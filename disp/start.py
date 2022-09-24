@@ -31,10 +31,9 @@ async def send_welcome(message: types.Message):
     except:
         pass
 
-    # проверяем зарегистрирован ли пользователь
-    req = cheak_user(bot_user) 
-    
-    if 'error' in req:
+    # проверяем зарегистрирован ли пользователь 
+    if not cheak_user(bot_user):
+        # если не зарегистрирован
         kb_hello = InlineKeyboardMarkup( resize_keyboard=True, one_time_keyboard=True)\
             .add(InlineKeyboardButton(text='Пройти анкету',    callback_data='register'))\
             .add(InlineKeyboardButton(text='Прочесть правила', callback_data='rules'))

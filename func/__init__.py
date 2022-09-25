@@ -1,2 +1,3 @@
 from .set_default_commands import set_default_commands
 from .cheak_user import cheak_user
+from .create_user_and_person import create_user_and_person

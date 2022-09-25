@@ -5,9 +5,10 @@ from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
+from func import create_user_and_person
 
 class NewGamer(StatesGroup):
-    username    = State()
+    gamename    = State()
     sex         = State()
     profession  = State()
     destination = State()
@@ -17,7 +18,7 @@ class NewGamer(StatesGroup):
 async def kb_hello_callback_register(query: types.CallbackQuery):
     "Начинаем опрос анкеты для создания нового игрока"
     await query.message.edit_reply_markup(reply_markup=None)
-    await NewGamer.username.set()
+    await NewGamer.gamename.set()
     await query.message.answer('Напишите ваше имя, желательно покороче - бумага в дефиците.')
 
 @dp.callback_query_handler(Text(equals=['register_new']),state=NewGamer.profession)
@@ -25,15 +26,15 @@ async def kb_profession_callback_previos(query: types.CallbackQuery, state: FSMC
     "Начинаем заново опрос анкеты для создания нового игрока"
     await state.finish()
     await query.message.edit_reply_markup(reply_markup=None)
-    await NewGamer.username.set()
+    await NewGamer.gamename.set()
     await query.message.answer('Что значит, вы ошиблись? Я же просил не тратить дефицитную бумагу. Хорошо, держите ещё один бланк. Вот сюда печатными буквами Ваше имя...')
 
 
-@dp.message_handler(state=NewGamer.username)
-async def load_username(message: types.Message, state: FSMContext):
+@dp.message_handler(state=NewGamer.gamename)
+async def load_gamename(message: types.Message, state: FSMContext):
     "Получаем юзернейм от пользователя и спрашиваем пол"
     async with state.proxy() as data:
-        data['username'] = message.text
+        data['gamename'] = message.text
 
     await NewGamer.next()
     MESS = "Современные законы обязывают меня спросить ваш пол. Кем вы себя идентифицируете? Помните, что мужчины сильнее, выносливее и умнее, а женщины привлекательны, ловки и менее подвержены стрессу."
@@ -85,9 +86,14 @@ async def load_destination(message: types.Message, state: FSMContext):
     "Получаем цель путешествия ради шутки"
     async with state.proxy() as data:
         data['destination'] = message.text
-        await   message.answer(str(data))
+        #await   message.answer(str(data))
+        res = create_user_and_person(
+                message['from']['id'],
+                data['gamename'],
+                data['sex'],
+                data['profession'],
+                data['destination']
+                )
 
     await state.finish()
-
-    
 

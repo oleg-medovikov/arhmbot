@@ -1,5 +1,5 @@
 import requests 
-from conf import SALT, API_URL
+from conf import API_URL, BOT_TOKEN
 
 def create_user_and_person(
         U_ID : int,
@@ -13,6 +13,10 @@ def create_user_and_person(
     if sex == 'male' : s = True
     else: s = False
 
+    header = {
+            'token' : BOT_TOKEN
+            }
+
     body = {
         "u_id"        : U_ID,
         "gamename"    : gamename,
@@ -21,6 +25,6 @@ def create_user_and_person(
         "destination" : destination    
             }
 
-    req = requests.post(url, headers={'salt' : SALT}, json=body)
+    req = requests.post(url, headers=header, json=body)
 
     

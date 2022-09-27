@@ -3,3 +3,4 @@ from .on_startup import on_startup
 
 from .start import *
 from .register import *
+from .get_files import *  

@@ -9,5 +9,7 @@ emoji = {
     'godliness' : '\ud83d\ude4f'.encode('utf-16', 'surrogatepass').decode('utf-16'),
     'strength'  : '\ud83d\udcaa'.encode('utf-16', 'surrogatepass').decode('utf-16'),
     'knowledge' : '\ud83d\udcda'.encode('utf-16', 'surrogatepass').decode('utf-16'),
+    'hunger'    : '\ud83c\udf57'.encode('utf-16', 'surrogatepass').decode('utf-16'),
+    'weary'     : '\ud83d\udecf\ufe0f'.encode('utf-16', 'surrogatepass').decode('utf-16'),
     
         }

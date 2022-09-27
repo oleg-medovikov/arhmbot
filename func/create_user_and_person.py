@@ -3,6 +3,7 @@ from conf import API_URL, BOT_TOKEN
 
 def create_user_and_person(
         U_ID : int,
+        name_tg : str,
         gamename : str,
         sex : str,
         profession  : str,
@@ -19,12 +20,13 @@ def create_user_and_person(
 
     body = {
         "u_id"        : U_ID,
+        "name_tg"     : name_tg,
         "gamename"    : gamename,
         "sex"         : s,
         "profession"  : profession,
         "destination" : destination    
             }
-
-    req = requests.post(url, headers=header, json=body)
-
     
+    print(body)
+
+    requests.post(url, headers=header, json=body)

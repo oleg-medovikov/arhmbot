@@ -1,4 +1,4 @@
-from .dispetcher import dp, bot
+from .dispetcher import dp
 from aiogram import types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.dispatcher.filters import Text
@@ -28,7 +28,6 @@ async def kb_profession_callback_previos(query: types.CallbackQuery, state: FSMC
     await query.message.edit_reply_markup(reply_markup=None)
     await NewGamer.gamename.set()
     await query.message.answer('Что значит, вы ошиблись? Я же просил не тратить дефицитную бумагу. Хорошо, держите ещё один бланк. Вот сюда печатными буквами Ваше имя...')
-
 
 @dp.message_handler(state=NewGamer.gamename)
 async def load_gamename(message: types.Message, state: FSMContext):
@@ -86,9 +85,11 @@ async def load_destination(message: types.Message, state: FSMContext):
     "Получаем цель путешествия ради шутки"
     async with state.proxy() as data:
         data['destination'] = message.text
-        #await   message.answer(str(data))
-        res = create_user_and_person(
+        
+        NAME_TG = message['from']['username'] +' '+ message['from']['last_name'] +' '+message['from']['first_name'] 
+        create_user_and_person(
                 message['from']['id'],
+                NAME_TG,
                 data['gamename'],
                 data['sex'],
                 data['profession'],
@@ -96,4 +97,9 @@ async def load_destination(message: types.Message, state: FSMContext):
                 )
 
     await state.finish()
+    MESS = 'Отлично... Дайте мне четверть часа на оформление и можете отправляться в город.'
+    kb_end_reg = InlineKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)\
+            .add(InlineKeyboardButton(text='Подождать 15 минут',  callback_data='start_new_game'))
+    
+    await message.answer(MESS, reply_markup= kb_end_reg ) 
 

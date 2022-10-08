@@ -27,6 +27,4 @@ def create_user_and_person(
         "destination" : destination    
             }
     
-    print(body)
-
     requests.post(url, headers=header, json=body)

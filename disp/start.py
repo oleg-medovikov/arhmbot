@@ -1,10 +1,9 @@
-from .dispetcher import dp, bot
-from aiogram.utils.callback_data import CallbackData
+from .dispetcher import dp
 from aiogram import types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.dispatcher.filters import Text
 
-from func import cheak_user, cheak_person, login_user, person_status
+from func import cheak_user, cheak_person, person_status
 
 import time
 
@@ -49,8 +48,6 @@ async def start_new_game(query: types.CallbackQuery):
  
         MESS = 'Так как вы впервые прибыли в наш город, заполните небольшую анкету о себе. Желательно, ознакомьтесь с правилами поведения в городе. Это повысит ваши шансы.'
         return await query.message.answer(MESS, reply_markup=kb_hello)
-    else:
-        login_user(bot_user)
     
     # проверяем наличие живого персонажа
     if not cheak_person(bot_user):
@@ -67,4 +64,7 @@ async def start_new_game(query: types.CallbackQuery):
         return await query.message.answer(MESS, reply_markup=kb_hello)
     else:
         # если персонаж жив, показываем его статус
-        return await query.message.answer(person_status( bot_user ) , parse_mode='Markdown')
+        kb_game = InlineKeyboardMarkup( resize_keyboard=True, one_time_keyboard=True)\
+                .add(InlineKeyboardButton(text='Продолжить игру',  callback_data='continue_game'))\
+                .add(InlineKeyboardButton(text='Прочесть правила', callback_data='rules'))
+        return await query.message.answer(person_status( bot_user ) , parse_mode='Markdown', reply_markup=kb_game )

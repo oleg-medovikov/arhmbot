@@ -1,4 +1,4 @@
-from conf import API_URL, DICT_USERS_TOKENS
+from conf import API_URL, user_token
 import requests
 from datetime import datetime, timedelta
 from conf import emoji
@@ -26,7 +26,7 @@ def weary_to_str(temp: int) -> str:
 def person_status(U_ID):
     url = API_URL + '/person_status'
 
-    req = requests.post(url, headers={'token' : DICT_USERS_TOKENS[str(U_ID)]  } )
+    req = requests.post(url, headers={'token' : user_token(U_ID) } )
     
     
     PERS = req.json()['person']

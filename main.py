@@ -1,5 +1,7 @@
 from disp import dp, on_startup
 import logging, asyncio
+import warnings 
+warnings.filterwarnings('ignore')
 
 logging.basicConfig(level=logging.INFO)
 

@@ -86,7 +86,12 @@ async def load_destination(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['destination'] = message.text
         
-        NAME_TG = message['from']['username'] +' '+ message['from']['last_name'] +' '+message['from']['first_name'] 
+        NAME_TG = ( message['from']['username'] if message['from']['username'] else ' ') \
+                +' '+\
+                ( message['from']['last_name']  if message['from']['last_name'] else ' ') \
+                + ' ' +\
+                ( message['from']['first_name'] if message['from']['first_name'] else ' ')
+
         create_user_and_person(
                 message['from']['id'],
                 NAME_TG,

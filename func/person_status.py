@@ -33,6 +33,7 @@ def person_status(U_ID):
     STAT = req.json()['person_status']
     # 'hunger': 0, 'weary': 0
     
+    print(PERS, STAT)
 
     DATE = datetime.fromisoformat(PERS['create_date']).strftime('%d.%m.%Y в %H:%M')
     DAYS = STAT['gametime'] // 96 

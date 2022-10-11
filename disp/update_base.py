@@ -1,13 +1,13 @@
 from .dispetcher import dp, bot
 from aiogram import types
 import requests, os
-from func import cheak_admin, update_person_defaults, update_location
+from func import cheak_admin, update_person_defaults, update_location, update_location_description
 import pandas as pd 
 
 FILES = {
-        'PersonDefaults.xlsx' : 'update_person_defaults',
-        'Karta.xlsx'          : 'update_location'
-
+        'PersonDefaults.xlsx'    : 'update_person_defaults',
+        'Karta.xlsx'             : 'update_location',
+        'KartaDescriptions.xlsx' : 'update_location_description',
         }
 
 NAMES = {
@@ -18,7 +18,8 @@ NAMES = {
        'knowledge_max', 'godliness_min', 'godliness_max', 'luck_min',
        'luck_max'],
     'Karta': ['node_id', 'name_node', 'contact_list_id', 'district', 'street', 'dist',
-       'date_update']
+       'date_update'],
+    'KartaDescriptions' : ['node_id', 'stage', 'description', 'date_update']
 
         }
 
@@ -56,6 +57,9 @@ async def update_document(message : types.Message):
         await message.answer( MESS )     
     elif FILES.get( FILE['file_name'] ) == 'update_location':
         MESS = update_location(U_ID, df )
+        await message.answer( MESS )
+    elif FILES.get( FILE['file_name'] ) == 'update_location_description':
+        MESS = update_location_description(U_ID, df )
         await message.answer( MESS )
 
     os.remove(DESTINATION)

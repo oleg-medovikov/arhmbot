@@ -17,10 +17,11 @@ def login_user(U_ID):
 
 DICT_USERS_TOKENS = dict()
 
-def user_token(u_id):
+def user_token(u_id : int) -> str:
     ID = str(u_id) 
     if ID in DICT_USERS_TOKENS.keys():
-        return DICT_USERS_TOKENS.get( ID )
+        TOKEN = DICT_USERS_TOKENS.get( ID )
+        return str(TOKEN)
     else:
         TOKEN = login_user(u_id)
         DICT_USERS_TOKENS[ ID ] = TOKEN

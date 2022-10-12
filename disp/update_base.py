@@ -1,13 +1,16 @@
 from .dispetcher import dp, bot
 from aiogram import types
-import requests, os
-from func import cheak_admin, update_person_defaults, update_location, update_location_description
+import os
+from func import cheak_admin, update_person_defaults, update_location,\
+        update_location_description, update_manual
+
 import pandas as pd 
 
 FILES = {
         'PersonDefaults.xlsx'    : 'update_person_defaults',
         'Karta.xlsx'             : 'update_location',
         'KartaDescriptions.xlsx' : 'update_location_description',
+        'Manual.xlsx'            : 'update_manual',
         }
 
 NAMES = {
@@ -17,10 +20,10 @@ NAMES = {
        'stealth_max', 'strength_min', 'strength_max', 'knowledge_min',
        'knowledge_max', 'godliness_min', 'godliness_max', 'luck_min',
        'luck_max'],
-    'Karta': ['node_id', 'name_node', 'contact_list_id', 'district', 'street', 'dist',
+    'Karta.xlsx': ['node_id', 'name_node', 'declension','contact_list_id', 'district', 'street', 'dist',
        'date_update'],
-    'KartaDescriptions' : ['node_id', 'stage', 'description', 'date_update']
-
+    'KartaDescriptions.xlsx' : ['node_id', 'stage', 'description', 'date_update'],
+    'Manual.xlsx' : ['m_id', 'm_name', 'order', 'text', 'date_update'],
         }
 
 @dp.message_handler(content_types='document')
@@ -50,7 +53,7 @@ async def update_document(message : types.Message):
     try:
         df = pd.read_excel(DESTINATION, usecols=COLUMNS)
     except Exception as e:
-        await message.answer(str(e) )
+        return await message.answer(str(e) )
 
     if   FILES.get( FILE['file_name'] ) == 'update_person_defaults':
         MESS = update_person_defaults(U_ID, df)    
@@ -60,6 +63,9 @@ async def update_document(message : types.Message):
         await message.answer( MESS )
     elif FILES.get( FILE['file_name'] ) == 'update_location_description':
         MESS = update_location_description(U_ID, df )
+        await message.answer( MESS )
+    elif FILES.get( FILE['file_name'] ) == 'update_manual':
+        MESS = update_manual(U_ID, df)
         await message.answer( MESS )
 
     os.remove(DESTINATION)

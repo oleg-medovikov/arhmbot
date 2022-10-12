@@ -3,3 +3,5 @@ from .config import BOT_API, SALT, API_URL,\
 
 from .emoji import emoji 
 from .conn_log import user_token 
+
+from .message import * 

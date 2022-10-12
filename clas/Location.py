@@ -5,6 +5,7 @@ from typing import Optional
 class Location(BaseModel):
     node_id         : int
     name_node       : str
+    declension      : str
     contact_list_id : str
     district        : str
     street          : bool

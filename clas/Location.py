@@ -8,6 +8,7 @@ class Location(BaseModel):
     declension      : str
     contact_list_id : str
     district        : str
+    district_id     : int
     street          : bool
     dist            : bool
     date_update     : Optional[datetime] = None

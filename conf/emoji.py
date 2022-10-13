@@ -2,6 +2,7 @@ emoji = {
     'heart'     : '\u2764\uFE0F',
     'brain'     : '\ud83e\udde0'.encode('utf-16', 'surrogatepass').decode('utf-16'),
     'dollar'    : '\ud83d\udcb5'.encode('utf-16', 'surrogatepass').decode('utf-16'),
+    'bank'      : '\ud83c\udfe6'.encode('utf-16', 'surrogatepass').decode('utf-16'),  
     'clock'     : '\ud83d\udd70'.encode('utf-16', 'surrogatepass').decode('utf-16'),
     'luck'      : '\ud83c\udf40'.encode('utf-16', 'surrogatepass').decode('utf-16'),
     'speed'     : '\ud83c\udfc3'.encode('utf-16', 'surrogatepass').decode('utf-16'),

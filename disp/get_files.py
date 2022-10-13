@@ -3,7 +3,7 @@ from aiogram import types
 import pandas as pd
 import os, requests 
 from func import cheak_admin, write_styling_excel_file
-from conf import API_URL, user_token 
+from conf import API_URL, user_token, emoji
 
 @dp.message_handler(commands='files')
 async def get_files_help(message: types.Message):
@@ -19,6 +19,7 @@ async def get_files_help(message: types.Message):
     /get_Karta
     /get_KartaDescriptions
     /get_Manual
+    /test_emoji
 
     """.replace('_', '\\_')
     
@@ -120,3 +121,18 @@ async def send_Manual_file(message: types.Message):
     await message.answer_document(open(FILENAME, 'rb' ))
     os.remove(FILENAME)   
 
+
+@dp.message_handler(commands='test_emoji')
+async def send_full_emoji_dict(message :types.Message):
+    # удалим команду для чистоты
+    try:
+        await message.delete()
+    except: pass
+
+    MAX_LEN = max((len(k) + len(v)*0 for k,v in emoji.items() ))
+    MESS = ''
+    for key, value in emoji.items():
+        word = key + ' '*(MAX_LEN - len(key))
+        MESS += f'``` { word }   ```' + value +'\n'
+
+    await message.answer( MESS, parse_mode='Markdown'  )

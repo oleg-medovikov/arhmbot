@@ -6,6 +6,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from func import get_game_status, get_look_around,\
         get_locations_nearby, make_relocation
 
+
 @dp.callback_query_handler(Text(equals=['continue_game']))
 async def continue_game(query: types.CallbackQuery):
     "Непосредственно игра!"
@@ -16,9 +17,13 @@ async def continue_game(query: types.CallbackQuery):
         2. предложить меню с действиями, куда двигаться  """
 
     U_ID = query.message['chat']['id']
-    MESS = get_game_status( U_ID )
-
-    kb_game = InlineKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)\
+    MESS, DIE = get_game_status( U_ID )
+    
+    if DIE: 
+        return await query.message.answer( MESS, parse_mode='Markdown'  )
+    else:
+        
+        kb_game = InlineKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)\
             .add(InlineKeyboardButton(
                 text='осмотреться', callback_data='look_around'
                 ))\
@@ -26,7 +31,7 @@ async def continue_game(query: types.CallbackQuery):
                 text='уйти куда-то ещё', callback_data='leave'
                 ))
 
-    await query.message.answer(MESS, reply_markup=kb_game)
+        return await query.message.answer(MESS, reply_markup=kb_game, parse_mode='Markdown')
 
 
 @dp.callback_query_handler(Text(equals=['look_around'] ))
@@ -43,7 +48,7 @@ async def look_around(query: types.CallbackQuery):
                 text='продолжить', callback_data='continue_game'
                 ))
 
-    await query.message.answer(MESS, reply_markup=kb_look_around )
+    await query.message.answer(MESS, reply_markup=kb_look_around, parse_mode='Markdown' )
 
 @dp.callback_query_handler(Text(equals='leave'))
 async def leave(query : types.CallbackQuery):
@@ -66,20 +71,27 @@ async def leave(query : types.CallbackQuery):
     
     MESS = 'Вы можете пойти:'
 
-    await query.message.reply( MESS, reply_markup=kb_loc_nearby )
+    await query.message.answer( MESS, reply_markup=kb_loc_nearby )
 
 @dp.callback_query_handler(Text(startswith='leave_'))
 async def relocation(query : types.CallbackQuery):
     NODE_ID = query.data.split('_')[-1]
     U_ID = query.message['chat']['id']
 
-    make_relocation( U_ID, NODE_ID )
+    MESS, DIE = make_relocation( U_ID, NODE_ID )
 
-    kb_relocation = InlineKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)\
-            .add(InlineKeyboardButton(
+    kb_relocation = InlineKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+
+    # Если персонаж не умер, можно идти дальше
+    if not DIE:
+        kb_relocation.add(InlineKeyboardButton(
                 text='идти дальше', callback_data='leave'
-                ))\
-            .add(InlineKeyboardButton(
+                ))
+    
+
+    # в любом случае предлагаем продолжить
+    kb_relocation.add(InlineKeyboardButton(
                 text='остановиться', callback_data='continue_game'
                 ))
-    await query.message.reply('Вы перешли в другое место', reply_markup=kb_relocation ) 
+
+    await query.message.answer(MESS, reply_markup=kb_relocation ) 

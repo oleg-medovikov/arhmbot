@@ -35,12 +35,18 @@ def person_status(U_ID):
     DAYS = STAT['gametime'] // 96 
     TIME = (datetime.strptime('09:00', '%H:%M') + timedelta(minutes=15*STAT['gametime'])).strftime('%H:%M')
 
+    if PERS['sex']:
+        r = 'Зарегистрирован'
+        p = 'Провел'
+    else:
+        r = 'Зарегистрирована'
+        p = 'Провела'
 
     MESS=f"""*Карточка персонажа*
 
 *ИМЯ:* {PERS['gamename']},  {PERS['profession']}
-*Зарегистрирован: * {DATE}
-*Провел дней в Архэме: {DAYS}*  
+*{r}: * {DATE}
+*{p} дней в Архэме: {DAYS}*  
 ```
 
   {emoji['clock']}  {TIME}    {emoji['dollar']} {STAT['money']}

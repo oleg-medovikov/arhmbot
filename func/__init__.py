@@ -10,9 +10,11 @@ from .update_person_defaults       import update_person_defaults
 from .update_location              import update_location
 from .update_location_description  import update_location_description
 from .update_manual                import update_manual
+from .update_item                  import update_item
 from .get_manual                   import get_manual
 from .get_manual_text              import get_manual_text
 from .get_game_status              import get_game_status
 from .get_look_around              import get_look_around
 from .get_locations_nearby         import get_locations_nearby
 from .make_relocation              import make_relocation
+

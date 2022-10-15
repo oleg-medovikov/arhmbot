@@ -12,5 +12,9 @@ emoji = {
     'knowledge' : '\ud83d\udcda'.encode('utf-16', 'surrogatepass').decode('utf-16'),
     'hunger'    : '\ud83c\udf57'.encode('utf-16', 'surrogatepass').decode('utf-16'),
     'weary'     : '\ud83d\udecf\ufe0f'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    
+    'mail'      : '\ud83d\udc8c'.encode('utf-16', 'surrogatepass').decode('utf-16'),
+    'note'      : '\ud83d\udcd3'.encode('utf-16', 'surrogatepass').decode('utf-16'),
+    'film'      : '\ud83c\udf9e'.encode('utf-16', 'surrogatepass').decode('utf-16'),
+    'redbook'   : '\ud83d\udcd5'.encode('utf-16', 'surrogatepass').decode('utf-16'),
+    'flashlight': '\ud83d\udd26'.encode('utf-16', 'surrogatepass').decode('utf-16'),
         }

@@ -19,11 +19,37 @@ async def get_files_help(message: types.Message):
     /get_Karta
     /get_KartaDescriptions
     /get_Manual
+    /get_Items
     /test_emoji
 
     """.replace('_', '\\_')
     
     return await message.answer(MESS, parse_mode='Markdown')
+
+@dp.message_handler(commands='get_Items')
+async def send_Items_file(message: types.Message):
+   # удалим команду для чистоты
+    try:
+        await message.delete()
+    except: pass
+
+    U_ID = message['from']['id']
+    
+    URL = API_URL + '/read_all_items'
+
+    req = requests.get(URL, headers={'token' : user_token(U_ID)})
+    
+    df = pd.DataFrame( data = req.json() )
+    
+    df['date_update'] = pd.to_datetime(df['date_update']).dt.strftime('%H:%M  %d.%m.%Y')
+    FILENAME = 'temp/Items.xlsx'
+    SHETNAME = 'def'
+
+    write_styling_excel_file(FILENAME,df, SHETNAME)
+
+    await message.answer_document(open(FILENAME, 'rb' ))
+    os.remove(FILENAME)   
+
 
 @dp.message_handler(commands='get_PersonDefaults')
 async def send_PersonDefaults_file(message: types.Message):

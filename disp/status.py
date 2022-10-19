@@ -4,7 +4,7 @@ from aiogram.dispatcher.filters import Text
 from aiogram.types import  InlineKeyboardMarkup, InlineKeyboardButton
 
 from func import person_status, get_inventory, get_item,\
-        make_equip_item, make_remove_item
+        make_equip_item, make_remove_item, make_drop_item
 from conf import emoji
 
 
@@ -134,4 +134,20 @@ async def remove_item(query: types.CallbackQuery):
     
     return await query.message.answer(MESS, reply_markup=kb_equip, parse_mode='Markdown'  )
 
+
+@dp.callback_query_handler(Text(startswith=['drop_']))
+async def drop_item(query: types.CallbackQuery):
+    await query.message.edit_reply_markup( reply_markup=None )
+
+    I_ID = query.data.split('_')[-1]
+    U_ID = query.message['chat']['id']
+
+    MESS = make_drop_item( U_ID, I_ID )
+
+    kb_equip = InlineKeyboardMarkup( resize_keybord = True, one_time_keyboard = True)\
+            .add(InlineKeyboardButton(
+                text = 'Понятно', callback_data = 'inventory'
+                ))
+    
+    return await query.message.answer(MESS, reply_markup=kb_equip, parse_mode='Markdown'  )
 

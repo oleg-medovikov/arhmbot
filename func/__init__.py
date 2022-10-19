@@ -21,3 +21,4 @@ from .get_item                     import get_item
 from .make_relocation              import make_relocation
 from .make_equip_item              import make_equip_item
 from .make_remove_item             import make_remove_item
+from .make_drop_item               import make_drop_item

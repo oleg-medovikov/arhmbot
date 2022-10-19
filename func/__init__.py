@@ -16,5 +16,8 @@ from .get_manual_text              import get_manual_text
 from .get_game_status              import get_game_status
 from .get_look_around              import get_look_around
 from .get_locations_nearby         import get_locations_nearby
+from .get_inventory                import get_inventory
+from .get_item                     import get_item
 from .make_relocation              import make_relocation
-
+from .make_equip_item              import make_equip_item
+from .make_remove_item             import make_remove_item

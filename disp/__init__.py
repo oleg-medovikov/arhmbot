@@ -8,3 +8,4 @@ from .pray        import *
 from .update_base import *
 from .manual      import *
 from .game        import *
+from .status      import *

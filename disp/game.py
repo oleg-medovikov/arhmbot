@@ -14,7 +14,9 @@ async def continue_game(query: types.CallbackQuery):
     await query.message.edit_reply_markup( reply_markup=None )
 
     """ 1. показать игроку частичный статус
-        2. предложить меню с действиями, куда двигаться  """
+        2. предложить осмотреться
+        3. предложить меню со статусом и инвентарем
+        3. предложить меню с перемещением куда двигаться  """
 
     U_ID = query.message['chat']['id']
     MESS, DIE = get_game_status( U_ID )
@@ -26,6 +28,9 @@ async def continue_game(query: types.CallbackQuery):
         kb_game = InlineKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)\
             .add(InlineKeyboardButton(
                 text='осмотреться', callback_data='look_around'
+                ))\
+            .add(InlineKeyboardButton(
+                text='статус персонажа', callback_data='status'
                 ))\
             .add(InlineKeyboardButton(
                 text='уйти куда-то ещё', callback_data='leave'

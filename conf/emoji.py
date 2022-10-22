@@ -25,6 +25,7 @@ emoji = {
     'pill'      : '\ud83d\udc8a'.encode('utf-16', 'surrogatepass').decode('utf-16'),
     'red'       : '\ud83d\udd34'.encode('utf-16', 'surrogatepass').decode('utf-16'),
     'green'     : '\ud83d\udfe2'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    #'penis'       : '\ud80c\udcba'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    #'leg'       : '\ud83e\uddb5'.encode('utf-16', 'surrogatepass').decode('utf-16'),
+    'ticket'    : '\ud83c\udf9f'.encode('utf-16', 'surrogatepass').decode('utf-16'),
+    #'penis'    : '\ud80c\udcba'.encode('utf-16', 'surrogatepass').decode('utf-16'),
+    #'leg'      : '\ud83e\uddb5'.encode('utf-16', 'surrogatepass').decode('utf-16'),
         }

@@ -2,7 +2,7 @@ from .dispetcher import dp, bot
 from aiogram import types
 import os
 from func import cheak_admin, update_person_defaults, update_location,\
-        update_location_description, update_manual, update_item
+        update_location_description, update_manual, update_item, update_event
 
 import pandas as pd 
 
@@ -12,6 +12,7 @@ FILES = {
         'KartaDescriptions.xlsx' : 'update_location_description',
         'Manual.xlsx'            : 'update_manual',
         'Items.xlsx'             : 'update_item',
+        'Events.xlsx'             : 'update_event',
         }
 
 NAMES = {
@@ -27,7 +28,11 @@ NAMES = {
     'Manual.xlsx' : ['m_id', 'm_name', 'order', 'text', 'date_update'],
     'Items.xlsx' : ['i_id','name','description','equip_mess','fail_mess','remove_mess','drop_mess',
                     'i_type','slot','effect','demand',
-                    'emoji','cost','single_use','achievement','date_update']
+                    'emoji','cost','single_use','achievement','date_update'],
+    'Events.xlsx' : ['e_id', 'e_name', 'single', 'active', 'stage', 'node_id',
+        'profession', 'demand', 'description', 'mess_prize',
+        'mess_punishment', 'check', 'choice', 'prize', 'punishment', 'username',
+        'date_update'],
         }
 
 @dp.message_handler(content_types='document')
@@ -73,6 +78,9 @@ async def update_document(message : types.Message):
         await message.answer( MESS )
     elif FILES.get( FILE['file_name'] ) == 'update_item':
         MESS = update_item(U_ID, df)
+        await message.answer( MESS )
+    elif FILES.get( FILE['file_name'] ) == 'update_event':
+        MESS = update_event(U_ID, df)
         await message.answer( MESS )
 
 

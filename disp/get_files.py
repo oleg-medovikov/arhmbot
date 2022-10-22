@@ -20,133 +20,45 @@ async def get_files_help(message: types.Message):
     /get_KartaDescriptions
     /get_Manual
     /get_Items
+    /get_Events
     /test_emoji
 
     """.replace('_', '\\_')
     
     return await message.answer(MESS, parse_mode='Markdown')
 
-@dp.message_handler(commands='get_Items')
-async def send_Items_file(message: types.Message):
+DICT_XLSX = {
+    'get_Events'            : '/read_all_events',
+    'get_Items'             : '/read_all_items',
+    'get_PersonDefaults'    : '/read_all_persons_defaults',
+    'get_Karta'             : '/read_all_locations',
+    'get_Manual'            : '/read_full_manual',
+    'get_KartaDescriptions' : '/read_all_locations_descriptions',
+
+        }
+
+@dp.message_handler(commands= DICT_XLSX.keys() )
+async def send_objects_file(message: types.Message):
    # удалим команду для чистоты
     try:
         await message.delete()
     except: pass
 
+    COMMAND = message.text.replace('/', '')
     U_ID = message['from']['id']
-    
-    URL = API_URL + '/read_all_items'
 
+    URL = API_URL + str( DICT_XLSX.get(COMMAND) )
     req = requests.get(URL, headers={'token' : user_token(U_ID)})
     
     df = pd.DataFrame( data = req.json() )
-    
     df['date_update'] = pd.to_datetime(df['date_update']).dt.strftime('%H:%M  %d.%m.%Y')
-    FILENAME = 'temp/Items.xlsx'
+    FILENAME = f'temp/{COMMAND[4:]}.xlsx'
     SHETNAME = 'def'
 
     write_styling_excel_file(FILENAME,df, SHETNAME)
 
     await message.answer_document(open(FILENAME, 'rb' ))
     os.remove(FILENAME)   
-
-
-@dp.message_handler(commands='get_PersonDefaults')
-async def send_PersonDefaults_file(message: types.Message):
-   # удалим команду для чистоты
-    try:
-        await message.delete()
-    except: pass
-
-    U_ID = message['from']['id']
-    
-    URL = API_URL + '/read_all_persons_defaults'
-
-    req = requests.get(URL, headers={'token' : user_token(U_ID)})
-    
-    df = pd.DataFrame( data = req.json() )
-    
-    df['date_update'] = pd.to_datetime(df['date_update']).dt.strftime('%H:%M  %d.%m.%Y')
-    FILENAME = 'temp/PersonDefaults.xlsx'
-    SHETNAME = 'def'
-
-    write_styling_excel_file(FILENAME,df, SHETNAME)
-
-    await message.answer_document(open(FILENAME, 'rb' ))
-    os.remove(FILENAME)   
-
-@dp.message_handler(commands='get_Karta')
-async def send_Karta_file(message: types.Message):
-   # удалим команду для чистоты
-    try:
-        await message.delete()
-    except: pass
-
-    U_ID = message['from']['id']
-    URL = API_URL + '/read_all_locations'
-    req = requests.get(URL, headers={'token' : user_token(U_ID)})
-    
-    df = pd.DataFrame( data = req.json() )
-    if len(df) == 0:
-        return await message.answer('Таблица пуста')
-    
-    df['date_update'] = pd.to_datetime(df['date_update']).dt.strftime('%H:%M  %d.%m.%Y')
-    FILENAME = 'temp/Karta.xlsx'
-    SHETNAME = 'def'
-
-    write_styling_excel_file(FILENAME,df, SHETNAME)
-
-    await message.answer_document(open(FILENAME, 'rb' ))
-    os.remove(FILENAME)   
-
-@dp.message_handler(commands='get_KartaDescriptions')
-async def send_Karta_Descriptions_file(message: types.Message):
-   # удалим команду для чистоты
-    try:
-        await message.delete()
-    except: pass
-
-    U_ID = message['from']['id']
-    URL = API_URL + '/read_all_locations_descriptions'
-    req = requests.get(URL, headers={'token' : user_token(U_ID)})
-    
-    df = pd.DataFrame( data = req.json() )
-    if len(df) == 0:
-        return await message.answer('Таблица пуста')
-    
-    df['date_update'] = pd.to_datetime(df['date_update']).dt.strftime('%H:%M  %d.%m.%Y')
-    FILENAME = 'temp/KartaDescriptions.xlsx'
-    SHETNAME = 'def'
-
-    write_styling_excel_file(FILENAME,df, SHETNAME)
-
-    await message.answer_document(open(FILENAME, 'rb' ))
-    os.remove(FILENAME)   
-
-@dp.message_handler(commands='get_Manual')
-async def send_Manual_file(message: types.Message):
-   # удалим команду для чистоты
-    try:
-        await message.delete()
-    except: pass
-
-    U_ID = message['from']['id']
-    URL = API_URL + '/read_full_manual'
-    req = requests.get(URL, headers={'token' : user_token(U_ID)})
-    
-    df = pd.DataFrame( data = req.json() )
-    if len(df) == 0:
-        return await message.answer('Таблица пуста')
-    
-    df['date_update'] = pd.to_datetime(df['date_update']).dt.strftime('%H:%M  %d.%m.%Y')
-    FILENAME = 'temp/Manual.xlsx'
-    SHETNAME = 'def'
-
-    write_styling_excel_file(FILENAME,df, SHETNAME)
-
-    await message.answer_document(open(FILENAME, 'rb' ))
-    os.remove(FILENAME)   
-
 
 @dp.message_handler(commands='test_emoji')
 async def send_full_emoji_dict(message :types.Message):

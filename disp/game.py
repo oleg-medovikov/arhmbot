@@ -33,6 +33,9 @@ async def continue_game(query: types.CallbackQuery):
                 text='статус персонажа', callback_data='status'
                 ))\
             .add(InlineKeyboardButton(
+                text='действовать', callback_data='get_event'
+                ))\
+            .add(InlineKeyboardButton(
                 text='уйти куда-то ещё', callback_data='leave'
                 ))
 

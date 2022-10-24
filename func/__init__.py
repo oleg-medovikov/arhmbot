@@ -24,3 +24,4 @@ from .make_equip_item              import make_equip_item
 from .make_remove_item             import make_remove_item
 from .make_drop_item               import make_drop_item
 from .make_get_event               import make_get_event
+from .make_finish_event            import make_finish_event

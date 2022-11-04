@@ -21,6 +21,7 @@ async def get_files_help(message: types.Message):
     /get_Manual
     /get_Items
     /get_Events
+    /get_Monsters
     /test_emoji
 
     """.replace('_', '\\_')
@@ -33,6 +34,7 @@ DICT_XLSX = {
     'get_PersonDefaults'    : '/read_all_persons_defaults',
     'get_Karta'             : '/read_all_locations',
     'get_Manual'            : '/read_full_manual',
+    'get_Monsters'          : '/read_all_monsters',
     'get_KartaDescriptions' : '/read_all_locations_descriptions',
 
         }

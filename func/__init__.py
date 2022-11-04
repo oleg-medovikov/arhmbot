@@ -12,6 +12,7 @@ from .update_location_description  import update_location_description
 from .update_manual                import update_manual
 from .update_item                  import update_item
 from .update_event                 import update_event
+from .update_monster               import update_monster
 from .get_manual                   import get_manual
 from .get_manual_text              import get_manual_text
 from .get_game_status              import get_game_status

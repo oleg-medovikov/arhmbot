@@ -1,10 +1,10 @@
 from conf import API_URL, user_token
-from clas import Event
+from clas import Monster
 import requests
 
 
-def update_event(U_ID, df):
-    url = API_URL + '/update_event'
+def update_monster(U_ID, df):
+    url = API_URL + '/update_monster'
     
     head={'token' : user_token(U_ID)}
     
@@ -14,14 +14,15 @@ def update_event(U_ID, df):
         row.pop('date_update')
         
         try:
-            E = Event(**row)
+            M = Monster(**row)
         except Exception as e:
             MESS += str(e)
             return MESS
             
-        req = requests.post(url, headers=head, json=E.__dict__ )
+        req = requests.post(url, headers=head, json=M.__dict__ )
+    
         if req.status_code == 200:
-           if 'исправлена' in req.json().get('mess') or \
+            if 'исправлена' in req.json().get('mess') or \
                     'добавлена' in req.json().get('mess'):
                 MESS += req.json().get('mess') + '\n'
         else:

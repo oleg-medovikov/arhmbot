@@ -1,9 +1,9 @@
 from .dispetcher import dp
 from aiogram import types
 from aiogram.dispatcher.filters import Text
-from aiogram.types import  InlineKeyboardMarkup, InlineKeyboardButton, message
+from aiogram.types import  InlineKeyboardMarkup, InlineKeyboardButton
 
-import json 
+import json, asyncio 
 from func import make_get_event, make_finish_event
 
 @dp.callback_query_handler(Text(equals=['get_event']))
@@ -52,8 +52,31 @@ async def person_finish_event(query: types.CallbackQuery):
 
     kb_event = InlineKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)\
             .add(InlineKeyboardButton(text = 'Понимаю', callback_data='continue_game') ) 
+    # если не нужно кидать кубики, то сразу возвращаем все сообщение
+    if not "Количество бросков кубика" in MESS:
+        return await query.message.answer( MESS, reply_markup=kb_event, parse_mode='Markdown' )
+    
+    # разбиваем сообщение на строчки
+    ROWS = MESS.split('\n')
+    
+    START_MESS ='``` ' + ROWS[1] +'\n'+ ROWS[2] + ' ```'
+    await query.message.answer(START_MESS, parse_mode='Markdown')
 
-    return await query.message.answer( MESS, reply_markup=kb_event, parse_mode='Markdown' )
+    NUMBERS = [int(x) for x in ROWS[3].split('  ')]
+    for NUMBER in NUMBERS:
+        await asyncio.sleep(3)
+        await query.message.answer(f"{NUMBER}\ufe0f\u20e3"  )
+    
+    END_MESS = "```\n"
+    for ROW in ROWS[4:]:
+        END_MESS += ROW + '\n'
+
+    return await query.message.answer( END_MESS, reply_markup=kb_event, parse_mode='Markdown' )
+
+
+
+
+
 
 
 

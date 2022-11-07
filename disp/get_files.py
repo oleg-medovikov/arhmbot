@@ -2,7 +2,7 @@ from .dispetcher import dp
 from aiogram import types
 import pandas as pd
 import os, requests 
-from func import cheak_admin, write_styling_excel_file
+from func import check_admin, write_styling_excel_file
 from conf import API_URL, user_token, emoji
 
 @dp.message_handler(commands='files')
@@ -11,7 +11,7 @@ async def get_files_help(message: types.Message):
         await message.delete()
     except: pass
     
-    if not cheak_admin( message['from']['id'] ): return None
+    if not check_admin( message['from']['id'] ): return None
 
     MESS = """*Доступные команды для редактирования базы*
     

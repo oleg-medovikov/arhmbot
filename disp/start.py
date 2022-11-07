@@ -4,7 +4,7 @@ from aiogram import types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.dispatcher.filters import Text
 
-from func import cheak_user, cheak_person, person_status
+from func import check_user, check_person, person_status
 from conf import MESS_disclaimer, MESS_hello_nologin, MESS_anketa_first,\
                  MESS_hello_login, MESS_anketa_second
 
@@ -24,7 +24,7 @@ async def start_new_game(query: types.CallbackQuery):
     await query.message.edit_reply_markup(reply_markup=None)
     bot_user = query.message['chat']['id']
     # проверяем зарегистрирован ли пользователь
-    if not cheak_user(bot_user):
+    if not check_user(bot_user):
         # если не зарегистрирован
         await query.message.answer( MESS_hello_nologin ) 
         kb_hello = InlineKeyboardMarkup( resize_keyboard=True, one_time_keyboard=True)\
@@ -34,7 +34,7 @@ async def start_new_game(query: types.CallbackQuery):
         return await query.message.answer( MESS_anketa_first, reply_markup=kb_hello)
     
     # если зарегистрированный пользователь, то проверяем наличие живого персонажа
-    if not cheak_person(bot_user):
+    if not check_person(bot_user):
         # если нет живого персонажа, нужно его завести
        
         await query.message.answer( MESS_hello_login ) 

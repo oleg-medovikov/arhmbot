@@ -19,6 +19,6 @@ class Monster(BaseModel):
     body_damage     : int
     health          : int
     price           : int
-    item            : int
+    item            : str
     experience      : int
     date_update     : Optional[datetime] = None

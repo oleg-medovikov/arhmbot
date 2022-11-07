@@ -1,7 +1,7 @@
 from .dispetcher import dp, bot
 from aiogram import types
 import os
-from func import cheak_admin, update_monster, update_person_defaults, update_location,\
+from func import check_admin, update_monster, update_person_defaults, update_location,\
         update_location_description, update_manual, update_item, update_event
 
 import pandas as pd 
@@ -51,7 +51,7 @@ async def update_document(message : types.Message):
     U_ID = message['from']['id']
     FILE = message['document']
 
-    if not cheak_admin( U_ID ):
+    if not check_admin( U_ID ):
         return await message.answer('Зачем вы шлёте мне файлы?')
 
     if not FILE['file_name'] in FILES.keys():

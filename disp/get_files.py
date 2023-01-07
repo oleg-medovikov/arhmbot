@@ -1,20 +1,23 @@
 from .dispetcher import dp
 from aiogram import types
 import pandas as pd
-import os, requests 
-from func import check_admin, write_styling_excel_file
-from conf import API_URL, user_token, emoji
+import os
+
+from func import delete_message, write_styling_excel
+from conf import emoji
+from clas import User, PersonDefaults
+
 
 @dp.message_handler(commands='files')
 async def get_files_help(message: types.Message):
-    try:
-        await message.delete()
-    except: pass
-    
-    if not check_admin( message['from']['id'] ): return None
+    await delete_message(message)
+
+    USER = await User.get(message['from']['id'])
+    if USER is None or not USER.admin:
+        return None
 
     MESS = """*Доступные команды для редактирования базы*
-    
+
     /get_PersonDefaults
     /get_Karta
     /get_KartaDescriptions
@@ -23,51 +26,57 @@ async def get_files_help(message: types.Message):
     /get_Events
     /get_Monsters
     /test_emoji
-
     """.replace('_', '\\_')
-    
+
     return await message.answer(MESS, parse_mode='Markdown')
 
 DICT_XLSX = {
-    'get_Events'            : '/read_all_events',
-    'get_Items'             : '/read_all_items',
-    'get_PersonDefaults'    : '/read_all_persons_defaults',
-    'get_Karta'             : '/read_all_locations',
-    'get_Manual'            : '/read_full_manual',
-    'get_Monsters'          : '/read_all_monsters',
-    'get_KartaDescriptions' : '/read_all_locations_descriptions',
-
+    'get_Events':             '/read_all_events',
+    'get_Items':              '/read_all_items',
+    'get_PersonDefaults':     '/read_all_persons_defaults',
+    'get_Karta':              '/read_all_locations',
+    'get_Manual':             '/read_full_manual',
+    'get_Monsters':           '/read_all_monsters',
+    'get_KartaDescriptions':  '/read_all_locations_descriptions',
         }
 
-@dp.message_handler(commands= DICT_XLSX.keys() )
+
+@dp.message_handler(commands=DICT_XLSX.keys())
 async def send_objects_file(message: types.Message):
-   # удалим команду для чистоты
-    try:
-        await message.delete()
-    except: pass
+    # удалим команду для чистоты
+    await delete_message(message)
+
+    USER = await User.get(message['from']['id'])
+    if USER is None or not USER.admin:
+        return None
 
     COMMAND = message.text.replace('/', '')
-    U_ID = message['from']['id']
 
-    URL = API_URL + str( DICT_XLSX.get(COMMAND) )
-    req = requests.get(URL, headers={'token' : user_token(U_ID)})
-    
-    df = pd.DataFrame( data = req.json() )
-    df['date_update'] = pd.to_datetime(df['date_update']).dt.strftime('%H:%M  %d.%m.%Y')
+    JSON = {
+        'get_PersonDefaults': await PersonDefaults.get_all(),
+
+    }.get(COMMAND, {})
+
+    df = pd.DataFrame(data=JSON)
+    df['date_update'] = df['date_update'].dt.strftime('%H:%M  %d.%m.%Y')
     FILENAME = f'temp/{COMMAND[4:]}.xlsx'
     SHETNAME = 'def'
 
-    write_styling_excel_file(FILENAME,df, SHETNAME)
+    write_styling_excel(FILENAME, df, SHETNAME)
 
-    await message.answer_document(open(FILENAME, 'rb' ))
-    os.remove(FILENAME)   
+    await message.answer_document(open(FILENAME, 'rb'))
+    os.remove(FILENAME)
+
 
 @dp.message_handler(commands='test_emoji')
 async def send_full_emoji_dict(message :types.Message):
     # удалим команду для чистоты
-    try:
-        await message.delete()
-    except: pass
+    await delete_message(message)
+
+    USER = await User.get(message['from']['id'])
+    if USER is None or not USER.admin:
+        return None
+
 
     MAX_LEN = max((len(k) + len(v)*0 for k,v in emoji.items() ))
     MESS = ''

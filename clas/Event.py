@@ -1,6 +1,6 @@
 from datetime import datetime
 from pydantic import BaseModel
-from typing   import Optional
+from typing import Optional
 
 class Event(BaseModel):
     e_id            : int

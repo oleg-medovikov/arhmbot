@@ -1,31 +1,42 @@
-emoji = {
-    'heart'     : '\u2764\uFE0F',
-    'brain'     : '\ud83e\udde0'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    'dollar'    : '\ud83d\udcb5'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    'bank'      : '\ud83c\udfe6'.encode('utf-16', 'surrogatepass').decode('utf-16'),  
-    'clock'     : '\ud83d\udd70'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    'luck'      : '\ud83c\udf40'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    'speed'     : '\ud83c\udfc3'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    'stealth'   : '\ud83e\udd77\ud83c\udffb'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    'godliness' : '\ud83d\ude4f'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    'strength'  : '\ud83d\udcaa'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    'knowledge' : '\ud83d\udcda'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    'hunger'    : '\ud83c\udf57'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    'weary'     : '\ud83d\udecf\ufe0f'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    'mail'      : '\ud83d\udc8c'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    'note'      : '\ud83d\udcd3'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    'film'      : '\ud83c\udf9e'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    'redbook'   : '\ud83d\udcd5'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    'flashlight': '\ud83d\udd26'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    'sword'     : '\ud83d\udde1'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    'axe'       : '\ud83e\ude93'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    'gun'       : '\ud83d\udd2b'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    'pick'      : '\u26cf'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    'syringe'   : '\ud83d\udc89'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    'pill'      : '\ud83d\udc8a'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    'red'       : '\ud83d\udd34'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    'green'     : '\ud83d\udfe2'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    'ticket'    : '\ud83c\udf9f'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    #'penis'    : '\ud80c\udcba'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-    #'leg'      : '\ud83e\uddb5'.encode('utf-16', 'surrogatepass').decode('utf-16'),
-        }
+Dict_emoji = {
+    'heart':      '\u2764\uFE0F',
+    'brain':      '\ud83e\udde0',
+    'dollar':     '\ud83d\udcb5',
+    'bank':       '\ud83c\udfe6',
+    'clock':      '\ud83d\udd70',
+    'luck':       '\ud83c\udf40',
+    'speed':      '\ud83c\udfc3',
+    'stealth':    '\ud83e\udd77\ud83c\udffb',
+    'godliness':  '\ud83d\ude4f',
+    'strength':   '\ud83d\udcaa',
+    'knowledge':  '\ud83d\udcda',
+    'hunger':     '\ud83c\udf57',
+    'weary':      '\ud83d\udecf\ufe0f',
+    'mail':       '\ud83d\udc8c',
+    'note':       '\ud83d\udcd3',
+    'film':       '\ud83c\udf9e',
+    'redbook':    '\ud83d\udcd5',
+    'flashlight': '\ud83d\udd26',
+    'sword':      '\ud83d\udde1',
+    'axe':        '\ud83e\ude93',
+    'gun':        '\ud83d\udd2b',
+    'pick':       '\u26cf',
+    'syringe':    '\ud83d\udc89',
+    'pill':       '\ud83d\udc8a',
+    'red':        '\ud83d\udd34',
+    'green':      '\ud83d\udfe2',
+    'ticket':     '\ud83c\udf9f',
+    'penis':     '\ud80c\udcba',
+    'leg':       '\ud83e\uddb5',
+    }
+
+
+def emoji(KEY: str) -> str:
+    """Хитро декодируем эмодзи, чтобы апи телеги не ругалось"""
+    STRING = Dict_emoji.get(KEY, '')
+    return STRING.encode('utf-16', 'surrogatepass').decode('utf-16')
+
+
+def emoji_all() -> list:
+    "Возвращаем список всех ключей эмодзи для проверки"
+    return list(Dict_emoji.keys())

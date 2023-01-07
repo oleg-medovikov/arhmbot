@@ -1,12 +1,16 @@
-from .dispetcher import  dp,bot 
+from .dispetcher import dp, bot
 from .on_startup import on_startup
+from .start import send_welcome, start_game
+from .get_files import get_files_help, send_objects_file
+from .update_base import update_base
 
-from .start       import *
-from .register    import *
-from .get_files   import *  
-from .pray        import *
-from .update_base import *
-from .manual      import *
-from .game        import *
-from .status      import *
-from .event       import *
+__all__ = [
+    'dp',
+    'bot',
+    'on_startup',
+    'send_welcome',
+    'start_game',
+    'get_files_help',
+    'send_objects_file',
+    'update_base',
+    ]

@@ -1,4 +1,4 @@
-#!/home/ubuntu/arhmbot/env/bin/python3.10
+#!/home/oleg/arhmbot/env/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys

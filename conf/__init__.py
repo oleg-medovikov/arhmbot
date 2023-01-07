@@ -1,7 +1,16 @@
-from .config import BOT_API, SALT, API_URL,\
-        BOT_TOKEN
+from .config import ARHM_PSQL, BOT_TOKEN
+from .emoji import emoji, emoji_all
+from .message import MESS_disclaimer, MESS_hello_login, \
+    MESS_anketa_first, MESS_anketa_second, MESS_hello_nologin
 
-from .emoji import emoji 
-from .conn_log import user_token 
-
-from .message import * 
+__all__ = [
+    'ARHM_PSQL',
+    'BOT_TOKEN',
+    'emoji',
+    'emoji_all',
+    'MESS_disclaimer',
+    'MESS_hello_login',
+    'MESS_hello_nologin',
+    'MESS_anketa_first',
+    'MESS_anketa_second',
+    ]

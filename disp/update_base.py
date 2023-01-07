@@ -3,7 +3,8 @@ from aiogram import types
 import os
 import pandas as pd
 
-from clas import User, PersonDefaults, Location
+from clas import User, PersonDefaults, Location, \
+    LocationDescription
 from func import delete_message
 
 FILES = {
@@ -86,11 +87,15 @@ async def update_base(message: types.Message):
     list_ = df.to_dict('records')
 
     MESS = {
-        'PersonDefaults.xlsx': PersonDefaults.update_all(list_),
-        'Karta.xlsx':          Location.update_all(list_),
-        }.get(FILE['file_name'], 'не знаю, как это обновить')
+        'PersonDefaults':    PersonDefaults.update_all(list_),
+        'Karta':             Location.update_all(list_),
+        'KartaDescriptions': LocationDescription.update_all(list_),
+        }.get(FILE['file_name'][:-5])
 
-    MESS = await MESS
+    try:
+        MESS = await MESS
+    except TypeError:
+        MESS = 'Пока не могу этот файл обработать'
 
     await message.answer(MESS)
     os.remove(DESTINATION)

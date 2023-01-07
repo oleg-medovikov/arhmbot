@@ -5,7 +5,8 @@ import os
 
 from func import delete_message, write_styling_excel
 from conf import emoji
-from clas import User, PersonDefaults, Location
+from clas import User, PersonDefaults, Location, \
+    LocationDescription
 
 
 @dp.message_handler(commands='files')
@@ -53,9 +54,15 @@ async def send_objects_file(message: types.Message):
     COMMAND = message.text.replace('/', '')
 
     JSON = {
-        'get_PersonDefaults': await PersonDefaults.get_all(),
-        'get_Karta': await Location.get_all(),
-        }.get(COMMAND, {})
+        'get_PersonDefaults':    PersonDefaults.get_all(),
+        'get_Karta':             Location.get_all(),
+        'get_KartaDescriptions': LocationDescription.get_all(),
+        }.get(COMMAND)
+
+    try:
+        JSON = await JSON
+    except TypeError:
+        return await message.answer('Пока проблемы с этой командой')
 
     df = pd.DataFrame(data=JSON)
     df['date_update'] = df['date_update'].dt.strftime('%H:%M  %d.%m.%Y')

@@ -5,7 +5,7 @@ import os
 
 from func import delete_message, write_styling_excel
 from conf import emoji
-from clas import User, PersonDefaults
+from clas import User, PersonDefaults, Location
 
 
 @dp.message_handler(commands='files')
@@ -54,8 +54,8 @@ async def send_objects_file(message: types.Message):
 
     JSON = {
         'get_PersonDefaults': await PersonDefaults.get_all(),
-
-    }.get(COMMAND, {})
+        'get_Karta': await Location.get_all(),
+        }.get(COMMAND, {})
 
     df = pd.DataFrame(data=JSON)
     df['date_update'] = df['date_update'].dt.strftime('%H:%M  %d.%m.%Y')

@@ -8,6 +8,7 @@ from .karta_descriptions import t_karta_descriptions
 from .manual import t_manual
 from .items import t_items
 from .events import t_events
+from .monsters import t_monsters
 
 metadata.create_all(engine)
 
@@ -21,4 +22,5 @@ __all__ = [
     't_manual',
     't_items',
     't_events',
+    't_monsters',
     ]

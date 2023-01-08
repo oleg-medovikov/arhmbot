@@ -4,7 +4,8 @@ import os
 import pandas as pd
 
 from clas import User, PersonDefaults, Location, \
-    LocationDescription, Manual, Item, Event
+    LocationDescription, Manual, Item, Event, \
+    Monster
 from func import delete_message
 
 FILES = {
@@ -48,10 +49,11 @@ NAMES = {
         'username', 'date_update'
         ],
     'Monsters.xlsx': [
-        'm_id', 'name', 'description', 'mess_win', 'mess_lose',
-        'check_of_stels', 'nigthmare', 'crush', 'phisical_resist',
-        'magic_resist', 'check_mind', 'check_fight', 'mind_damage',
-        'body_damage', 'health', 'price', 'item', 'experience', 'date_update'
+        'm_id', 'name', 'description', 'mess_win', 'mess_lose_hp',
+        'mess_lose_md', 'check_of_stels', 'nigthmare', 'crush',
+        'phisical_resist', 'magic_resist', 'check_mind', 'check_fight',
+        'mind_damage', 'body_damage', 'health', 'price', 'item',
+        'experience', 'date_update'
         ],
         }
 
@@ -93,6 +95,7 @@ async def update_base(message: types.Message):
         'Manual':            Manual.update_all(list_),
         'Items':             Item.update_all(list_),
         'Events':            Event.update_all(list_),
+        'Monsters':          Monster.update_all(list_),
         }.get(FILE['file_name'][:-5])
 
     try:

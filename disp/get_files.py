@@ -6,7 +6,7 @@ import os
 from func import delete_message, write_styling_excel
 from conf import emoji
 from clas import User, PersonDefaults, Location, \
-    LocationDescription, Manual, Item
+    LocationDescription, Manual, Item, Event
 
 
 @dp.message_handler(commands='files')
@@ -59,6 +59,7 @@ async def send_objects_file(message: types.Message):
         'get_KartaDescriptions': LocationDescription.get_all(),
         'get_Manual':            Manual.get_all(),
         'get_Items':             Item.get_all(),
+        'get_Events':            Event.get_all(),
         }.get(COMMAND)
 
     try:

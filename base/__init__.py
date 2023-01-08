@@ -10,6 +10,7 @@ from .items import t_items
 from .events import t_events
 from .monsters import t_monsters
 from .drop_items import t_drop_items
+from .event_history import t_events_history
 
 metadata.create_all(engine)
 
@@ -25,4 +26,5 @@ __all__ = [
     't_events',
     't_monsters',
     't_drop_items',
+    't_events_history',
     ]

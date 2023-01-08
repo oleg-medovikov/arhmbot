@@ -7,6 +7,7 @@ from .Manual import Manual
 from .Item import Item
 from .Event import Event
 from .Monster import Monster
+from .DropItem import DropItem
 
 __all__ = [
     'User',
@@ -18,4 +19,5 @@ __all__ = [
     'Item',
     'Event',
     'Monster',
+    'DropItem',
     ]

@@ -4,7 +4,7 @@ import pandas as pd
 import os
 
 from func import delete_message, write_styling_excel
-from conf import emoji
+from conf import emoji, emoji_all
 from clas import User, PersonDefaults, Location, \
     LocationDescription, Manual, Item, Event, \
     Monster
@@ -89,11 +89,10 @@ async def send_full_emoji_dict(message: types.Message):
     if USER is None or not USER.admin:
         return None
 
-
-    MAX_LEN = max((len(k) + len(v)*0 for k,v in emoji.items() ))
+    MAX_LEN = max((len(k) for k in emoji_all()))
     MESS = ''
-    for key, value in emoji.items():
+    for key in emoji_all():
         word = key + ' '*(MAX_LEN - len(key))
-        MESS += f'``` { word }   ```' + value +'\n'
+        MESS += f'``` { word }   ```' + emoji(key) + '\n'
 
-    await message.answer( MESS, parse_mode='Markdown'  )
+    await message.answer(MESS, parse_mode='Markdown')

@@ -8,6 +8,7 @@ from .Item import Item
 from .Event import Event
 from .Monster import Monster
 from .DropItem import DropItem
+from .EventHistory import EventHistory
 
 __all__ = [
     'User',

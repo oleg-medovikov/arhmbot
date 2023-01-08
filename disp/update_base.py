@@ -4,7 +4,7 @@ import os
 import pandas as pd
 
 from clas import User, PersonDefaults, Location, \
-    LocationDescription, Manual
+    LocationDescription, Manual, Item
 from func import delete_message
 
 FILES = {
@@ -91,6 +91,7 @@ async def update_base(message: types.Message):
         'Karta':             Location.update_all(list_),
         'KartaDescriptions': LocationDescription.update_all(list_),
         'Manual':            Manual.update_all(list_),
+        'Items':             Item.update_all(list_),
         }.get(FILE['file_name'][:-5])
 
     try:

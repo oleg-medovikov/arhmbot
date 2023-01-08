@@ -6,6 +6,7 @@ from .persons_defaults import t_persons_defaults
 from .karta import t_karta
 from .karta_descriptions import t_karta_descriptions
 from .manual import t_manual
+from .items import t_items
 
 metadata.create_all(engine)
 
@@ -17,4 +18,5 @@ __all__ = [
     't_karta',
     't_karta_descriptions',
     't_manual',
+    't_items',
     ]

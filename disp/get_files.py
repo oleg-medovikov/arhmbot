@@ -6,7 +6,7 @@ import os
 from func import delete_message, write_styling_excel
 from conf import emoji
 from clas import User, PersonDefaults, Location, \
-    LocationDescription, Manual
+    LocationDescription, Manual, Item
 
 
 @dp.message_handler(commands='files')
@@ -58,6 +58,7 @@ async def send_objects_file(message: types.Message):
         'get_Karta':             Location.get_all(),
         'get_KartaDescriptions': LocationDescription.get_all(),
         'get_Manual':            Manual.get_all(),
+        'get_Items':             Item.get_all(),
         }.get(COMMAND)
 
     try:
@@ -77,7 +78,7 @@ async def send_objects_file(message: types.Message):
 
 
 @dp.message_handler(commands='test_emoji')
-async def send_full_emoji_dict(message :types.Message):
+async def send_full_emoji_dict(message: types.Message):
     # удалим команду для чистоты
     await delete_message(message)
 

@@ -32,23 +32,33 @@ async def continue_game(query: types.CallbackQuery):
         one_time_keyboard=True
         )
 
+    # если не закончено событие, предложить его закончить
     if EVENT:
-         kb_game.add(InlineKeyboardButton(text='понимаю', callback_data='get_event'))
-         return await query.message.answer(MESS, reply_markup=kb_game, parse_mode='Markdown')
+        kb_game.add(InlineKeyboardButton(
+             text='понимаю',
+             callback_data='get_event'
+             ))
+        return await query.message.answer(
+                 MESS,
+                 reply_markup=kb_game,
+                 parse_mode='Markdown'
+                 )
 
-    kb_game.add(InlineKeyboardButton(
-            text='осмотреться', callback_data='look_around'
-            ))\
-        .add(InlineKeyboardButton(
-            text='статус персонажа', callback_data='status'
-            ))\
-        .add(InlineKeyboardButton(
-            text='действовать', callback_data='get_event'
-            ))\
-        .add(InlineKeyboardButton(
-            text='уйти куда-то ещё', callback_data='leave'
+    # если с персонажем все нормально, предложить что-то сделать
+    DICT = {
+        'осмотреться':       'look_around',
+        'статус персонажа':  'status',
+        'действовать':       'get_event',
+        'уйти куда-то ещё':  'leave',
+        }
+
+    for key, value in DICT.items():
+        kb_game.add(InlineKeyboardButton(
+            text=value,
+            callback_data=key
             ))
-
-    return await query.message.answer(MESS, reply_markup=kb_game, parse_mode='Markdown')
-
-
+    return await query.message.answer(
+            MESS,
+            reply_markup=kb_game,
+            parse_mode='Markdown'
+            )

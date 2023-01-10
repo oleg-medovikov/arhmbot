@@ -4,7 +4,7 @@ from .message import MESS_disclaimer, MESS_hello_login, \
     MESS_anketa_first, MESS_anketa_second, MESS_hello_nologin, \
     MESS_ask_name, MESS_anketa_repeat, MESS_ask_sex, \
     MESS_ask_profession_male, MESS_ask_profession_female, \
-    MESS_ask_destination, MESS_anketa_end
+    MESS_ask_destination, MESS_anketa_end, MESS_manual
 
 __all__ = [
     'ARHM_PSQL',
@@ -23,4 +23,5 @@ __all__ = [
     'MESS_ask_profession_female',
     'MESS_ask_destination',
     'MESS_anketa_end',
+    'MESS_manual',
     ]

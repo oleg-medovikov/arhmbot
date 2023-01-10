@@ -11,6 +11,7 @@ from .events import t_events
 from .monsters import t_monsters
 from .drop_items import t_drop_items
 from .events_history import t_events_history
+from .persons_status import t_persons_status
 
 metadata.create_all(engine)
 
@@ -19,6 +20,7 @@ __all__ = [
     't_users',
     't_persons',
     't_persons_defaults',
+    't_persons_status',
     't_karta',
     't_karta_descriptions',
     't_manual',

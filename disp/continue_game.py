@@ -3,8 +3,7 @@ from aiogram import types
 from aiogram.dispatcher.filters import Text
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from func import get_game_status, get_look_around,\
-        get_locations_nearby, make_relocation
+from clas import User, Person, EventHistory
 
 """
     1. показать игроку частичный статус
@@ -20,12 +19,8 @@ async def continue_game(query: types.CallbackQuery):
     # удаляем предыдущую клавиатуру
     await query.message.edit_reply_markup(reply_markup=None)
 
-    U_ID = query.message['chat']['id']
-    MESS, DIE, EVENT = get_game_status(U_ID)
-
-    # если персонаж умер, вовращаем сообщение о смерти
-    if DIE:
-        return await query.message.answer(MESS, parse_mode='Markdown')
+    USER = await User.get(query.message['chat']['id'])
+    PERSON = await Person.get(USER.u_id)
 
     kb_game = InlineKeyboardMarkup(
         resize_keyboard=True,
@@ -33,16 +28,21 @@ async def continue_game(query: types.CallbackQuery):
         )
 
     # если не закончено событие, предложить его закончить
-    if EVENT:
+    if await EventHistory.get(PERSON.p_id) is not None:
         kb_game.add(InlineKeyboardButton(
              text='понимаю',
              callback_data='get_event'
              ))
         return await query.message.answer(
-                 MESS,
+                 'У вас незаконченное событие!',
                  reply_markup=kb_game,
                  parse_mode='Markdown'
                  )
+    # вытаскиваем статус персонажа, чтобы проверить его состояние
+    MESS = ''
+    # если персонаж умер, вовращаем сообщение о смерти
+    if DIE:
+        return await query.message.answer(MESS, parse_mode='Markdown')
 
     # если с персонажем все нормально, предложить что-то сделать
     DICT = {

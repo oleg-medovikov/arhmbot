@@ -3,7 +3,7 @@ from aiogram import types
 from aiogram.dispatcher.filters import Text
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from clas import User, Person, EventHistory
+from clas import User, Person, EventHistory, PersonStatus
 
 """
     1. показать игроку частичный статус
@@ -27,7 +27,7 @@ async def continue_game(query: types.CallbackQuery):
         one_time_keyboard=True
         )
 
-    # если не закончено событие, предложить его закончить
+    # если есть незаконченное событие, предложить его закончить
     if await EventHistory.get(PERSON.p_id) is not None:
         kb_game.add(InlineKeyboardButton(
              text='понимаю',
@@ -40,7 +40,9 @@ async def continue_game(query: types.CallbackQuery):
                  )
     # вытаскиваем статус персонажа, чтобы проверить его состояние
     MESS = ''
-    # если персонаж умер, вовращаем сообщение о смерти
+    PERSONSTATUS = await PersonStatus.get(PERSON)
+
+    # если персонаж умер, возвращаем сообщение о смерти
     if DIE:
         return await query.message.answer(MESS, parse_mode='Markdown')
 

@@ -13,11 +13,9 @@ class Person(BaseModel):
     u_id:               int
     gamename:           str
     create_date:        datetime
-    date_death:         Optional[datetime] = None
     sex:                bool
     profession:         str
     destination:        str
-    death:              Optional[bool] = False
     start_location_id:  int
     start_money:        int
     max_health:         int
@@ -28,6 +26,9 @@ class Person(BaseModel):
     knowledge:          int
     godliness:          int
     luck:               int
+    death:              Optional[bool] = False
+    d_reason:           Optional[str] = None
+    date_death:         Optional[datetime] = None
 
     @staticmethod
     async def create(
@@ -99,12 +100,13 @@ class Person(BaseModel):
         else:
             raise ValueError('Не найден персонаж, хотя он должен быть!')
 
-    async def die(self):
+    async def die(self, REASON):
         "персонаж умирает"
         query = t_persons.update()\
             .where(t_persons.c.p_id == self.p_id)\
             .values(
                 death=True,
+                d_reason=REASON,
                 date_death=datetime.now()
                 )
         await ARHM_DB.execute(query)

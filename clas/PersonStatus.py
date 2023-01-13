@@ -166,7 +166,7 @@ class PersonStatus(BaseModel):
             self.bless < 0:   [6],
             }[True]
         # считаем количество успешных проверок
-        CHECK_PASSED = sum([NUMBERS.count(x) for x in  CHECK_LIST])
+        CHECK_PASSED = sum([NUMBERS.count(x) for x in CHECK_LIST])
 
         return {
             'success':      bool(CHECK_PASSED),

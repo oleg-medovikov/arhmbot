@@ -1,5 +1,5 @@
 from .config import ARHM_PSQL, BOT_TOKEN, \
-    MAX_HUNGER, MAX_WEARY
+    MAX_HUNGER, MAX_WEARY, MAX_BAG_CAPASITY
 from .emoji import emoji, emoji_all
 from .message import MESS_disclaimer, MESS_hello_login, \
     MESS_anketa_first, MESS_anketa_second, MESS_hello_nologin, \
@@ -27,4 +27,5 @@ __all__ = [
     'MESS_manual',
     'MAX_HUNGER',
     'MAX_WEARY',
+    'MAX_BAG_CAPASITY',
     ]

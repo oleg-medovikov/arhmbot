@@ -8,3 +8,6 @@ ARHM_PSQL = config('ARHM_PSQL',   cast=str)
 # параметры максимального голода и усталости
 MAX_HUNGER = 255
 MAX_WEARY = 255
+
+# максимальная вместимость инвентаря
+MAX_BAG_CAPASITY = 7

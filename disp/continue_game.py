@@ -3,7 +3,9 @@ from aiogram import types
 from aiogram.dispatcher.filters import Text
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
+from conf import MAX_HUNGER, MAX_WEARY
 from clas import User, Person, EventHistory, PersonStatus
+from func import death_message
 
 """
     1. показать игроку частичный статус
@@ -38,12 +40,36 @@ async def continue_game(query: types.CallbackQuery):
                  reply_markup=kb_game,
                  parse_mode='Markdown'
                  )
-    # вытаскиваем статус персонажа, чтобы проверить его состояние
+    # вытаскиваем статус персонажа, чтобы проверить его состояние, жив ли
     MESS = ''
-    PERSONSTATUS = await PersonStatus.get(PERSON)
+    PSTAT = await PersonStatus.get(PERSON)
 
-    # если персонаж умер, возвращаем сообщение о смерти
-    if DIE:
+    if PSTAT.death:
+        reason = PERSON.d_reason
+    else:
+        reason = {
+            PSTAT.mind < 1:
+                'Самоубийство от потери рассудка',
+            PSTAT.mind < 1 and PSTAT.weary >= MAX_WEARY:
+                'Смерть от нервного истощения',
+            PSTAT.health < 1:
+                'Насильственная смерть',
+            PSTAT.health < 1 and PSTAT.hunger >= MAX_HUNGER:
+                'Смерть от голода',
+            }.get(True)
+
+    if reason is not None:
+        """
+        тут может произойти повторная перезапись причины смерти,
+        но ничего страшного
+        это произойдёт если персонаж будет умирать в какой-то ещё функции
+        (например, смерть как наказание за событие)
+        где будут прописаны уникальные причины смерти
+        """
+        await PERSON.die(reason)
+        PSTAT = await PSTAT.change('death', True)
+        # пишем эпитафию
+        MESS = death_message(PERSON, PSTAT)
         return await query.message.answer(MESS, parse_mode='Markdown')
 
     # если с персонажем все нормально, предложить что-то сделать

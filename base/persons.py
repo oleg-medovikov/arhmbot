@@ -10,11 +10,9 @@ t_persons = Table(
     Column('u_id',              Integer),  # user id
     Column('gamename',          String),  # имя персонажа
     Column('create_date',       DateTime),  # время создания
-    Column('date_death',        DateTime),  # время смерти
     Column('sex',               Boolean),  # 1 - male, 0 - female
     Column('profession',        String),  # профессия персонажа
     Column('destination',       String),  # цель прибытия в Архэм (так шутка)
-    Column('death',             Boolean),  # 0 - живой, 1 - мертвый
     Column('start_location_id', SmallInteger),
     Column('start_money',       SmallInteger),
     Column('max_health',        SmallInteger),  # максимальное здоровье
@@ -24,5 +22,8 @@ t_persons = Table(
     Column('strength',          SmallInteger),  # сила
     Column('knowledge',         SmallInteger),  # знания
     Column('godliness',         SmallInteger),  # набожность
-    Column('luck',              SmallInteger)  # удача
-        )
+    Column('luck',              SmallInteger),  # удача
+    Column('death',             Boolean),  # 0 - живой, 1 - мертвый
+    Column('d_reason',          String),  # причина смерти
+    Column('date_death',        DateTime),  # время смерти
+    )

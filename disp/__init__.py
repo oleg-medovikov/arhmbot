@@ -4,6 +4,7 @@ from .start import send_welcome, start_game
 from .get_files import get_files_help, send_objects_file
 from .update_base import update_base
 from .manual import kb_full_manual, answer_man_buttom
+from .test import test_func
 
 __all__ = [
     'dp',
@@ -16,4 +17,5 @@ __all__ = [
     'update_base',
     'kb_full_manual',
     'answer_man_buttom',
+    'test_func',
     ]

@@ -43,51 +43,40 @@ class Inventory(BaseModel):
         res = await ARHM_DB.fetch_all(query)
         return res
 
-    async def equip(self) -> tuple[bool, str]:
+    async def equip(self, equip_mess: str) -> tuple[bool, str]:
         """ Функция надевания предмета
         нужно проверить есть ли в данном слоте другой предмет
         """
-        query = t_inventory.select().where(
-                t_inventory.c.p_id == self.p_id)
+        query = select([t_inventory.c.slot])\
+            .where(t_inventory.c.p_id == self.p_id)
 
-        res = await ARHM_DB.fetch_all(query)
+        LIST = [x[0] for x in await ARHM_DB.fetch_all(query)]
 
-        WORDS = []
-        if self.slot == 'twohands':
-            # двуручное блокируется двуручным и одноручным
-            WORDS.append('twohands')
-            WORDS.append('onehand')
-        else:
-            WORDS.append(self.slot)
+        # двуручное блокируется двуручным и одноручным и наоборот
+        # решаем блокировать ли обмундирование, занят ли слот
+        LOCK = {
+            'onehand':  'twohands' in LIST or LIST.count('onehand') > 1,
+            'twohands': 'onehand' or 'twohands' in LIST,
+            'head':     'head' in LIST,
+            'body':     'body' in LIST,
+            'legs':     'legs' in LIST,
+                }.get(self.slot)
 
-        # считаем количество предметов в данном слоте
-        # у одноручного мб 2 предмета в слоте
-        count = 0
-        for item in res:
-            if item['slot'] in WORDS:
-                count += 1
-
-        CHEAK, MESS = {
-            (self.slot, 0):  (True,  'Предмет экипирован'),
-            ('onehand', 1):  (True,  'Предмет экипирован'),
-            ('onehand', 2):  (False, 'Обе руки заняты!'),
-            ('twohands', 1): (False, 'У Вас не хватает рук!'),
-            ('twohands', 2): (False, 'У Вас не хватает рук!'),
-            ('head', 1):     (False, 'Вы уже что-то носите на голове!'),
-            ('body', 1):     (False, 'Вы уже одеты во что-то!'),
-            ('legs', 1):     (False, 'На ваших ногах что-то надето!'),
-        }.get((self.slot, count), (False, 'что-то не так с инвентарем'))
-
-        if CHEAK:
-            # если проверка пройдена экипируем предмет
-            query = t_inventory.update().where(and_(
-                t_inventory.c.p_id == self.p_id,
-                t_inventory.c.i_id == self.i_id))\
-                        .values(self.dict())
-            await ARHM_DB.execute(query)
-            return True, MESS
-        else:
+        if LOCK:
+            MESS = {
+                'onehand':  'Обе руки заняты!',
+                'twohands': 'У Вас не хватает рук!',
+                'head':     'Вы уже что-то носите на голове!',
+                'body':     'Вы уже одеты во что-то!',
+                'legs':     'На ваших ногах что-то надето!',
+                }.get(self.slot)
             return False, MESS
+
+        # если проверка пройдена экипируем предмет
+
+        query = t_inventory.insert().values(self.dict())
+        await ARHM_DB.execute(query)
+        return True, equip_mess
 
     async def remove(self) -> bool:
         """снятие предмета и помещение в сумку"""

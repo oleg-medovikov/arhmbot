@@ -1,6 +1,7 @@
 from datetime import datetime
 from pydantic import BaseModel
 from typing   import Optional
+from sqlalchemy import select
 import json
 
 from base import ARHM_DB, t_karta
@@ -26,6 +27,15 @@ class Location(BaseModel):
             return Location(**res)
         else:
             raise ValueError('Нет такой локации!')
+
+    @staticmethod
+    async def get_districts() -> list:
+        "тестовая функция"
+        query = select([t_karta.c.district]).distinct()\
+            .order_by(t_karta.c.district)
+
+        res = await ARHM_DB.fetch_all(query)
+        return [x[0] for x in res]
 
     @staticmethod
     async def nearby(NODE_ID: int):

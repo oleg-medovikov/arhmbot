@@ -11,6 +11,7 @@ from .register import hello_callback_register, \
     load_destination_register
 from .continue_game import continue_game
 from .look_around import look_around
+from .relocation import leave, relocation
 
 __all__ = [
     'dp',
@@ -26,6 +27,8 @@ __all__ = [
     'start_game',
     'continue_game',
     'look_around',
+    'leave',
+    'relocation',
     'get_files_help',
     'send_objects_file',
     'update_base',

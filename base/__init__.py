@@ -7,6 +7,7 @@ from .karta import t_karta
 from .karta_descriptions import t_karta_descriptions
 from .manual import t_manual
 from .items import t_items
+from .inventory import t_inventory
 from .events import t_events
 from .monsters import t_monsters
 from .drop_items import t_drop_items
@@ -25,6 +26,7 @@ __all__ = [
     't_karta_descriptions',
     't_manual',
     't_items',
+    't_inventory',
     't_events',
     't_monsters',
     't_drop_items',

@@ -72,7 +72,10 @@ async def continue_game(query: types.CallbackQuery):
         MESS = death_message(PERSON, PSTAT)
         return await query.message.answer(MESS, parse_mode='Markdown')
 
-    # если с персонажем все нормально, предложить что-то сделать
+    """
+    если с персонажем все нормально,
+    предложить меню дальнейших действий в городе
+    """
     DICT = {
         'осмотреться':       'look_around',
         'статус персонажа':  'status',

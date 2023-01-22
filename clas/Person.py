@@ -89,7 +89,11 @@ class Person(BaseModel):
         return res is not None
 
     @staticmethod
-    async def get(U_ID: int) -> 'Person':
+    async def get(U_ID: int) -> Optional['Person']:
+        """
+        вытаскиваем живого персонажа пользователя
+        или ничего, если такого нет
+        """
         quary = t_persons.select(and_(
             t_persons.c.u_id == U_ID,
             t_persons.c.death is False
@@ -97,8 +101,6 @@ class Person(BaseModel):
         res = await ARHM_DB.fetch_one(quary)
         if res is not None:
             return Person(**res)
-        else:
-            raise ValueError('Не найден персонаж, хотя он должен быть!')
 
     async def die(self, REASON):
         "персонаж умирает"

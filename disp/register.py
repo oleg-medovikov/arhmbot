@@ -19,7 +19,7 @@ class NewGamer(StatesGroup):
 
 
 @dp.callback_query_handler(Text(equals=['register']))
-async def kb_hello_callback_register(query: types.CallbackQuery):
+async def hello_callback_register(query: types.CallbackQuery):
     "Начинаем опрос анкеты для создания нового игрока"
     await query.message.edit_reply_markup(reply_markup=None)
     await NewGamer.gamename.set()
@@ -30,7 +30,7 @@ async def kb_hello_callback_register(query: types.CallbackQuery):
         Text(equals=['register_new']),
         state=NewGamer.profession
         )
-async def kb_profession_callback_previos(
+async def profession_callback_previos(
         query: types.CallbackQuery,
         state: FSMContext
         ):
@@ -42,7 +42,7 @@ async def kb_profession_callback_previos(
 
 
 @dp.message_handler(state=NewGamer.gamename)
-async def load_gamename(message: types.Message, state: FSMContext):
+async def load_gamename_register(message: types.Message, state: FSMContext):
     "Получаем юзернейм от пользователя и спрашиваем пол"
     async with state.proxy() as data:
         data['gamename'] = message.text
@@ -58,7 +58,7 @@ async def load_gamename(message: types.Message, state: FSMContext):
 
 
 @dp.callback_query_handler(Text(equals=['male', 'female']), state=NewGamer.sex)
-async def load_sex(query: types.CallbackQuery, state: FSMContext):
+async def load_sex_register(query: types.CallbackQuery, state: FSMContext):
     "Получаем пол и спрашиваем профессию"
     await query.message.edit_reply_markup(reply_markup=None)
     async with state.proxy() as data:
@@ -102,7 +102,10 @@ async def load_sex(query: types.CallbackQuery, state: FSMContext):
         ]),
     state=NewGamer.profession
     )
-async def load_profession(query: types.CallbackQuery, state: FSMContext):
+async def load_profession_register(
+    query: types.CallbackQuery,
+    state: FSMContext
+        ):
     "Получаем профессию и спрашиваем о цели поездки"
     await query.message.edit_reply_markup(reply_markup=None)
     async with state.proxy() as data:
@@ -113,12 +116,16 @@ async def load_profession(query: types.CallbackQuery, state: FSMContext):
 
 
 @dp.message_handler(state=NewGamer.destination)
-async def load_destination(message: types.Message, state: FSMContext):
+async def load_destination_register(message: types.Message, state: FSMContext):
     "Получаем цель путешествия ради шутки"
     async with state.proxy() as data:
-        data['destination'] = message.Text
+        data['destination'] = message.text
 
         DICT = message['from']
+
+        print(DICT.full_name)
+        print(DICT.mention)
+
         NAME_TG = DICT.get('username', '') + ' ' \
             + DICT.get('last_name', '') + ' ' \
             + DICT.get('first_name', '')

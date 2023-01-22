@@ -2,6 +2,7 @@ from datetime import datetime
 from pydantic import BaseModel
 from typing import Optional
 from sqlalchemy import and_
+from sqlalchemy.sql.expression import false
 from random import randint
 
 from base import ARHM_DB, t_persons
@@ -41,7 +42,8 @@ class Person(BaseModel):
         "вытаскиваем живого персонажа, если он есть"
         query = t_persons.select(and_(
            t_persons.c.u_id == U_ID,
-           t_persons.c.death is False))
+           t_persons.c.death == false()
+           ))
         res = await ARHM_DB.fetch_one(query)
         if res is not None:
             return Person(**res)
@@ -74,7 +76,8 @@ class Person(BaseModel):
         # вытаскиваем созданного персонажа
         query = t_persons.select(and_(
            t_persons.c.u_id == U_ID,
-           t_persons.c.death is False))
+           t_persons.c.death == false()
+           ))
         res = await ARHM_DB.fetch_one(query)
         return Person(**res)
 
@@ -96,7 +99,7 @@ class Person(BaseModel):
         """
         quary = t_persons.select(and_(
             t_persons.c.u_id == U_ID,
-            t_persons.c.death is False
+            t_persons.c.death == false()
             ))
         res = await ARHM_DB.fetch_one(quary)
         if res is not None:

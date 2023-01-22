@@ -121,26 +121,26 @@ async def load_destination_register(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['destination'] = message.text
 
-        DICT = message['from']
+        TG_USER = message['from']
 
-        print(DICT.full_name)
-        print(DICT.mention)
-
-        NAME_TG = DICT.get('username', '') + ' ' \
-            + DICT.get('last_name', '') + ' ' \
-            + DICT.get('first_name', '')
+        LIST = (
+            TG_USER.username, ' ',
+            TG_USER.last_name, ' ',
+            TG_USER.first_name,
+            )
+        NAME_TG = ''.join(str(x) for x in LIST)
         NAME_TG = NAME_TG.strip()
 
         USER = await User.create(
-            TG_ID=DICT[id],
-            USERNAME=DICT.get('username', ''),
+            TG_ID=TG_USER.id,
+            USERNAME=TG_USER.username,
             NAME_TG=NAME_TG,
                 )
 
         await Person.create(
             U_ID=USER.u_id,
             GAMENAME=data['gamename'],
-            SEX=data['sex'],
+            SEX=True if data['sex'] == 'male' else False,
             PROFESSION=data['profession'],
             DESTINATION=data['destination'],
                 )

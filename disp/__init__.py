@@ -9,6 +9,7 @@ from .register import hello_callback_register, \
     profession_callback_previos, load_gamename_register, \
     load_sex_register, load_profession_register, \
     load_destination_register
+from .continue_game import continue_game
 
 __all__ = [
     'dp',
@@ -22,6 +23,7 @@ __all__ = [
     'load_profession_register',
     'load_destination_register',
     'start_game',
+    'continue_game',
     'get_files_help',
     'send_objects_file',
     'update_base',

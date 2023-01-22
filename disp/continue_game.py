@@ -5,7 +5,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from conf import MAX_HUNGER, MAX_WEARY
 from clas import User, Person, EventHistory, PersonStatus
-from func import death_message
+from func import death_message, person_status_card
 
 """
     1. показать игроку частичный статус
@@ -85,11 +85,12 @@ async def continue_game(query: types.CallbackQuery):
 
     for key, value in DICT.items():
         kb_game.add(InlineKeyboardButton(
-            text=value,
-            callback_data=key
+            text=key,
+            callback_data=value
             ))
+
     return await query.message.answer(
-            MESS,
+            person_status_card(PERSON, PSTAT),
             reply_markup=kb_game,
             parse_mode='Markdown'
             )

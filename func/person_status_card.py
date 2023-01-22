@@ -10,7 +10,7 @@ def person_status_card(PERS: 'Person', STAT: 'PersonStatus') -> str:
     "генерируем краткую карточку состояния персонажа"
 
     DATE = datetime.fromisoformat(
-            PERS.create_date
+            str(PERS.create_date)
             ).strftime('%d.%m.%Y в %H:%M')
     DAYS = STAT.gametime // 96
     TIME = (
@@ -22,22 +22,26 @@ def person_status_card(PERS: 'Person', STAT: 'PersonStatus') -> str:
         '*Карточка персонажа*\n',
         '*ИМЯ:* ', PERS.gamename, ', ',  PERS.profession,
         '\n*Зарегистрирован', ('' if PERS.sex else 'а'), ':* ', DATE,
-        '*Проведено дней в Археме:* ', DAYS,
+        '\n*Проведено дней в Археме:* ', DAYS,
         '\n ``` \n',
         emoji('clock'), '  ', TIME, '  ',
-        emoji('dollar'), ' ',  {STAT.money}, '\n',
-        emoji('heart'), ' ', STAT.health, ' из ', PERS.max_health,
-        emoji('brain'), ' ', STAT.mind, ' из ', PERS.max_mind, '\n',
-        emoji('strength'), ' ', STAT.strength, ' ',
-        emoji('speed'), ' ', STAT.speed, ' ',
+        emoji('dollar'), ' ', STAT.money, '\n',
+        emoji('heart'), ' ', STAT.health, ' из ', PERS.max_health, '\n',
+        emoji('brain'), ' ', STAT.mind, ' из ', PERS.max_mind, '\n\n',
+        emoji('strength'), ' ', STAT.strength,
+        ' '*(4 - len(str(STAT.strength))),
+        emoji('speed'), ' ', STAT.speed,
+        ' '*(4 - len(str(STAT.speed))),
         emoji('stealth'), ' ', STAT.stealth, '\n',
-        emoji('knowledge'), ' ', STAT.knowledge, ' ',
-        emoji('godliness'), ' ', STAT.godliness, ' ',
-        emoji('luck'), ' ', STAT.luck, '\n',
+        emoji('knowledge'), ' ', STAT.knowledge,
+        ' '*(4 - len(str(STAT.knowledge))),
+        emoji('godliness'), ' ', STAT.godliness,
+        ' '*(4 - len(str(STAT.godliness))),
+        emoji('luck'), ' ', STAT.luck, '\n\n',
         emoji('hunger'), ' ', hunger_str(STAT.hunger), '\n',
         emoji('weary'), ' ', weary_str(STAT.weary),
         '\n ``` \n',
-        '*Достижения:*',
+        '*Достижения:*\n',
         'нет'
         )
 

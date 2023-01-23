@@ -12,6 +12,7 @@ from .register import hello_callback_register, \
 from .continue_game import continue_game
 from .look_around import look_around
 from .relocation import leave, relocation
+from .inventory_main import inventory_main
 
 __all__ = [
     'dp',
@@ -26,6 +27,7 @@ __all__ = [
     'load_destination_register',
     'start_game',
     'continue_game',
+    'inventory_main',
     'look_around',
     'leave',
     'relocation',

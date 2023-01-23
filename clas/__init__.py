@@ -10,7 +10,7 @@ from .Monster import Monster
 from .DropItem import DropItem
 from .EventHistory import EventHistory
 from .PersonStatus import PersonStatus
-
+from .Inventory import Inventory
 
 __all__ = [
     'User',
@@ -21,6 +21,7 @@ __all__ = [
     'LocationDescription',
     'Manual',
     'Item',
+    'Inventory',
     'Event',
     'EventHistory',
     'Monster',

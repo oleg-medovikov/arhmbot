@@ -24,6 +24,7 @@ class Inventory(BaseModel):
 
     @staticmethod
     async def get(P_ID: int) -> list:
+        "Возвращаем список всех предметов персонажа"
         j = t_inventory.join(
                 t_items,
                 t_inventory.c.i_id == t_items.c.i_id

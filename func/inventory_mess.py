@@ -42,7 +42,7 @@ def inventory_mess(PERS: 'Person', INV: list) -> str:
 
     LIST = (
         '*Ваш инвентарь* ', PERS.gamename,
-        '\n\n',
+        '\n',
         '\n\t*Голова:* ',  I_zero['head'],
         '\n\t*В руках:* ', I_zero['hands'],
         '\n\t*На теле:* ', I_zero['body'],

@@ -44,12 +44,18 @@ class Inventory(BaseModel):
         res = await ARHM_DB.fetch_all(query)
         return res
 
-    async def equip(self, equip_mess: str) -> tuple[bool, str]:
+    @staticmethod
+    async def equip(
+        P_ID: int,
+        I_ID: int,
+        SLOT: str,
+        equip_mess: str
+            ) -> tuple[bool, str]:
         """ Функция надевания предмета
         нужно проверить есть ли в данном слоте другой предмет
         """
         query = select([t_inventory.c.slot])\
-            .where(t_inventory.c.p_id == self.p_id)
+            .where(t_inventory.c.p_id == P_ID)
 
         LIST = [x[0] for x in await ARHM_DB.fetch_all(query)]
 
@@ -62,7 +68,7 @@ class Inventory(BaseModel):
             'body':     'body' in LIST,
             'legs':     'legs' in LIST,
             'shoes':    'shoes' in LIST,
-                }.get(self.slot)
+                }.get(SLOT)
 
         if LOCK:
             MESS = {
@@ -72,12 +78,16 @@ class Inventory(BaseModel):
                 'body':     'Вы уже одеты во что-то!',
                 'legs':     'На ваших ногах что-то надето!',
                 'shoes':    'Вы уже обуты в другую обувь!',
-                }.get(self.slot)
+                }.get(SLOT)
             return False, MESS
 
         # если проверка пройдена экипируем предмет
-
-        query = t_inventory.insert().values(self.dict())
+        query = t_inventory.update()\
+            .where(and_(
+                t_inventory.c.p_id == P_ID,
+                t_inventory.c.i_id == I_ID
+                ))\
+            .values(slot=SLOT, date_update=datetime.now())
         await ARHM_DB.execute(query)
         return True, equip_mess
 
@@ -110,25 +120,32 @@ class Inventory(BaseModel):
 
         await ARHM_DB.execute(query)
 
-    async def add(self) -> tuple[bool, str]:
+    @staticmethod
+    async def add(P_ID: int, I_ID: int) -> tuple[bool, str]:
         """функция добавления предмета в сумку
         проверка на уникальность"""
         query = t_inventory.select().where(and_(
-            t_inventory.c.p_id == self.p_id,
-            t_inventory.c.i_id == self.i_id
+            t_inventory.c.p_id == P_ID,
+            t_inventory.c.i_id == I_ID
             ))
         res = await ARHM_DB.fetch_one(query)
         if res is not None:
             return False, 'Предмет не добавлен, так как он уже есть у Вас.'
         # проверка на вместимость сумки
         query = t_inventory.select().where(and_(
-            t_inventory.c.p_id == self.p_id,
+            t_inventory.c.p_id == P_ID,
             t_inventory.c.slot == 'bag'
             ))
         res = await ARHM_DB.fetch_all(query)
         if len(res) >= MAX_BAG_CAPASITY:
             return False,  'Предмет не добавлен, в сумке не хватает места!'
 
-        query = t_inventory.insert().values(self.dict())
+        values = {
+            'p_id': P_ID,
+            'slot': 'bag',
+            'i_id': I_ID,
+            'date_update': datetime.now()
+                }
+        query = t_inventory.insert().values(**values)
         await ARHM_DB.execute(query)
         return True, 'Предмет добавлен в сумку'

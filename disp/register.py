@@ -151,24 +151,18 @@ async def load_destination_register(message: types.Message, state: FSMContext):
 
     PERSDEF = await PersonDefaults.get(PERSON.profession)
     for i_id in json.loads(PERSDEF.start_list_items):
-        ITEM = await Item(i_id)
+        ITEM = await Item.get(i_id)
         # сначала кладём предмет в сумку
-        INV = Inventory(**{
-            PERSON.p_id,
-            'bag',
-            i_id,
-            })
-        cheak, string = await INV.add()
+        cheak, string = await Inventory.add(PERSON.p_id, i_id)
         # если получилось, пробуем надеть на персонажа
         if cheak:
             if ITEM.slot in ('bag'):
                 continue
-            INV = Inventory(**{
-                    PERSON.p_id,
-                    ITEM.slot,
-                    i_id,
-                    })
-            await INV.equp('')
+            await Inventory.equip(
+                PERSON.p_id,
+                ITEM.i_id,
+                ITEM.slot,
+                ITEM.equip_mess)
 
     kb_end_reg = InlineKeyboardMarkup(
         resize_keyboard=True,

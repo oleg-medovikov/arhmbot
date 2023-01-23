@@ -3,71 +3,44 @@ from aiogram import types
 from aiogram.dispatcher.filters import Text
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from clas import User, Person, PersonStatus, Location, \
-    LocationDescription, Item, DropItem, Inventory
+from clas import User, Person, Inventory
 
-DICT = {
-    'HEAD': 'Непокрытая голова',
-    'HAND_1': 'Пустая правая рука',
-    'HAND_2': 'Пустая левая рука',
-    'TWOHANDS': 'Пустые руки',
-    'BODY': 'Голое тело',
-    'LEGS': 'Голые ноги',
-    'SHOES': 'Босые ноги',
-    }
+from func import inventory_mess
+from conf import emoji
 
 
 @dp.callback_query_handler(Text(equals=['inventory_main']))
 async def inventory_main(query: types.CallbackQuery):
-    "персонаж осматривается на местности и тратит время"
+    "показываем игроку инвентарь персонажа"
     # удаляем предыдущую клавиатуру
     await query.message.edit_reply_markup(reply_markup=None)
     U_ID = query.message['chat']['id']
 
     USER = await User.get(U_ID)
     PERSON = await Person.get(USER.u_id)
-#    PERSTAT = await PersonStatus.get(PERSON)
-#    LOCATION = await Location.get(PERSTAT.location)
 
     INV = await Inventory.get(PERSON.p_id)
 
-    HEAD     = 'Пусто'
-    HAND_1   = 'Пусто'
-    HAND_2   = 'Пусто'
-    TWOHANDS = 'Пусто'
-    BODY     = 'Пусто'
-    LEGS     = 'Пусто'
+    MESS = inventory_mess(PERSON, INV)
+
+    kb_bag = InlineKeyboardMarkup(
+            resize_keyboard=True,
+            one_time_keyboard=True
+            )
 
     for item in INV:
-        if   item['slot'] == 'head':
-            HEAD = item['emoji'] +' '+ item['name']
-        elif item['slot'] == 'onehand':
-            if HAND_1 == 'Пусто':
-                HAND_1 = item['emoji'] +' '+ item['name']
-            else:
-                HAND_2 = item['emoji'] +' '+ item['name']
-        elif item['slot'] == 'twohands':
-            TWOHANDS = item['emoji'] +' '+ item['name']
-        elif item['slot'] == 'BODY':
-            BODY = item['emoji'] +' '+ item['name']
-        elif item['slot'] == 'legs':
-            LEGS = item['emoji'] +' '+ item['name']
+        kb_bag.add(InlineKeyboardButton(
+            text=emoji(item['emoji']) + ' ' + item['name'],
+            callback_data='bag_item_' + str(item['i_id'])
+                ))
 
-    if TWOHANDS != 'Пусто':
-        RUKI = 'В руках: ' + TWOHANDS
-    else:
-        RUKI = f"""
-В правой руке: {HAND_1}
-В левой  руке: {HAND_2}
-"""
+    kb_bag.add(InlineKeyboardButton(
+        text='назад',
+        callback_data='continue_game',
+        ))
 
-    MESS = f"""```
-Ваш инвентарь, {PERSON.gamename}
-__________________________
-Голова: {HEAD}
-{RUKI}
-Тело: {BODY}
-Ноги: {LEGS}
-В вашей сумке:
-```
-"""
+    return await query.message.answer(
+            MESS,
+            reply_markup=kb_bag,
+            parse_mode='Markdown'
+            )

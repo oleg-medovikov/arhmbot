@@ -5,6 +5,7 @@ from .hunger_str import hunger_str
 from .weary_str import weary_str
 from .death_message import death_message
 from .person_status_card import person_status_card
+from .inventory_mess import inventory_mess
 
 __all__ = [
     'delete_message',
@@ -14,4 +15,5 @@ __all__ = [
     'weary_str',
     'death_message',
     'person_status_card',
+    'inventory_mess',
     ]

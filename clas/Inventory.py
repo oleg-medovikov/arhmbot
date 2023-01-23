@@ -60,6 +60,7 @@ class Inventory(BaseModel):
             'head':     'head' in LIST,
             'body':     'body' in LIST,
             'legs':     'legs' in LIST,
+            'shoes':    'shoes' in LIST,
                 }.get(self.slot)
 
         if LOCK:
@@ -69,6 +70,7 @@ class Inventory(BaseModel):
                 'head':     'Вы уже что-то носите на голове!',
                 'body':     'Вы уже одеты во что-то!',
                 'legs':     'На ваших ногах что-то надето!',
+                'shoes':    'Вы уже обуты в другую обувь!',
                 }.get(self.slot)
             return False, MESS
 

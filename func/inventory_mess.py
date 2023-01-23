@@ -1,4 +1,3 @@
-
 from clas import Person
 from conf import emoji
 
@@ -22,6 +21,7 @@ I_zero = {
     'bag':      '',
     }
 
+
 def inventory_mess(PERS: 'Person', INV: list) -> str:
     "Генерируем сообщение для списка инвентаря"
 
@@ -29,9 +29,9 @@ def inventory_mess(PERS: 'Person', INV: list) -> str:
         I_zero[item.slot] += ' ' + emoji(item.emoji) + ' ' + item.name
 
     I_zero['hands'] = {
-            I_zero['onehand'] == '' and I_zero['twohands'] == '': I_def['onehand'],
-            I_zero['onehand'] != '':  I_def['onehand'],
-            I_zero['twohands'] != '': I_def['twohands'],
+        (I_zero['onehand'] and I_zero['twohands']) == '': I_def['onehand'],
+        I_zero['onehand'] != '':  I_def['onehand'],
+        I_zero['twohands'] != '': I_def['twohands'],
             }[True]
 
     for key, value in I_zero.items():
@@ -40,14 +40,14 @@ def inventory_mess(PERS: 'Person', INV: list) -> str:
         if value == '':
             I_zero[key] = I_def[key]
 
+    LIST = (
+        '*Ваш инвентарь* ', PERS.gamename,
+        '\n\n',
+        '\n\t*Голова:* ',  I_zero['head'],
+        '\n\t*В руках:* ', I_zero['hands'],
+        '\n\t*На теле:* ', I_zero['body'],
+        '\n\t*Обувь:* ',   I_zero['shoes'],
+        '\n\nВ вашей сумке:'
+        )
 
-    MESS = f"""```
-Ваш инвентарь, {PERSON.gamename}
-__________________________
-Голова: {HEAD}
-{RUKI}
-Тело: {BODY}
-Ноги: {LEGS}
-В вашей сумке:
-```
-"""
+    return ''.join(str(x) for x in LIST)

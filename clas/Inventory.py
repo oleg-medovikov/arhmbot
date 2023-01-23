@@ -41,8 +41,12 @@ class Inventory(BaseModel):
             .order_by(t_inventory.c.date_update)\
             .select_from(j)
 
-        res = await ARHM_DB.fetch_all(query)
-        return res
+        list_ = []
+
+        for row in await ARHM_DB.fetch_all(query):
+            list_.append(dict(row))
+
+        return list_
 
     @staticmethod
     async def equip(

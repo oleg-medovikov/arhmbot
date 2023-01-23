@@ -29,10 +29,16 @@ async def inventory_main(query: types.CallbackQuery):
             )
 
     for item in INV:
-        kb_bag.add(InlineKeyboardButton(
-            text=emoji(item['emoji']) + ' ' + item['name'],
-            callback_data='bag_item_' + str(item['i_id'])
-                ))
+        if item['slot'] in ('bag'):
+            kb_bag.add(InlineKeyboardButton(
+                text=emoji(item['emoji']) + ' ' + item['name'],
+                callback_data='bag_item_' + str(item['i_id'])
+                    ))
+
+    kb_bag.add(InlineKeyboardButton(
+        text='Экипированные вещи',
+        callback_data='inventory_equip_items',
+        ))
 
     kb_bag.add(InlineKeyboardButton(
         text='назад',

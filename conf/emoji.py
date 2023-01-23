@@ -26,8 +26,9 @@ Dict_emoji = {
     'red':        '\ud83d\udd34',
     'green':      '\ud83d\udfe2',
     'ticket':     '\ud83c\udf9f',
-    'penis':     '\ud80c\udcba',
-    'leg':       '\ud83e\uddb5',
+    'suit':       '\ud83e\udd35',
+    'penis':      '\ud80c\udcba',
+    'leg':        '\ud83e\uddb5',
     }
 
 

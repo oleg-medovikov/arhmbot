@@ -11,27 +11,27 @@ I_def = {
     'bag':      'Сумка пустая, не тянет плечо',
     }
 
-I_zero = {
-    'head':     '',
-    'onehand':  '',
-    'twohands': '',
-    'body':     '',
-    'legs':     '',
-    'shoes':    '',
-    'bag':      '',
-    }
-
 
 def inventory_mess(PERS: 'Person', INV: list) -> str:
     "Генерируем сообщение для списка инвентаря"
 
+    I_zero = {
+        'head':     '',
+        'onehand':  '',
+        'twohands': '',
+        'body':     '',
+        'legs':     '',
+        'shoes':    '',
+        'bag':      '',
+        }
+
     for item in INV:
-        I_zero[item.slot] += ' ' + emoji(item.emoji) + ' ' + item.name
+        I_zero[item['slot']] += ' ' + emoji(item['emoji']) + ' ' + item['name']
 
     I_zero['hands'] = {
         (I_zero['onehand'] and I_zero['twohands']) == '': I_def['onehand'],
-        I_zero['onehand'] != '':  I_def['onehand'],
-        I_zero['twohands'] != '': I_def['twohands'],
+        I_zero['onehand'] != '':  I_zero['onehand'],
+        I_zero['twohands'] != '': I_zero['twohands'],
             }[True]
 
     for key, value in I_zero.items():
@@ -43,10 +43,11 @@ def inventory_mess(PERS: 'Person', INV: list) -> str:
     LIST = (
         '*Ваш инвентарь* ', PERS.gamename,
         '\n',
-        '\n\t*Голова:* ',  I_zero['head'],
-        '\n\t*В руках:* ', I_zero['hands'],
-        '\n\t*На теле:* ', I_zero['body'],
-        '\n\t*Обувь:* ',   I_zero['shoes'],
+        '\n*Голова:* ',  I_zero['head'],
+        '\n*В руках:* ', I_zero['hands'],
+        '\n*На теле:* ', I_zero['body'],
+        '\n*Ноги:* ',    I_zero['legs'],
+        '\n*Обувь:* ',   I_zero['shoes'],
         '\n\nВ вашей сумке:'
         )
 

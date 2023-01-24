@@ -23,6 +23,18 @@ class Inventory(BaseModel):
         return res is not None
 
     @staticmethod
+    async def bug_free_space(P_ID: int) -> bool:
+        "Проверяем есть ли свободное место в сумке"
+        query = t_inventory.select(and_(
+            t_inventory.c.p_id == P_ID,
+            t_inventory.c.slot == 'bag'
+            ))
+        res = await ARHM_DB.fetch_all(query)
+
+        return len(res) < MAX_BAG_CAPASITY
+
+
+    @staticmethod
     async def get(P_ID: int) -> list:
         "Возвращаем список всех предметов персонажа"
         j = t_inventory.join(

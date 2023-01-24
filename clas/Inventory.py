@@ -33,7 +33,6 @@ class Inventory(BaseModel):
 
         return len(res) < MAX_BAG_CAPASITY
 
-
     @staticmethod
     async def get(P_ID: int) -> list:
         "Возвращаем список всех предметов персонажа"
@@ -107,25 +106,14 @@ class Inventory(BaseModel):
         await ARHM_DB.execute(query)
         return True, equip_mess
 
-    async def remove(self) -> bool:
+    @staticmethod
+    async def remove(P_ID: int, I_ID):
         """снятие предмета и помещение в сумку"""
-        query = t_inventory.select()\
-            .where(and_(
-                t_inventory.c.p_id == self.p_id,
-                t_inventory.c.slot == 'bag'
-                ))
-
-        res = await ARHM_DB.fetch_all(query)
-        if len(res) < MAX_BAG_CAPASITY:
-            self.slot = 'bag'
-            query = t_inventory.update().where(and_(
-                t_inventory.c.p_id == self.p_id,
-                t_inventory.c.i_id == self.i_id
-                )).values(self.dict())
-            await ARHM_DB.execute(query)
-            return True
-        else:
-            return False
+        query = t_inventory.update().where(and_(
+            t_inventory.c.p_id == P_ID,
+            t_inventory.c.i_id == I_ID
+                )).values(slot='bag')
+        await ARHM_DB.execute(query)
 
     @staticmethod
     async def drop(P_ID: int, I_ID: int):

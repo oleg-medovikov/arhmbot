@@ -29,6 +29,7 @@ Dict_emoji = {
     'suit':       '\ud83e\udd35',
     'penis':      '\ud80c\udcba',
     'leg':        '\ud83e\uddb5',
+    'expensive_shoes': '\ud83d\udc5e',
     }
 
 

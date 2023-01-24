@@ -1,7 +1,7 @@
 from .dispetcher import dp
 from aiogram import types
 
-from clas import User, Location
+from clas import User, Location, PersonStatus
 from func import delete_message
 
 
@@ -13,10 +13,8 @@ async def test_func(message: types.Message):
     if USER is None or not USER.admin:
         return None
 
-    list_ = await Location.get_districts()
+    PERS, STAT = await PersonStatus.get_all(message['from']['id'])
 
-    MESS = str(list_)
+    MESS = str(PERS) + str(STAT)
 
     await message.answer(MESS)
-
-

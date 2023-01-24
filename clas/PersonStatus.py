@@ -2,8 +2,10 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 from random import randint
+from sqlalchemy import and_, select
+from sqlalchemy.sql.expression import false
 
-from base import ARHM_DB, t_persons_status
+from base import ARHM_DB, t_users, t_persons_status, t_persons
 from .Person import Person
 
 from conf import MAX_HUNGER, MAX_WEARY
@@ -30,6 +32,29 @@ class PersonStatus(BaseModel):
     proof:        int
     hunger:       int
     weary:        int
+
+    @staticmethod
+    async def get_all(T_ID: int) -> tuple['Person', 'PersonStatus']:
+        """Возвращаем сразу 2 объекта, чтобы было меньше sql запросов"""
+        j = t_users.join(
+            t_persons,
+            t_persons.c.u_id == t_users.c.u_id
+                ).join(
+                t_persons_status,
+                t_persons_status.c.p_id == t_persons.c.p_id
+                    )
+
+        query = select(
+                *t_persons.columns,
+                *t_persons_status.columns
+                ).where(and_(
+                    t_users.c.tg_id == T_ID,
+                    t_persons.c.death == false()
+                    )).select_from(j)
+
+        res = await ARHM_DB.fetch_one(query)
+
+        return Person(**res), PersonStatus(**res)
 
     @staticmethod
     async def get(PERSON: 'Person') -> 'PersonStatus':

@@ -4,7 +4,7 @@ from aiogram.dispatcher.filters import Text
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from conf import MAX_HUNGER, MAX_WEARY
-from clas import User, Person, EventHistory, PersonStatus
+from clas import EventHistory, PersonStatus
 from func import death_message, person_status_card
 
 """
@@ -21,8 +21,7 @@ async def continue_game(query: types.CallbackQuery):
     # удаляем предыдущую клавиатуру
     await query.message.edit_reply_markup(reply_markup=None)
 
-    USER = await User.get(query.message['chat']['id'])
-    PERSON = await Person.get(USER.u_id)
+    PERS, STAT = await PersonStatus.get_all(query.message['chat']['id'])
 
     kb_game = InlineKeyboardMarkup(
         resize_keyboard=True,
@@ -30,7 +29,7 @@ async def continue_game(query: types.CallbackQuery):
         )
 
     # если есть незаконченное событие, предложить его закончить
-    if await EventHistory.get(PERSON.p_id) is not None:
+    if await EventHistory.get(PERS.p_id) is not None:
         kb_game.add(InlineKeyboardButton(
              text='понимаю',
              callback_data='get_event'
@@ -42,19 +41,18 @@ async def continue_game(query: types.CallbackQuery):
                  )
     # вытаскиваем статус персонажа, чтобы проверить его состояние, жив ли
     MESS = ''
-    PSTAT = await PersonStatus.get(PERSON)
 
-    if PSTAT.death:
-        reason = PERSON.d_reason
+    if STAT.death:
+        reason = PERS.d_reason
     else:
         reason = {
-            PSTAT.mind < 1:
+            STAT.mind < 1:
                 'Самоубийство от потери рассудка',
-            PSTAT.mind < 1 and PSTAT.weary >= MAX_WEARY:
+            STAT.mind < 1 and STAT.weary >= MAX_WEARY:
                 'Смерть от нервного истощения',
-            PSTAT.health < 1:
+            STAT.health < 1:
                 'Насильственная смерть',
-            PSTAT.health < 1 and PSTAT.hunger >= MAX_HUNGER:
+            STAT.health < 1 and STAT.hunger >= MAX_HUNGER:
                 'Смерть от голода',
             }.get(True)
 
@@ -66,10 +64,10 @@ async def continue_game(query: types.CallbackQuery):
         (например, смерть как наказание за событие)
         где будут прописаны уникальные причины смерти
         """
-        await PERSON.die(reason)
-        PSTAT = await PSTAT.change('death', True)
+        await PERS.die(reason)
+        STAT = await STAT.change('death', True)
         # пишем эпитафию
-        MESS = death_message(PERSON, PSTAT)
+        MESS = death_message(PERS, STAT)
         return await query.message.answer(MESS, parse_mode='Markdown')
 
     """
@@ -90,7 +88,7 @@ async def continue_game(query: types.CallbackQuery):
             ))
 
     return await query.message.answer(
-            person_status_card(PERSON, PSTAT),
+            person_status_card(PERS, STAT),
             reply_markup=kb_game,
             parse_mode='Markdown'
             )

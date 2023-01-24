@@ -115,11 +115,12 @@ class Inventory(BaseModel):
         else:
             return False
 
-    async def drop(self):
+    @staticmethod
+    async def drop(P_ID: int, I_ID: int):
         """Функция удаления из инвенторя"""
         query = t_inventory.delete().where(and_(
-            t_inventory.c.p_id == self.p_id,
-            t_inventory.c.i_id == self.i_id
+            t_inventory.c.p_id == P_ID,
+            t_inventory.c.i_id == I_ID
             ))
 
         await ARHM_DB.execute(query)

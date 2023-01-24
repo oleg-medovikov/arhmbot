@@ -6,7 +6,8 @@ from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
-from clas import User, Person, PersonDefaults, Item, Inventory
+from func import using_item
+from clas import User, Person, PersonDefaults, Item, Inventory, PersonStatus
 from conf import MESS_ask_name, MESS_anketa_repeat, MESS_ask_sex, \
     MESS_ask_profession_male, MESS_ask_profession_female, \
     MESS_ask_destination, MESS_anketa_end
@@ -138,7 +139,7 @@ async def load_destination_register(message: types.Message, state: FSMContext):
             NAME_TG=NAME_TG,
                 )
 
-        PERSON = await Person.create(
+        PERS = await Person.create(
             U_ID=USER.u_id,
             GAMENAME=data['gamename'],
             SEX=True if data['sex'] == 'male' else False,
@@ -149,20 +150,11 @@ async def load_destination_register(message: types.Message, state: FSMContext):
 
     # Теперь нужно заполнить инвентарь персонажа
 
-    PERSDEF = await PersonDefaults.get(PERSON.profession)
-    for i_id in json.loads(PERSDEF.start_list_items):
-        ITEM = await Item.get(i_id)
-        # сначала кладём предмет в сумку
-        cheak, string = await Inventory.add(PERSON.p_id, i_id)
-        # если получилось, пробуем надеть на персонажа
-        if cheak:
-            if ITEM.slot in ('bag'):
-                continue
-            await Inventory.equip(
-                PERSON.p_id,
-                ITEM.i_id,
-                ITEM.slot,
-                ITEM.equip_mess)
+    PERSDEF = await PersonDefaults.get(PERS.profession)
+    STAT = await PersonStatus.get(PERS)
+
+    for I_ID in json.loads(PERSDEF.start_list_items):
+        await using_item(PERS, STAT, I_ID, True)
 
     kb_end_reg = InlineKeyboardMarkup(
         resize_keyboard=True,

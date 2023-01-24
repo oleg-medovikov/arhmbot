@@ -3,7 +3,7 @@ from aiogram import types
 from aiogram.dispatcher.filters import Text
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from clas import User, Person, PersonStatus, Location
+from clas import PersonStatus, Location
 
 
 @dp.callback_query_handler(Text(equals='leave'))
@@ -11,13 +11,10 @@ async def leave(query: types.CallbackQuery):
     "проверить список локаций по близости и предложить игроку"
     # удаляем предыдущую клавиатуру
     await query.message.edit_reply_markup(reply_markup=None)
-    U_ID = query.message['chat']['id']
 
-    USER = await User.get(U_ID)
-    PERSON = await Person.get(USER.u_id)
-    PERSTAT = await PersonStatus.get(PERSON)
+    PERS, STAT = await PersonStatus.get_all(query.message['chat']['id'])
 
-    LOCATIONS = await Location.nearby(PERSTAT.location)
+    LOCATIONS = await Location.nearby(STAT.location)
 
     kb_loc_nearby = InlineKeyboardMarkup(
             resize_keyboard=True,
@@ -41,22 +38,17 @@ async def leave(query: types.CallbackQuery):
 
 @dp.callback_query_handler(Text(startswith='leave_'))
 async def relocation(query: types.CallbackQuery):
-    NODE_ID = query.data.split('_')[-1]
-    U_ID = query.message['chat']['id']
+    NODE_ID = int(query.data.split('_')[-1])
 
-    USER = await User.get(U_ID)
-    PERSON = await Person.get(USER.u_id)
-    PERSTAT = await PersonStatus.get(PERSON)
+    PERS, STAT = await PersonStatus.get_all(query.message['chat']['id'])
 
-    await PERSTAT.waste_time(1)
+    await STAT.waste_time(1)
 
-    PERSTAT.location = int(NODE_ID)
+    STAT.location = NODE_ID
 
-    await PERSTAT.update()
+    await STAT.update()
 
-    LOCATION = await Location.get(PERSTAT.location)
-
-    PERSTAT = await PersonStatus.get(PERSON)
+    LOCATION = await Location.get(STAT.location)
 
     LIST_1 = (
         'Вы отдали последние силы,\n',
@@ -75,8 +67,8 @@ async def relocation(query: types.CallbackQuery):
             )
 
     LIST, DIE = {
-        PERSTAT.mind < 1:   (LIST_1, True),
-        PERSTAT.health < 1: (LIST_2, True),
+        STAT.mind < 1:   (LIST_1, True),
+        STAT.health < 1: (LIST_2, True),
         }.get(True, (LIST_3, False))
 
     MESS = ''.join(str(x) for x in LIST)

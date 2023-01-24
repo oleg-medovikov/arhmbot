@@ -36,7 +36,7 @@ class PersonStatus(BaseModel):
     @staticmethod
     async def get_all(T_ID: int) -> tuple['Person', 'PersonStatus']:
         """Возвращаем сразу 2 объекта, чтобы было меньше sql запросов"""
-        j = t_users.join(
+        join = t_users.join(
             t_persons,
             t_persons.c.u_id == t_users.c.u_id
                 ).join(
@@ -50,7 +50,7 @@ class PersonStatus(BaseModel):
                 ).where(and_(
                     t_users.c.tg_id == T_ID,
                     t_persons.c.death == false()
-                    )).select_from(j)
+                    )).select_from(join)
 
         res = await ARHM_DB.fetch_one(query)
 

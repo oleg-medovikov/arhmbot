@@ -7,6 +7,7 @@ from .death_message import death_message
 from .person_status_card import person_status_card
 from .inventory_mess import inventory_mess
 from .using_item import using_item
+from .update_message import update_message
 
 __all__ = [
     'delete_message',
@@ -15,6 +16,7 @@ __all__ = [
     'hunger_str',
     'weary_str',
     'death_message',
+    'update_message',
     'person_status_card',
     'inventory_mess',
     'using_item',

@@ -7,7 +7,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 
 from func import using_item
-from clas import User, Person, PersonDefaults, Item, Inventory, PersonStatus
+from clas import User, Person, PersonDefaults, PersonStatus
 from conf import MESS_ask_name, MESS_anketa_repeat, MESS_ask_sex, \
     MESS_ask_profession_male, MESS_ask_profession_female, \
     MESS_ask_destination, MESS_anketa_end

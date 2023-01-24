@@ -3,31 +3,28 @@ from aiogram import types
 from aiogram.dispatcher.filters import Text
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from clas import User, Person, PersonStatus, Location, \
+from clas import PersonStatus, Location, \
     LocationDescription, Item, DropItem, Inventory
+from func import update_message
 
 
 @dp.callback_query_handler(Text(equals=['look_around']))
 async def look_around(query: types.CallbackQuery):
     "персонаж осматривается на местности и тратит время"
-    # удаляем предыдущую клавиатуру
-    await query.message.edit_reply_markup(reply_markup=None)
-    U_ID = query.message['chat']['id']
 
-    USER = await User.get(U_ID)
-    PERSON = await Person.get(USER.u_id)
-    PERSTAT = await PersonStatus.get(PERSON)
-    LOCATION = await Location.get(PERSTAT.location)
+    PERS, STAT = await PersonStatus.get_all(query.message['chat']['id'])
 
-    await PERSTAT.waste_time(1)
+    LOCATION = await Location.get(STAT.location)
+
+    await STAT.waste_time(1)
 
     DESCR_loc = await LocationDescription.get(
                     LOCATION.node_id,
-                    PERSTAT.stage
+                    STAT.stage
                     )
     DESCR_dist = await LocationDescription.get(
                     LOCATION.district_id,
-                    PERSTAT.stage
+                    STAT.stage
                     )
     LOCATION.district = LOCATION.district.replace(' район', '')
     p_1 = '-'*(len(LOCATION.district) + 6)
@@ -35,7 +32,7 @@ async def look_around(query: types.CallbackQuery):
 
     # пробуем найти на локации предметы
     try:
-        DP = await DropItem.get(LOCATION.node_id, PERSTAT.stage)
+        DP = await DropItem.get(LOCATION.node_id, STAT.stage)
     except ValueError:
         FIND_ITEM = 'ничего примечательного'
     else:
@@ -44,7 +41,7 @@ async def look_around(query: types.CallbackQuery):
 
         # пробуем поместить предмет в сумку
         INV = Inventory(**{
-            'p_id': PERSON.p_id,
+            'p_id': PERS.p_id,
             'slot': 'bag',
             'i_id': ITEM.i_id,
                     })
@@ -80,8 +77,8 @@ async def look_around(query: types.CallbackQuery):
             text='продолжить', callback_data='continue_game'
             ))
 
-    return await query.message.answer(
-            MESS,
-            reply_markup=kb_look_around,
-            parse_mode='Markdown'
+    return await update_message(
+        query.message,
+        MESS,
+        kb_look_around
             )

@@ -3,25 +3,20 @@ from aiogram import types
 from aiogram.dispatcher.filters import Text
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from clas import User, Person, Inventory
+from clas import PersonStatus, Inventory
 
-from func import inventory_mess
+from func import inventory_mess, update_message
 from conf import emoji
 
 
 @dp.callback_query_handler(Text(equals=['inventory_main']))
 async def inventory_main(query: types.CallbackQuery):
     "показываем игроку инвентарь персонажа"
-    # удаляем предыдущую клавиатуру
-    await query.message.edit_reply_markup(reply_markup=None)
-    U_ID = query.message['chat']['id']
+    PERS, STAT = await PersonStatus.get_all(query.message['chat']['id'])
 
-    USER = await User.get(U_ID)
-    PERSON = await Person.get(USER.u_id)
+    INV = await Inventory.get(PERS.p_id)
 
-    INV = await Inventory.get(PERSON.p_id)
-
-    MESS = inventory_mess(PERSON, INV)
+    MESS = inventory_mess(PERS, INV)
 
     kb_bag = InlineKeyboardMarkup(
             resize_keyboard=True,
@@ -32,7 +27,7 @@ async def inventory_main(query: types.CallbackQuery):
         if item['slot'] in ('bag'):
             kb_bag.add(InlineKeyboardButton(
                 text=emoji(item['emoji']) + ' ' + item['name'],
-                callback_data='bag_item_' + str(item['i_id'])
+                callback_data='inventory_bag_item_' + str(item['i_id'])
                     ))
 
     kb_bag.add(InlineKeyboardButton(
@@ -44,9 +39,7 @@ async def inventory_main(query: types.CallbackQuery):
         text='назад',
         callback_data='continue_game',
         ))
-
-    return await query.message.answer(
+    return await update_message(
+            query.message,
             MESS,
-            reply_markup=kb_bag,
-            parse_mode='Markdown'
-            )
+            kb_bag)

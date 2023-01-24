@@ -13,6 +13,7 @@ from .continue_game import continue_game
 from .look_around import look_around
 from .relocation import leave, relocation
 from .inventory_main import inventory_main
+from .inventory_bag_item import inventory_bag_item
 
 __all__ = [
     'dp',
@@ -28,6 +29,7 @@ __all__ = [
     'start_game',
     'continue_game',
     'inventory_main',
+    'inventory_bag_item',
     'look_around',
     'leave',
     'relocation',

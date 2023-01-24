@@ -5,7 +5,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from conf import MAX_HUNGER, MAX_WEARY
 from clas import EventHistory, PersonStatus
-from func import death_message, person_status_card, update_message
+from func import death_message, person_status_card
 
 """
     1. показать игроку частичный статус
@@ -35,11 +35,11 @@ async def continue_game(query: types.CallbackQuery):
              callback_data='get_event'
              ))
 
-        return await update_message(
-            query.message,
-            'У вас незаконченное событие!',
-            kb_game
+        await query.message.edit_text(
+                'У вас незаконченное событие!',
+                parse_mode='Markdown'
                 )
+        return await query.message.edit_reply_markup(kb_game)
 
     # вытаскиваем статус персонажа, чтобы проверить его состояние, жив ли
     if STAT.death:
@@ -67,11 +67,11 @@ async def continue_game(query: types.CallbackQuery):
         await PERS.die(reason)
         STAT = await STAT.change('death', True)
         # пишем эпитафию
-        return await update_message(
-            query.message,
-            death_message(PERS, STAT),
-            kb_game
+        await query.message.edit_text(
+                death_message(PERS, STAT),
+                parse_mode='Markdown'
                 )
+        return await query.message.edit_reply_markup(kb_game)
 
     """
     если с персонажем все нормально,
@@ -90,10 +90,8 @@ async def continue_game(query: types.CallbackQuery):
             callback_data=value
             ))
 
-    return await update_message(
-            query.message,
+    await query.message.edit_text(
             person_status_card(PERS, STAT),
-            kb_game
-                )
-
-
+            parse_mode='Markdown'
+            )
+    await query.message.edit_reply_markup(kb_game)

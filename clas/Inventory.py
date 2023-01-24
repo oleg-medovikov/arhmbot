@@ -107,7 +107,7 @@ class Inventory(BaseModel):
         return True, equip_mess
 
     @staticmethod
-    async def remove(P_ID: int, I_ID):
+    async def remove(P_ID: int, I_ID: int):
         """снятие предмета и помещение в сумку"""
         query = t_inventory.update().where(and_(
             t_inventory.c.p_id == P_ID,

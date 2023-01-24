@@ -24,25 +24,11 @@ async def using_item(
     if not await Inventory.bug_free_space(PERS.p_id):
         return "Необходимо освободить место в сумке!"
 
-    # Настало время надеть предмет на персонажа
-    if ITEM.slot in equip_slots:
-        CHEAK, MESS = await Inventory.equip(
-            PERS.p_id,
-            ITEM.i_id,
-            ITEM.slot,
-            ITEM.equip_mess)
-        if not CHEAK:
-            return MESS
+    # снимаем предмет и кладем в сумку
+    await Inventory.remove(STAT.p_id, ITEM.i_id)
 
     # теперь нужно применить свойства предмета
     for key, value in json.loads(ITEM.effect).items():
-        STAT = await STAT.change(key, value)
+        STAT = await STAT.change(key, -value)
 
-    await STAT.update()
-
-    # если предмет одноразовый, то удалить из инвентаря
-    if ITEM.single_use:
-        await Inventory(PERS.p_id, ITEM.i_id)
-        return ITEM.equip_mess
-
-    return MESS
+    return ITEM.remove_mess

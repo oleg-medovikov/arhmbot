@@ -53,8 +53,6 @@ async def using_item(
     for key, value in json.loads(ITEM.effect).items():
         STAT = await STAT.change(key, value)
 
-    await STAT.update()
-
     # если предмет одноразовый, то удалить из инвентаря
     if ITEM.single_use:
         await Inventory(PERS.p_id, ITEM.i_id)

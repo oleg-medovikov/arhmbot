@@ -1,6 +1,5 @@
 from aiogram.utils.exceptions import MessageNotModified
 from aiogram import types
-from asyncio import sleep
 
 
 async def update_message(
@@ -15,5 +14,4 @@ async def update_message(
     except MessageNotModified:
         pass
 
-    sleep(1)
     await message.edit_reply_markup(keyboard)

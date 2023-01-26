@@ -4,14 +4,12 @@ from aiogram.dispatcher.filters import Text
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from clas import PersonStatus, Location
+from func import update_message
 
 
 @dp.callback_query_handler(Text(equals='leave'))
 async def leave(query: types.CallbackQuery):
     "проверить список локаций по близости и предложить игроку"
-    # удаляем предыдущую клавиатуру
-    await query.message.edit_reply_markup(reply_markup=None)
-
     PERS, STAT = await PersonStatus.get_all(query.message['chat']['id'])
 
     LOCATIONS = await Location.nearby(STAT.location)
@@ -33,7 +31,11 @@ async def leave(query: types.CallbackQuery):
 
     MESS = 'Вы можете пойти:'
 
-    await query.message.answer(MESS, reply_markup=kb_loc_nearby)
+    return await update_message(
+            query.message,
+            MESS,
+            kb_loc_nearby
+            )
 
 
 @dp.callback_query_handler(Text(startswith='leave_'))
@@ -89,4 +91,10 @@ async def relocation(query: types.CallbackQuery):
                 text='остановиться', callback_data='continue_game'
                 ))
 
-    await query.message.answer(MESS, reply_markup=kb_relocation)
+    return await update_message(
+            query.message,
+            MESS,
+            kb_relocation
+            )
+
+

@@ -55,7 +55,7 @@ async def using_item(
 
     # если предмет одноразовый, то удалить из инвентаря
     if ITEM.single_use:
-        await Inventory(PERS.p_id, ITEM.i_id)
+        await Inventory.drop(PERS.p_id, ITEM.i_id)
         return ITEM.equip_mess
 
     return MESS

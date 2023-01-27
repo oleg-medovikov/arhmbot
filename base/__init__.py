@@ -13,6 +13,7 @@ from .monsters import t_monsters
 from .drop_items import t_drop_items
 from .events_history import t_events_history
 from .persons_status import t_persons_status
+from .strings import t_strings
 
 metadata.create_all(engine)
 
@@ -31,4 +32,5 @@ __all__ = [
     't_monsters',
     't_drop_items',
     't_events_history',
+    't_strings',
     ]

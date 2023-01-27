@@ -5,7 +5,7 @@ import pandas as pd
 
 from clas import User, PersonDefaults, Location, \
     LocationDescription, Manual, Item, Event, \
-    Monster
+    Monster, String
 from func import delete_message
 
 FILES = {
@@ -16,6 +16,7 @@ FILES = {
     'Items.xlsx':              'update_item',
     'Events.xlsx':             'update_event',
     'Monsters.xlsx':           'update_monster',
+    'Strings.xlsx':            'update_string',
         }
 
 NAMES = {
@@ -36,6 +37,9 @@ NAMES = {
         ],
     'Manual.xlsx': [
         'm_id', 'm_name', 'order', 'text', 'date_update'
+        ],
+    'Strings.xlsx': [
+        's_id', 's_name', 'text', 'date_update'
         ],
     'Items.xlsx': [
         'i_id', 'name', 'description', 'equip_mess', 'fail_mess',
@@ -96,6 +100,7 @@ async def update_base(message: types.Message):
         'Items':             Item.update_all(list_),
         'Events':            Event.update_all(list_),
         'Monsters':          Monster.update_all(list_),
+        'Strings':           String.update_all(list_),
         }.get(FILE['file_name'][:-5])
 
     try:

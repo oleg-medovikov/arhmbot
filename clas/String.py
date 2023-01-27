@@ -12,14 +12,14 @@ class String(BaseModel):
     date_update: Optional[datetime] = datetime.now()
 
     @staticmethod
-    async def get(S_ID: int) -> str:
+    async def get(S_NAME: str) -> str:
         query = t_strings.select(
-                t_strings.c.m_id == int(S_ID))
+                t_strings.c.s_name == S_NAME)
         res = await ARHM_DB.fetch_one(query)
         try:
             return res['text']
         except ValueError:
-            return f'Нет такой строчки {S_ID}'
+            return f'Нет такой строчки {S_NAME}'
 
     @staticmethod
     async def get_all() -> list:

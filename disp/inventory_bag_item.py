@@ -21,7 +21,7 @@ async def inventory_bag_item(query: types.CallbackQuery):
 
     DICT = {
         'Использовать предмет': f'inventory_using_item_{I_ID}',
-        'Выбросить предмет':    f'inventory_drop_item_{I_ID}',
+        'Выбросить предмет':    f'inventory_drop_item_ask_{I_ID}',
         'назад':                'inventory_main',
         }
 

@@ -7,7 +7,7 @@ from func import delete_message, write_styling_excel
 from conf import emoji, emoji_all
 from clas import User, PersonDefaults, Location, \
     LocationDescription, Manual, Item, Event, \
-    Monster
+    Monster, String
 
 
 @dp.message_handler(commands='files')
@@ -27,6 +27,7 @@ async def get_files_help(message: types.Message):
     /get_Items
     /get_Events
     /get_Monsters
+    /get_Strings
     /test_emoji
     """.replace('_', '\\_')
 
@@ -40,6 +41,7 @@ DICT_XLSX = {
     'get_Manual':             '/read_full_manual',
     'get_Monsters':           '/read_all_monsters',
     'get_KartaDescriptions':  '/read_all_locations_descriptions',
+    'get_Strings':            '/read_all_strings',
         }
 
 
@@ -62,6 +64,7 @@ async def send_objects_file(message: types.Message):
         'get_Items':             Item.get_all(),
         'get_Events':            Event.get_all(),
         'get_Monsters':          Monster.get_all(),
+        'get_Strings':           String.get_all(),
         }.get(COMMAND)
 
     try:

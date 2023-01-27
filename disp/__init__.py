@@ -15,6 +15,7 @@ from .relocation import leave, relocation
 from .inventory_main import inventory_main
 from .inventory_bag_item import inventory_bag_item
 from .inventory_using_item import inventory_using_item
+from .inventory_drop_item import inventory_drop_item, inventory_drop_item_ask
 
 __all__ = [
     'dp',
@@ -32,6 +33,8 @@ __all__ = [
     'inventory_main',
     'inventory_bag_item',
     'inventory_using_item',
+    'inventory_drop_item',
+    'inventory_drop_item_ask',
     'look_around',
     'leave',
     'relocation',

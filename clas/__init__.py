@@ -11,6 +11,7 @@ from .DropItem import DropItem
 from .EventHistory import EventHistory
 from .PersonStatus import PersonStatus
 from .Inventory import Inventory
+from .String import String
 
 __all__ = [
     'User',
@@ -26,4 +27,5 @@ __all__ = [
     'EventHistory',
     'Monster',
     'DropItem',
+    'String',
     ]

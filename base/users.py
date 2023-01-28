@@ -6,7 +6,7 @@ from sqlalchemy import Table, Column, \
 t_users = Table(
     "users",
     metadata,
-    Column('u_id',        Integer, primary_key=True),  # TG_ID
+    Column('u_id',        Integer, primary_key=True),  # U_ID
     Column('tg_id',       BigInteger),  # TG_ID
     Column('username',    String),  # логин пользователя
     Column('name_tg',     String),  # имя пользователя в телеге если есть

@@ -40,12 +40,7 @@ async def look_around(query: types.CallbackQuery):
         FIND_ITEM = ITEM.name + '\n' + DP.comment
 
         # пробуем поместить предмет в сумку
-        INV = Inventory(**{
-            'p_id': PERS.p_id,
-            'slot': 'bag',
-            'i_id': ITEM.i_id,
-                    })
-        check, mess = await INV.add()
+        check, mess = await Inventory.add(PERS.p_id, ITEM.i_id)
         if check:
             await DP.delete_from_location()
 

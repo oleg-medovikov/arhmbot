@@ -9,6 +9,7 @@ from .inventory_mess import inventory_mess
 from .using_item import using_item
 from .update_message import update_message
 from .remove_item import remove_item
+from .filter_event import filter_event
 
 __all__ = [
     'delete_message',
@@ -22,4 +23,5 @@ __all__ = [
     'inventory_mess',
     'using_item',
     'remove_item',
+    'filter_event',
     ]

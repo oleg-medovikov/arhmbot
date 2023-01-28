@@ -105,7 +105,7 @@ class Person(BaseModel):
         if res is not None:
             return Person(**res)
 
-    async def die(self, REASON):
+    async def die(self, REASON) -> 'Person':
         "персонаж умирает"
         query = t_persons.update()\
             .where(t_persons.c.p_id == self.p_id)\
@@ -115,3 +115,8 @@ class Person(BaseModel):
                 date_death=datetime.now()
                 )
         await ARHM_DB.execute(query)
+        query = t_persons.select(
+            t_persons.c.p_id == self.p_id
+                )
+        res = await ARHM_DB.fetch_one(query)
+        return Person(**res)

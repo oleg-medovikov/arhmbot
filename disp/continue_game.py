@@ -4,7 +4,7 @@ from aiogram.dispatcher.filters import Text
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from conf import MAX_HUNGER, MAX_WEARY
-from clas import EventHistory, PersonStatus
+from clas import EventHistory, PersonStatus, Person
 from func import death_message, person_status_card, update_message
 
 """
@@ -33,7 +33,7 @@ async def continue_game(query: types.CallbackQuery):
     if EH is not None:
         kb_game.add(InlineKeyboardButton(
              text='понимаю',
-             callback_data=f'end_event_{EH.e_id}'
+             callback_data='get_event'
              ))
 
         return await update_message(
@@ -65,8 +65,12 @@ async def continue_game(query: types.CallbackQuery):
         (например, смерть как наказание за событие)
         где будут прописаны уникальные причины смерти
         """
-        await PERS.die(reason)
+        PERS = await PERS.die(reason)
         STAT = await STAT.change('death', True)
+        kb_game.add(InlineKeyboardButton(
+             text='попробовать ещё раз',
+             callback_data='start_new_game'
+             ))
         # пишем эпитафию
         return await update_message(
             query.message,

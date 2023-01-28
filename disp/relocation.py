@@ -44,7 +44,7 @@ async def relocation(query: types.CallbackQuery):
 
     PERS, STAT = await PersonStatus.get_all(query.message['chat']['id'])
 
-    await STAT.waste_time(1)
+    await STAT.waste_time(5)
 
     STAT.location = NODE_ID
 
@@ -96,5 +96,3 @@ async def relocation(query: types.CallbackQuery):
             MESS,
             kb_relocation
             )
-
-

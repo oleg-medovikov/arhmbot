@@ -34,6 +34,9 @@ Dict_emoji = {
     'hat':        '\ud83e\udd20',
     'glasses':    '\ud83d\udc53',
     'proof':      '\ud83d\udd0e',
+    'shirt':      '\ud83d\udc55',
+    'robe':       '\ud83e\udd4b',
+    'dress':      '\ud83d\udc57',
     }
 
 

@@ -9,9 +9,9 @@ from clas import PersonStatus, Event, EventHistory
 from func import update_message, filter_event
 
 
-@dp.callAback_query_handler(Text(equals=['get_event']))
+@dp.callback_query_handler(Text(equals=['get_event']))
 async def get_event(query: types.CallbackQuery):
-    "показываем игроку инвентарь персонажа"
+    "Выбираем игроку событие и предлагаем выбор как поступить"
     PERS, STAT = await PersonStatus.get_all(query.message['chat']['id'])
 
     kb_event = InlineKeyboardMarkup(

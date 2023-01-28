@@ -17,6 +17,7 @@ from .inventory_bag_item import inventory_bag_item
 from .inventory_using_item import inventory_using_item
 from .inventory_drop_item import inventory_drop_item, inventory_drop_item_ask
 from .inventory_equip_items import inventory_equip_items
+from .inventory_remove_item import inventory_remove_item
 
 __all__ = [
     'dp',
@@ -37,6 +38,7 @@ __all__ = [
     'inventory_drop_item',
     'inventory_drop_item_ask',
     'inventory_equip_items',
+    'inventory_remove_item',
     'look_around',
     'look_around_get_item',
     'leave',

@@ -7,7 +7,7 @@ equip_slots = [
     ]
 
 
-async def using_item(
+async def remove_item(
     PERS: 'Person',
     STAT: 'PersonStatus',
     I_ID: int,

@@ -7,23 +7,37 @@ from clas import Item
 from func import update_message
 
 
-@dp.callback_query_handler(Text(startswith=['inventory_bag_item']))
+@dp.callback_query_handler(Text(startswith=[
+                                    'inventory_bag_item_',
+                                    'inventory_equip_item_'
+                                    ]))
 async def inventory_bag_item(query: types.CallbackQuery):
     "показываем игроку описание предмета и действия с ним"
 
     I_ID = int(query.data.split('_')[-1])
+    BAG = {
+        'bag' in query.data:   True,
+        'equip' in query.data: False,
+        }[True]
+
     ITEM = await Item.get(I_ID)
 
     kb_bag = InlineKeyboardMarkup(
             resize_keyboard=True,
             one_time_keyboard=True
             )
-
-    DICT = {
-        'Использовать предмет': f'inventory_using_item_{I_ID}',
-        'Выбросить предмет':    f'inventory_drop_item_ask_{I_ID}',
-        'назад':                'inventory_main',
-        }
+    if BAG:
+        DICT = {
+            'Использовать предмет': f'inventory_using_item_{I_ID}',
+            'Выбросить предмет':    f'inventory_drop_item_ask_{I_ID}',
+            'назад':                'inventory_main',
+            }
+    else:
+        DICT = {
+            'Снять предмет':        f'inventory_remove_item_{I_ID}',
+            'Выбросить предмет':    f'inventory_drop_item_ask_{I_ID}',
+            'назад':                'inventory_main',
+            }
 
     for key, value in DICT.items():
         kb_bag.add(InlineKeyboardButton(

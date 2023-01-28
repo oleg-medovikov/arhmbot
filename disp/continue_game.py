@@ -92,8 +92,6 @@ async def continue_game(query: types.CallbackQuery):
 
     return await update_message(
             query.message,
-            person_status_card(PERS, STAT),
+            await person_status_card(query.message['chat']['id']),
             kb_game
                 )
-
-

@@ -31,6 +31,8 @@ Dict_emoji = {
     'leg':        '\ud83e\uddb5',
     'expensive_shoes': '\ud83d\udc5e',
     'shorts':     '\ud83e\ude73',
+    'hat':        '\ud83e\udd20',
+    'glasses':    '\ud83d\udc53',
     }
 
 

@@ -1,13 +1,15 @@
 from datetime import datetime, timedelta
 
-from clas import Person, PersonStatus
+from clas import PersonStatus
 from conf import emoji
 from .weary_str import weary_str
 from .hunger_str import hunger_str
 
 
-def person_status_card(PERS: 'Person', STAT: 'PersonStatus') -> str:
+async def person_status_card(TG_ID: int) -> str:
     "генерируем краткую карточку состояния персонажа"
+
+    PERS, STAT = await PersonStatus.get_all(TG_ID)
 
     DATE = datetime.fromisoformat(
             str(PERS.create_date)

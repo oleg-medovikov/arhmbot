@@ -12,7 +12,7 @@ I_def = {
     }
 
 
-def inventory_mess(PERS: 'Person', INV: list) -> str:
+def inventory_mess(PERS: 'Person', INV: list, EQUIP: bool = False) -> str:
     "Генерируем сообщение для списка инвентаря"
 
     I_zero = {
@@ -48,7 +48,7 @@ def inventory_mess(PERS: 'Person', INV: list) -> str:
         '\n*На теле:* ', *I_zero['body'],
         '\n*Ноги:* ',    *I_zero['legs'],
         '\n*Обувь:* ',   *I_zero['shoes'],
-        '\n\nВ вашей сумке:'
+        '\n\nВаш персонаж сейчас использует' if EQUIP else '\n\nВ вашей сумке:'
         )
 
     return ''.join(str(x) for x in LIST)

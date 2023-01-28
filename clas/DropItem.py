@@ -24,6 +24,17 @@ class DropItem(BaseModel):
         await ARHM_DB.execute(query)
 
     @staticmethod
+    async def get_by_id(DI_ID: int) -> 'DropItem':
+        query = t_drop_items.select().where(
+            t_drop_items.c.di_id == DI_ID
+                )
+        res = await ARHM_DB.fetch_one(query)
+        if res is not None:
+            return DropItem(**res)
+        else:
+            raise ValueError('Кто-то поднял предмет раньше')
+
+    @staticmethod
     async def get(NODE_ID: int, STAGE: int) -> 'DropItem':
         query = t_drop_items.select().where(and_(
             t_drop_items.c.node_id == NODE_ID,

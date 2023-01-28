@@ -34,17 +34,12 @@ async def look_around(query: types.CallbackQuery):
     try:
         DP = await DropItem.get(LOCATION.node_id, STAT.stage)
     except ValueError:
+        FIND = False
         FIND_ITEM = 'ничего примечательного'
     else:
+        FIND = True
         ITEM = await Item.get(DP.i_id)
-        FIND_ITEM = ITEM.name + '\n' + DP.comment
-
-        # пробуем поместить предмет в сумку
-        check, mess = await Inventory.add(PERS.p_id, ITEM.i_id)
-        if check:
-            await DP.delete_from_location()
-
-        FIND_ITEM += '\n' + mess
+        FIND_ITEM = ITEM.name + '\n\n' + DP.comment
 
     # Формируем сообщение
 
@@ -68,8 +63,66 @@ async def look_around(query: types.CallbackQuery):
     kb_look_around = InlineKeyboardMarkup(
         resize_keyboard=True,
         one_time_keyboard=True
-        ).add(InlineKeyboardButton(
-            text='продолжить', callback_data='continue_game'
+        )
+
+    # если игрок нашёл предмет, то предложить его поднять
+    if FIND:
+        DICT = {
+            'Подобрать предмет':    f'look_around_get_{DP.di_id}',
+            'Оставить предмет в покое': 'continue_game',
+            }
+    else:
+        DICT = {
+            'Продолжить': 'continue_game'
+                }
+
+    for key, value in DICT.items():
+        kb_look_around.add(InlineKeyboardButton(
+            text=key,
+            callback_data=value
+            ))
+
+    return await update_message(
+        query.message,
+        MESS,
+        kb_look_around
+            )
+
+
+@dp.callback_query_handler(Text(startswith=['look_around_get_']))
+async def look_around_get_item(query: types.CallbackQuery):
+    "игрок захотел поднять предмет"
+
+    DI_ID = int(query.data.split('_')[-1])
+
+    try:
+        DP = await DropItem.get_by_id(DI_ID)
+    except ValueError:
+        MESS = 'Вы нагнулись за предметом, но кто-то выхватил его быстрее!'
+        GET = False
+    else:
+        GET = True
+        PERS, STAT = await PersonStatus.get_all(query.message['chat']['id'])
+
+    # пробуем поместить предмет в сумку
+    if GET:
+        check, MESS = await Inventory.add(PERS.p_id, DP.i_id)
+        if check:
+            await DP.delete_from_location()
+
+    DICT = {
+            'Продолжить': 'continue_game'
+        }
+
+    kb_look_around = InlineKeyboardMarkup(
+        resize_keyboard=True,
+        one_time_keyboard=True
+        )
+
+    for key, value in DICT.items():
+        kb_look_around.add(InlineKeyboardButton(
+            text=key,
+            callback_data=value
             ))
 
     return await update_message(

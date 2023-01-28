@@ -10,7 +10,7 @@ from .register import hello_callback_register, \
     load_sex_register, load_profession_register, \
     load_destination_register
 from .continue_game import continue_game
-from .look_around import look_around
+from .look_around import look_around, look_around_get_item
 from .relocation import leave, relocation
 from .inventory_main import inventory_main
 from .inventory_bag_item import inventory_bag_item
@@ -38,6 +38,7 @@ __all__ = [
     'inventory_drop_item_ask',
     'inventory_equip_items',
     'look_around',
+    'look_around_get_item',
     'leave',
     'relocation',
     'get_files_help',

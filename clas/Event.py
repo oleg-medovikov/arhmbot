@@ -2,6 +2,7 @@ from datetime import datetime
 from pydantic import BaseModel
 from typing import Optional
 from sqlalchemy import select, and_
+from sqlalchemy.sql.expression import true
 
 from base import ARHM_DB, t_events, t_karta
 
@@ -29,7 +30,7 @@ class Event(BaseModel):
     async def location(NODE_ID: int, STAGE: int, PROFESSION: str) -> list:
         "вытащить все активные события для данной локации"
         query = t_events.select(and_(
-                t_events.c.active is True,
+                t_events.c.active == true,
                 t_events.c.node_id == NODE_ID,
                 t_events.c.stage == STAGE,
                 t_events.c.profession.in_((PROFESSION, 'все')),

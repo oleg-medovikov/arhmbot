@@ -1,6 +1,6 @@
 from datetime import datetime
 from pydantic import BaseModel
-from typing   import Optional
+from typing import Optional
 from sqlalchemy import select
 import json
 

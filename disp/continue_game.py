@@ -29,10 +29,11 @@ async def continue_game(query: types.CallbackQuery):
         )
 
     # если есть незаконченное событие, предложить его закончить
-    if await EventHistory.get(PERS.p_id) is not None:
+    EH = await EventHistory.get(PERS.p_id)
+    if EH is not None:
         kb_game.add(InlineKeyboardButton(
              text='понимаю',
-             callback_data='get_event'
+             callback_data=f'end_event_{EH.e_id}'
              ))
 
         return await update_message(

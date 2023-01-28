@@ -1,7 +1,6 @@
 from datetime import datetime
 from pydantic import BaseModel
 from typing import Optional
-import json
 
 from base import ARHM_DB, t_items
 

@@ -33,6 +33,7 @@ Dict_emoji = {
     'shorts':     '\ud83e\ude73',
     'hat':        '\ud83e\udd20',
     'glasses':    '\ud83d\udc53',
+    'proof':      '\ud83d\udd0e',
     }
 
 

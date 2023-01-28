@@ -16,7 +16,9 @@ async def test_func(message: types.Message):
 
     PERS, STAT = await PersonStatus.get_all(message['from']['id'])
 
-    MESS = await using_item(PERS, STAT, 7, True)
+    # добавить обувь
+    # MESS = await using_item(PERS, STAT, 7, True)
 
+    MESS = str(STAT)
 
     await message.answer(MESS)

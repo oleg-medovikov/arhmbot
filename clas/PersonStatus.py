@@ -53,8 +53,52 @@ class PersonStatus(BaseModel):
                     )).select_from(join)
 
         res = await ARHM_DB.fetch_one(query)
+        pers_val = {
+            'p_id':              res['p_id'],
+            'u_id':              res['u_id'],
+            'gamename':          res['gamename'],
+            'create_date':       res['create_date'],
+            'sex':               res['sex'],
+            'profession':        res['profession'],
+            'destination':       res['destination'],
+            'start_location_id': res['start_location_id'],
+            'start_money':       res['start_money'],
+            'max_health':        res['max_health'],
+            'max_mind':          res['max_mind'],
+            'speed':             res['speed'],
+            'stealth':           res['stealth'],
+            'strength':          res['strength'],
+            'knowledge':         res['knowledge'],
+            'godliness':         res['godliness'],
+            'luck':              res['luck'],
+            'death':             res['death'],
+            'd_reason':          res['d_reason'],
+            'date_death':        res['date_death'],
+                }
+        stat_val = {
+            'p_id':        res['p_id'],
+            'death':       res['death_1'],
+            'gametime':    res['gametime'],
+            'stage':       res['stage'],
+            'money':       res['money'],
+            'location':    res['location'],
+            'health':      res['health'],
+            'mind':        res['mind'],
+            'speed':       res['speed_1'],
+            'stealth':     res['stealth_1'],
+            'strength':    res['strength_1'],
+            'knowledge':   res['knowledge_1'],
+            'godliness':   res['godliness_1'],
+            'luck':        res['luck_1'],
+            'experience':  res['experience'],
+            'bless':       res['bless'],
+            'proof':       res['proof'],
+            'hunger':      res['hunger'],
+            'weary':       res['weary'],
+            'date_update': res['date_update'],
+                }
 
-        return Person(**res), PersonStatus(**res)
+        return Person(**pers_val), PersonStatus(**stat_val)
 
     @staticmethod
     async def get(PERSON: 'Person') -> 'PersonStatus':

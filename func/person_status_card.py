@@ -1,15 +1,13 @@
 from datetime import datetime, timedelta
 
-from clas import PersonStatus
+from clas import Person, PersonStatus
 from conf import emoji
 from .weary_str import weary_str
 from .hunger_str import hunger_str
 
 
-async def person_status_card(TG_ID: int) -> str:
+def person_status_card(PERS: 'Person', STAT: 'PersonStatus') -> str:
     "генерируем краткую карточку состояния персонажа"
-
-    PERS, STAT = await PersonStatus.get_all(TG_ID)
 
     DATE = datetime.fromisoformat(
             str(PERS.create_date)
@@ -27,7 +25,8 @@ async def person_status_card(TG_ID: int) -> str:
         '\n*Проведено дней в Археме:* ', DAYS,
         '\n ``` \n',
         emoji('clock'), '  ', TIME, '  ',
-        emoji('dollar'), ' ', STAT.money, '\n',
+        emoji('dollar'), ' ', STAT.money, '  ',
+        emoji('proof'), '  ', STAT.proof, '\n',
         emoji('heart'), ' ', STAT.health, ' из ', PERS.max_health, '\n',
         emoji('brain'), ' ', STAT.mind, ' из ', PERS.max_mind, '\n\n',
         emoji('strength'), ' ', STAT.strength,

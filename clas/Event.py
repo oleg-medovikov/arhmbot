@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from typing import Optional
 from sqlalchemy import select, and_
 from sqlalchemy.sql.expression import true
+import json
 
 from base import ARHM_DB, t_events, t_karta
 
@@ -50,6 +51,27 @@ class Event(BaseModel):
             return Event(**res)
         else:
             raise ValueError(f'Нет такого события! {E_ID}')
+
+    def get_choice(self) -> list:
+        if self.choice:
+            return json.loads(self.check)['choice']
+        else:
+            return []
+
+    def get_check(self) -> dict:
+        "choice тут не нужен!"
+        d = json.loads(self.check)
+        try:
+            del d['choice']
+        except KeyError:
+            pass
+        return d
+
+    def get_prize(self) -> dict:
+        return json.loads(self.prize)
+
+    def get_punishment(self) -> dict:
+        return json.loads(self.punishment)
 
     @staticmethod
     async def get_all() -> list:

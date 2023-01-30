@@ -1,7 +1,7 @@
 from .dispetcher import dp
 from aiogram import types
 
-from clas import User,  PersonStatus
+from clas import User, PersonStatus, Event
 from func import delete_message, using_item
 
 
@@ -15,10 +15,13 @@ async def test_func(message: types.Message):
         return None
 
     PERS, STAT = await PersonStatus.get_all(message['from']['id'])
+    res = STAT.dice_roll(0)
 
     # добавить обувь
     # MESS = await using_item(PERS, STAT, 7, True)
+    #EVENT = await Event.get(0)
+    #L = EVENT.get_check()
 
-    MESS = str(STAT)
+    MESS = str(res)
 
     await message.answer(MESS)

@@ -221,7 +221,7 @@ class PersonStatus(BaseModel):
             .values(**self.dict())
         await ARHM_DB.execute(query)
 
-    async def dice_roll(self, COUNT: int) -> dict:
+    def dice_roll(self, COUNT: int) -> dict:
         "кидаем кубик и считаем количество успешных проверок"
 
         # 5% шанс дополнительного броска за каждую удачу

@@ -4,7 +4,7 @@ from aiogram.dispatcher.filters import Text
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from conf import MAX_HUNGER, MAX_WEARY
-from clas import EventHistory, PersonStatus, Person
+from clas import EventHistory, PersonStatus
 from func import death_message, person_status_card, update_message
 
 """

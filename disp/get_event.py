@@ -20,31 +20,32 @@ async def get_event(query: types.CallbackQuery):
         )
 
     # проверка, что персонаж не в состоянии выполнения события
-    EH = await EventHistory.get(PERS.p_id)
-    if EH is not None:
-        EVENT = await Event.get(EH.e_id)
-    else:
+    try:
+        EH = await EventHistory.get(PERS.p_id)
+    except ValueError:
+        # пробуем найти событие для персонажа на этой локации
         try:
             EVENT = await filter_event(PERS, STAT)
         except ValueError:
-            # возможно, после фильтров не осталось ивентов
+            # возможно, после фильтров не осталось событий
             kb_event.add(InlineKeyboardButton(
                 text='понимаю',
                 callback_data='continue_game'
                     ))
-
             return await update_message(
                     query.message,
                     'Похоже, вам нечего тут делать',
                     kb_event
                         )
-        else:
-            # добавляем элемент в историю ивентов
-            EVENTHIS = EventHistory(**{
-                'gametime': STAT.gametime,
-                'p_id':     PERS.p_id,
-                'e_id':     EVENT.e_id, })
-            await EVENTHIS.new()
+    else:
+        EVENT = await Event.get(EH.e_id)
+
+    # добавляем элемент в историю ивентов
+    EVENTHIS = EventHistory(**{
+        'gametime': STAT.gametime,
+        'p_id':     PERS.p_id,
+        'e_id':     EVENT.e_id, })
+    await EVENTHIS.new()
 
     if EVENT.choice:
         LIST_ = json.loads(EVENT.check)['choice']
@@ -59,11 +60,11 @@ async def get_event(query: types.CallbackQuery):
     else:
         kb_event.add(InlineKeyboardButton(
             text='Понимаю',
-            callback_data='end_event_{EVENT.i_id}'
+            callback_data=f'end_event_{EVENT.e_id}'
              ))
 
     return await update_message(
             query.message,
-            EVENT.desription,
+            EVENT.description,
             kb_event
                 )

@@ -19,6 +19,7 @@ from .inventory_drop_item import inventory_drop_item, inventory_drop_item_ask
 from .inventory_equip_items import inventory_equip_items
 from .inventory_remove_item import inventory_remove_item
 from .get_event import get_event
+from .end_event import end_event
 
 __all__ = [
     'dp',
@@ -51,4 +52,5 @@ __all__ = [
     'answer_man_buttom',
     'test_func',
     'get_event',
+    'end_event',
     ]

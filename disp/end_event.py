@@ -38,20 +38,20 @@ async def end_event(query: types.CallbackQuery):
 
     # Если выбора нет, нужно пройти проверки и выяснить результат
 
-    for key, value in EVENT.get_check.items():
+    for key, value in EVENT.get_check().items():
         if key not in ('speed', 'stealth', 'strength',
                        'knowledge', 'godliness', 'luck'):
             # если затесалась ошибка в параметре - игнорируем
-            print(f'в {EVENT.id} ivent ошибка в check!')
+            print(f'в {EVENT.e_id} ivent ошибка в check!\n {key}')
             continue
 
         # нужно вычислить количество бросков кубиком
         COUNT = STAT.dict().get(key) - value
         RES = STAT.dice_roll(COUNT)
         MESS += f'\n\nВы проходите проверку {DICT_CHECK.get(key)}\n'
-        MESS += f'у Вас {COUNT} попыток' \
-            + f' из которых {RES["luck"]} благодаря удаче\n' \
-            if RES["luck"] else '\n'
+        MESS += f'всего у Вас попыток: {COUNT}' \
+            + (f' из которых {RES["luck"]} благодаря удаче\n'
+               if RES["luck"] else '\n')
 
         for num in RES['numbers']:
             MESS += f"  {num}\ufe0f\u20e3  "
@@ -64,7 +64,7 @@ async def end_event(query: types.CallbackQuery):
             MESS += f"\nВам удалось пройти проверку {DICT_CHECK.get(key)}!"
 
     MESS += '\n\n' + EVENT.mess_prize if EVENTHIS.result \
-        else EVENT.mess_punishment
+        else '\n\n' + EVENT.mess_punishment
 
     # словарь изменение статов персонажа
     DICT = EVENT.get_prize() if EVENTHIS.result \
@@ -89,7 +89,7 @@ async def end_event(query: types.CallbackQuery):
             if not CHECK_EQUIP:
                 MESS += '\n\n' + MESS_EQUIP
 
-    MESS = f'```\n {MESS} \n```'
+    #MESS = f'```\n{MESS}\n```'
 
     # заканчиваем прохождение ивента
     await EVENTHIS.write_result()

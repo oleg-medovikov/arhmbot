@@ -9,8 +9,7 @@ async def filter_event(PERS: 'Person', STAT: 'PersonStatus') -> 'Event':
     EVENTS = await Event.location(
                     STAT.location,
                     STAT.stage,
-                    PERS.profession,
-                    PERS.p_id
+                    PERS.profession
                     )
 
     EVENT_FILTER = []
@@ -19,12 +18,12 @@ async def filter_event(PERS: 'Person', STAT: 'PersonStatus') -> 'Event':
 
     for EVENT in EVENTS:
         # если событие одноразовые и уже было, то исключаем
-        if EVENT['single'] is True:
-            if EVENT['e_id'] in list(EVENT_DONE):
+        if EVENT.single is True:
+            if EVENT.e_id in list(EVENT_DONE):
                 EVENT_FILTER.append(EVENT)
                 continue
         # проверяем событие подходит ли оно по статам
-        for key, value in json.loads(EVENT['demand']).items():
+        for key, value in EVENT.get_demand().items():
             if key in ('sex', 'profession'):
                 # Это проверка персоны
                 if PERS.dict()[key] != value:

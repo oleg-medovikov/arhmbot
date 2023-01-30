@@ -31,7 +31,7 @@ class Event(BaseModel):
     async def location(NODE_ID: int, STAGE: int, PROFESSION: str) -> list:
         "вытащить все активные события для данной локации"
         query = t_events.select(and_(
-                t_events.c.active == true,
+                t_events.c.active == true(),
                 t_events.c.node_id == NODE_ID,
                 t_events.c.stage == STAGE,
                 t_events.c.profession.in_((PROFESSION, 'все')),
@@ -66,6 +66,9 @@ class Event(BaseModel):
         except KeyError:
             pass
         return d
+
+    def get_demand(self) -> dict:
+        return json.loads(self.demand)
 
     def get_prize(self) -> dict:
         return json.loads(self.prize)

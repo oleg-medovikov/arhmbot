@@ -2,7 +2,7 @@ from datetime import datetime
 from pydantic import BaseModel
 from typing import Optional
 from sqlalchemy import and_
-
+from sqlalchemy.sql.expression import null
 from base import ARHM_DB, t_events_history
 
 
@@ -14,15 +14,17 @@ class EventHistory(BaseModel):
     date_update: Optional[datetime] = datetime.now()
 
     @staticmethod
-    async def get(P_ID: int) -> Optional['EventHistory']:
+    async def get(P_ID: int) -> 'EventHistory':
         "Проверка есть ли у персонажа незаконченные ивенты"
         query = t_events_history.select(and_(
             t_events_history.c.p_id == P_ID,
-            t_events_history.c.result is None
+            t_events_history.c.result == null()
                 ))
         res = await ARHM_DB.fetch_one(query)
         if res is not None:
             return EventHistory(**res)
+        else:
+            raise ValueError('У персонажа не найдено событие в истории')
 
     @staticmethod
     async def get_list(P_ID: int) -> list:

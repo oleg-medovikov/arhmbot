@@ -48,9 +48,13 @@ async def get_event(query: types.CallbackQuery):
     await EVENTHIS.new()
 
     if EVENT.choice:
-        LIST_ = json.loads(EVENT.check)['choice']
-        for i, key in enumerate(LIST_):
-            CALL = f"end_event_{'punishment' if i else 'prize'}_{EVENT.e_id}"
+        for i, key in enumerate(EVENT.get_choice()):
+            if 'monster' in EVENT.get_choice().keys():
+                choice = 'hide' if i else 'attack'
+                CALL = f"monster_fight_{choice}_{EVENT.e_id}"
+            else:
+                choice = 'punishment' if i else 'prize'
+                CALL = f"end_event_{choice}_{EVENT.e_id}"
 
             kb_event.add(InlineKeyboardButton(
                 text=key,

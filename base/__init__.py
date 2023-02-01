@@ -14,6 +14,7 @@ from .drop_items import t_drop_items
 from .events_history import t_events_history
 from .persons_status import t_persons_status
 from .strings import t_strings
+from .fight_history import t_fight_history
 
 metadata.create_all(engine)
 
@@ -33,4 +34,5 @@ __all__ = [
     't_drop_items',
     't_events_history',
     't_strings',
+    't_fight_history',
     ]

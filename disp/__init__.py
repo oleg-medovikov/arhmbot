@@ -20,6 +20,7 @@ from .inventory_equip_items import inventory_equip_items
 from .inventory_remove_item import inventory_remove_item
 from .get_event import get_event
 from .end_event import end_event
+from .monster_fight import monster_fight
 
 __all__ = [
     'dp',
@@ -53,4 +54,5 @@ __all__ = [
     'test_func',
     'get_event',
     'end_event',
+    'monster_fight',
     ]

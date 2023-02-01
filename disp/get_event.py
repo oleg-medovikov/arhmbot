@@ -2,7 +2,6 @@ from .dispetcher import dp
 from aiogram import types
 from aiogram.dispatcher.filters import Text
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-import json
 
 from clas import PersonStatus, Event, EventHistory
 
@@ -49,7 +48,7 @@ async def get_event(query: types.CallbackQuery):
 
     if EVENT.choice:
         for i, key in enumerate(EVENT.get_choice()):
-            if 'monster' in EVENT.get_choice().keys():
+            if 'monster' in EVENT.get_check().keys():
                 choice = 'hide' if i else 'attack'
                 CALL = f"monster_fight_{choice}_{EVENT.e_id}"
             else:

@@ -15,12 +15,14 @@ async def test_func(message: types.Message):
         return None
 
     PERS, STAT = await PersonStatus.get_all(message['from']['id'])
-    res = STAT.dice_roll(0)
+    #res = STAT.dice_roll(2)
 
-    # добавить обувь
-    # MESS = await using_item(PERS, STAT, 7, True)
+    # добавить предмет
+    #await using_item(PERS, STAT, 1, True)
     #EVENT = await Event.get(0)
     #L = EVENT.get_check()
+
+
 
     MESS = str(res)
 

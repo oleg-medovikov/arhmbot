@@ -67,6 +67,10 @@ class Event(BaseModel):
             pass
         return d
 
+    def get_monster(self) -> int:
+        d = json.loads(self.check)
+        return d['monster']
+
     def get_demand(self) -> dict:
         return json.loads(self.demand)
 

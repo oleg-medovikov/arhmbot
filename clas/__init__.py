@@ -12,6 +12,7 @@ from .EventHistory import EventHistory
 from .PersonStatus import PersonStatus
 from .Inventory import Inventory
 from .String import String
+from .FightHistory import FightHistory
 
 __all__ = [
     'User',
@@ -28,4 +29,5 @@ __all__ = [
     'Monster',
     'DropItem',
     'String',
+    'FightHistory',
     ]

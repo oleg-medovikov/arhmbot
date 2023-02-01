@@ -33,21 +33,27 @@ class FightHistory(BaseModel):
     description:   Optional[str]
     date_create:   Optional[datetime] = datetime.now()
 
-    async def get_history(self) -> list:
+    @staticmethod
+    async def get_history(M_UID: int) -> list:
         "Достаем все раунды сражения с монстром"
-        query = t_fight_history.select(t_fight_history.c.m_uid == self.m_uid)
-        return await ARHM_DB.fetch_all(query)
+        query = t_fight_history.select(
+                t_fight_history.c.m_uid == M_UID
+                )
+        list_ = []
+        for row in await ARHM_DB.fetch_all(query):
+            list_.append(FightHistory(**row))
+        return list_
 
     async def new_battle_round(
         self,
-        PERSTAT: 'PersonStatus',
+        STAT: 'PersonStatus',
         MONSTER: 'Monster'
             ) -> 'FightHistory':
         "Отыгрываем и сохраняем раунд боя персонажа с монстром"
         # ===========подготовка
         self.battle_round += 1
         # обновляем игровое время
-        self.gametime = PERSTAT.gametime
+        self.gametime = STAT.gametime
 
         if self.battle_round == 1:
             # первый раунд начинается с проверки на сокрушение и кошмар
@@ -81,7 +87,7 @@ class FightHistory(BaseModel):
         # непосредственно сам раунд боя
         # делаем проверку на рассудок
         if MONSTER.check_mind and self.p_alive is True:
-            DICT = await PERSTAT.dice_roll(PERSTAT.knowledge + PERSTAT.godliness)
+            DICT = STAT.dice_roll(STAT.knowledge + STAT.godliness)
             self.numbers_md = json.dumps(DICT)
             if DICT['check_passed'] < MONSTER.check_mind:
                 self.m_damage_md += MONSTER.mind_damage
@@ -90,7 +96,8 @@ class FightHistory(BaseModel):
                     self.p_alive = False
                     self.description = 'Сошёл с ума в бою'
             else:
-                # тут нужно не забыть про урон от кошмарности монстра в персом раунде!
+                # тут нужно не забыть про урон от кошмара монстра
+                # в первом раунде!
                 self.p_end_md = self.p_start_md - self.m_damage_md
         else:
             # если монстр не может нанести урон по рассудку
@@ -99,7 +106,7 @@ class FightHistory(BaseModel):
 
         # проверка боя
         if MONSTER.check_fight and self.p_alive is True:
-            DICT = await PERSTAT.dice_roll(PERSTAT.strength)
+            DICT = STAT.dice_roll(STAT.strength)
             self.numbers_hp = json.dumps(DICT)
             try:
                 self.p_damage_hp = DICT['check_passed'] // MONSTER.check_fight

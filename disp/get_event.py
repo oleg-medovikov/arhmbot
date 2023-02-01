@@ -49,7 +49,7 @@ async def get_event(query: types.CallbackQuery):
     if EVENT.choice:
         for i, key in enumerate(EVENT.get_choice()):
             if 'monster' in EVENT.get_check().keys():
-                choice = 'hide' if i else 'attack'
+                choice = 'attack' if i else 'hide'
                 CALL = f"monster_fight_{choice}_{EVENT.e_id}"
             else:
                 choice = 'punishment' if i else 'prize'

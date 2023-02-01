@@ -15,7 +15,7 @@ async def test_func(message: types.Message):
         return None
 
     PERS, STAT = await PersonStatus.get_all(message['from']['id'])
-    #res = STAT.dice_roll(2)
+    res = STAT.dice_roll(2)
 
     # добавить предмет
     #await using_item(PERS, STAT, 1, True)

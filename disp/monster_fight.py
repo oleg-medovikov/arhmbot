@@ -4,7 +4,7 @@ from aiogram.dispatcher.filters import Text
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from uuid import uuid4
 
-from clas import PersonStatus, Event, Monster, FightHistory
+from clas import PersonStatus, Event, Monster, FightHistory, EventHistory
 from func import update_message
 
 
@@ -15,6 +15,7 @@ async def monster_fight(query: types.CallbackQuery):
     E_ID = int(query.data.split('_')[-1])
     EVENT = await Event.get(E_ID)
     PERS, STAT = await PersonStatus.get_all(query.message['chat']['id'])
+    EVENTHIS = await EventHistory.get(PERS.p_id)
     MONSTER = await Monster.get(EVENT.get_monster())
     kb_event = InlineKeyboardMarkup(
             resize_keyboard=True,
@@ -28,11 +29,11 @@ async def monster_fight(query: types.CallbackQuery):
     if not CHOICE:
         # Если персонаж пробует спрятаться от монстра
         COUNT = STAT.stealth - MONSTER.check_of_stels
-        DICT = await STAT.dice_roll(COUNT)
+        DICT = STAT.dice_roll(COUNT)
         MESS += '\nПроходим проверку на скрытность'
         MESS += f'\nКоличество бросков {COUNT}' + \
             (
-                f'из них благодаря удаче {DICT["LUCK"]}\n' if DICT["LUCK"]
+                f'из них благодаря удаче {DICT["luck"]}\n' if DICT["luck"]
                 else '\n'
             )
         for num in DICT['numbers']:
@@ -45,6 +46,8 @@ async def monster_fight(query: types.CallbackQuery):
                 text='закончить событие',
                 callback_data='continue_game'
                         ))
+            EVENTHIS.result = False
+            await EVENTHIS.write_result()
 
             return await update_message(
                     query.message,
@@ -74,9 +77,29 @@ async def monster_fight(query: types.CallbackQuery):
     while BATLE.p_alive and BATLE.p_right_mind and BATLE.m_alive is True:
         BATLE = await BATLE.new_battle_round(STAT, MONSTER)
 
-    BATLE_HISTORY = await FightHistory.get_history(BATLE.m_uid)
+    for BATLE in await FightHistory.get_history(BATLE.m_uid):
+        MESS += f'\nРаунд боя {BATLE.battle_round}'
+        DICT_MD = BATLE.get_num_md()
+        MESS += f'\nПроверка на рассудок, бросков: {len(DICT_MD["numbers"])}\n'
+        for num in DICT_MD['numbers']:
+            MESS += f"  {num}\ufe0f\u20e3  "
+        MESS += '\nВы не испугались противника!' if DICT_MD["success"] else \
+            f'\nВы испугались противника, урон рассудку {BATLE.m_damage_md}'
+        DICT_HP = BATLE.get_num_hp()
+        MESS += f'\nПроверка боя, бросков: {len(DICT_HP["numbers"])}\n'
+        for num in DICT_HP['numbers']:
+            MESS += f"  {num}\ufe0f\u20e3  "
+        MESS += f'\nВы нанесли {BATLE.p_damage_hp} урона'
+        MESS += f'\nПротивник нанёс {BATLE.m_damage_hp} урона'
 
-    MESS += '\n\n' + str(BATLE_HISTORY)
+    MESS += '\n\n' + {
+            BATLE.m_alive is False:      MONSTER.mess_win,
+            BATLE.p_right_mind is False: MONSTER.mess_lose_md,
+            BATLE.p_alive is False:      MONSTER.mess_lose_hp,
+            }[True]
+
+    EVENTHIS.result = True
+    await EVENTHIS.write_result()
 
     kb_event.add(InlineKeyboardButton(
         text='закончить событие',

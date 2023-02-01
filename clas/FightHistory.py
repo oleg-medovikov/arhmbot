@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from typing import Optional
 from uuid import UUID
 import json
+from json.decoder import JSONDecodeError
 
 from base import ARHM_DB, t_fight_history
 
@@ -38,11 +39,25 @@ class FightHistory(BaseModel):
         "Достаем все раунды сражения с монстром"
         query = t_fight_history.select(
                 t_fight_history.c.m_uid == M_UID
-                )
+                ).order_by(t_fight_history.c.battle_round)
         list_ = []
         for row in await ARHM_DB.fetch_all(query):
             list_.append(FightHistory(**row))
         return list_
+
+    def get_num_hp(self) -> dict:
+        return json.loads(self.numbers_hp)
+
+    def get_num_md(self) -> dict:
+        try:
+            return json.loads(self.numbers_md)
+        except JSONDecodeError:
+            return {
+                'success': True,
+                'luck': 0,
+                'numbers': [6],
+                'check_passed': 1
+                    }
 
     async def new_battle_round(
         self,

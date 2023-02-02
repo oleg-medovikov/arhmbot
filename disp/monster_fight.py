@@ -30,14 +30,14 @@ async def monster_fight(query: types.CallbackQuery):
         # Если персонаж пробует спрятаться от монстра
         COUNT = STAT.stealth - MONSTER.check_of_stels
         DICT = STAT.dice_roll(COUNT)
-        MESS += '\nПроходим проверку на скрытность'
-        MESS += f'\nКоличество бросков {COUNT}' + \
-            (
-                f'из них благодаря удаче {DICT["luck"]}\n' if DICT["luck"]
-                else '\n'
-            )
-        for num in DICT['numbers']:
-            MESS += f"  {num}\ufe0f\u20e3  "
+        LIST = (
+                '\nПроходим проверку на скрытность',
+                '\nКоличество бросков ', COUNT,
+                f' из них благодаря удаче {DICT["luck"]}\n' if DICT["luck"]
+                else '\n',
+                *(f"  {x}\ufe0f\u20e3  " for x in DICT["numbers"]),
+                )
+        MESS += ''.join(str(x) for x in LIST)
 
         if DICT['success']:
             MESS += '\nВы успешно прошли проверку!\n\n'

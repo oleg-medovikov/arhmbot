@@ -55,8 +55,8 @@ class FightHistory(BaseModel):
             return {
                 'success': True,
                 'luck': 0,
-                'numbers': [6],
-                'check_passed': 1
+                'numbers': [],
+                'check_passed': 0
                     }
 
     async def new_battle_round(

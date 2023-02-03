@@ -37,6 +37,7 @@ Dict_emoji = {
     'shirt':      '\ud83d\udc55',
     'robe':       '\ud83e\udd4b',
     'dress':      '\ud83d\udc57',
+    'stopwatch':  '\u23f1',
     }
 
 

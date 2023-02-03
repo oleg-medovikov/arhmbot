@@ -4,8 +4,8 @@ from aiogram.dispatcher.filters import Text
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from clas import PersonStatus, Location
-from func import update_message
-
+from func import update_message, timedelta_to_str
+from conf import emoji
 
 @dp.callback_query_handler(Text(equals='leave'))
 async def leave(query: types.CallbackQuery):
@@ -44,7 +44,7 @@ async def relocation(query: types.CallbackQuery):
 
     PERS, STAT = await PersonStatus.get_all(query.message['chat']['id'])
 
-    await STAT.waste_time(5)
+    WASTE = await STAT.waste_time(1)
 
     STAT.location = NODE_ID
 
@@ -63,8 +63,8 @@ async def relocation(query: types.CallbackQuery):
         'но их не хватило...',
             )
     LIST_3 = (
-        'Прошло какое-то время,\n',
-        'и Вы оказались ', LOCATION.declension, ',\n',
+        emoji('stopwatch'), ' ', timedelta_to_str(WASTE), '\n\n',
+        'Вы оказались ', LOCATION.declension, ',\n',
         'хотите идти дальше?',
             )
 

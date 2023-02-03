@@ -192,7 +192,7 @@ class PersonStatus(BaseModel):
                 .values(**self.dict())
             await ARHM_DB.execute(query)
 
-    async def waste_time(self, TIME: int):
+    async def waste_time(self, TIME: int) -> int:
         "Тратим игровое время в зависимости от скорости персонажа"
         if self.speed > 10:
             TOTAL = 1
@@ -220,6 +220,8 @@ class PersonStatus(BaseModel):
             .where(t_persons_status.c.p_id == self.p_id)\
             .values(**self.dict())
         await ARHM_DB.execute(query)
+
+        return TOTAL
 
     def dice_roll(self, COUNT: int) -> dict:
         "кидаем кубик и считаем количество успешных проверок"

@@ -165,6 +165,7 @@ class Event(BaseModel):
                             t_events.c.e_id == row['e_id'])\
                         .values(**row)
                     await ARHM_DB.execute(query)
+                    break
         if string == '':
             string = 'Нечего обновлять'
         return string

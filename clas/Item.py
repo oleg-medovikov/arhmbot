@@ -92,6 +92,7 @@ class Item(BaseModel):
                             t_items.c.i_id == row['i_id'])\
                         .values(**row)
                     await ARHM_DB.execute(query)
+                    break
         if string == '':
             string = 'Нечего обновлять'
         return string

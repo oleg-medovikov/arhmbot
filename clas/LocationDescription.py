@@ -84,6 +84,7 @@ class LocationDescription(BaseModel):
                             ))\
                         .values(**row)
                     await ARHM_DB.execute(query)
+                    break
         if string == '':
             string = 'Нечего обновлять'
         return string

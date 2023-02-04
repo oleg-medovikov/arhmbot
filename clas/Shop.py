@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
 from sqlalchemy import and_
+from json import loads
 
 
 from base import ARHM_DB, t_shops
@@ -67,6 +68,8 @@ class Shop(BaseModel):
                 t_shops.c.s_id == row['s_id']
                 )
             res = await ARHM_DB.fetch_one(query)
+            row['product_list'] = loads(row['product_list'])
+            row['shopping_list'] = loads(row['shopping_list'])
 
             # если строки нет, то добавляем
             if res is None:
@@ -86,6 +89,7 @@ class Shop(BaseModel):
                             t_shops.c.s_id == row['s_id'])\
                         .values(**row)
                     await ARHM_DB.execute(query)
+                    break
         if string == '':
             string = 'Нечего обновлять'
         return string

@@ -84,6 +84,12 @@ async def update_base(message: types.Message):
         os.remove(DESTINATION)
         return await message.answer(str(e))
 
+    for col in df.columns:
+        try:
+            df[col] = df[col].str.replace('\u2028', '\n')
+        except AttributeError:
+            continue
+
     list_ = df.to_dict('records')
 
     MESS = {

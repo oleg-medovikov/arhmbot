@@ -69,6 +69,7 @@ class PersonDefaults(BaseModel):
                             t_persons_defaults.c.profession == row['profession'])\
                         .values(**row)
                     await ARHM_DB.execute(query)
+                    break
         if string == '':
             string = 'Нечего обновлять'
         return string

@@ -68,6 +68,7 @@ class String(BaseModel):
                             t_strings.c.s_id == row['s_id'])\
                         .values(**row)
                     await ARHM_DB.execute(query)
+                    break
         if string == '':
             string = 'Нечего обновлять'
         return string

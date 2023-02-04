@@ -84,6 +84,7 @@ class Location(BaseModel):
                             t_karta.c.node_id == row['node_id'])\
                         .values(**row)
                     await ARHM_DB.execute(query)
+                    break
         if string == '':
             string = 'Нечего обновлять'
         return string

@@ -38,6 +38,7 @@ Dict_emoji = {
     'robe':       '\ud83e\udd4b',
     'dress':      '\ud83d\udc57',
     'stopwatch':  '\u23f1',
+    'hotdog':     '\ud83c\udf2d',
     }
 
 

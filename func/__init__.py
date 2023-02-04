@@ -11,6 +11,7 @@ from .update_message import update_message
 from .remove_item import remove_item
 from .filter_event import filter_event
 from .time_to_str import timedelta_to_str
+from .demand import demand
 
 __all__ = [
     'delete_message',
@@ -26,4 +27,5 @@ __all__ = [
     'remove_item',
     'filter_event',
     'timedelta_to_str',
+    'demand',
     ]

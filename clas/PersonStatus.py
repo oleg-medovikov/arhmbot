@@ -249,3 +249,5 @@ class PersonStatus(BaseModel):
             'numbers':      NUMBERS,
             'check_passed': CHECK_PASSED
                 }
+
+

@@ -28,10 +28,21 @@ class Shop(BaseModel):
                 t_shops.c.stage == STAGE
                 ))
         res = await ARHM_DB.fetch_one(query)
-        try:
+        if res is not None:
             return Shop(**res)
-        except ValueError:
-            return 'в этой локации нет магазина'
+        else:
+            raise ValueError('в этой локации нет магазина')
+
+    @staticmethod
+    async def get_by_id(S_ID: int) -> 'Shop':
+        query = t_shops.select(
+                t_shops.c.s_id == S_ID
+                )
+        res = await ARHM_DB.fetch_one(query)
+        return Shop(**res)
+
+    def get_demand(self):
+        return loads(self.demand)
 
     @staticmethod
     async def get_all() -> list:

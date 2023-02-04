@@ -4,7 +4,7 @@ from aiogram.dispatcher.filters import Text
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from conf import MAX_HUNGER, MAX_WEARY
-from clas import EventHistory, PersonStatus
+from clas import EventHistory, PersonStatus, Shop
 from func import death_message, person_status_card, update_message
 
 """
@@ -91,6 +91,13 @@ async def continue_game(query: types.CallbackQuery):
         'действовать':       'get_event',
         'уйти куда-то ещё':  'leave',
         }
+
+    try:
+        SHOP = await Shop.get(STAT.location, STAT.stage)
+    except ValueError:
+        pass
+    else:
+        DICT[SHOP.shop_name] = f'go_to_the_shop_{SHOP.s_id}'
 
     for key, value in DICT.items():
         kb_game.add(InlineKeyboardButton(

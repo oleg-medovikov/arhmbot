@@ -87,6 +87,7 @@ async def update_base(message: types.Message):
     for col in df.columns:
         try:
             df[col] = df[col].str.replace('\u2028', '\n')
+            df[col] = df[col].str.replace("'", '"')
         except AttributeError:
             continue
 

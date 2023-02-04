@@ -35,6 +35,16 @@ class Item(BaseModel):
             raise ValueError(f'Нет такого предмета! {I_ID}')
 
     @staticmethod
+    async def get_by_list(LIST: list) -> list:
+        query = t_items.select(
+            t_items.c.i_id.in_(LIST)
+                ).order_by(t_items.c.i_id)
+        list_ = []
+        for row in await ARHM_DB.fetch_all(query):
+            list_.append(Item(**row))
+        return list_
+
+    @staticmethod
     async def get_all():
         query = t_items.select().order_by(t_items.c.i_id)
         list_ = []

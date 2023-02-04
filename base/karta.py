@@ -1,6 +1,7 @@
 from .base import metadata
 
-from sqlalchemy import Table, Column, SmallInteger, String, Boolean, DateTime
+from sqlalchemy import Table, Column, ARRAY, \
+    SmallInteger, String, Boolean, DateTime
 
 t_karta = Table(
     'karta',
@@ -8,7 +9,7 @@ t_karta = Table(
     Column('node_id',         SmallInteger, primary_key=True),  # id локации
     Column('name_node',       String),  # Имя локации
     Column('declension',      String),  # Склонение вы находитесь ...
-    Column('contact_list_id', String),  # связи с другими узлами
+    Column('contact_list_id', ARRAY(SmallInteger)),  # связи с другими узлами
     Column('district',        String),  # район  локации
     Column('district_id',     SmallInteger),  # код района локации
     Column('street',          Boolean),  # Является ли улицей

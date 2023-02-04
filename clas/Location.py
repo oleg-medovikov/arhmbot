@@ -2,7 +2,7 @@ from datetime import datetime
 from pydantic import BaseModel
 from typing import Optional
 from sqlalchemy import select
-import json
+from json import loads
 
 from base import ARHM_DB, t_karta
 
@@ -11,7 +11,7 @@ class Location(BaseModel):
     node_id:          int
     name_node:        str
     declension:       str
-    contact_list_id:  str
+    contact_list_id:  list
     district:         str
     district_id:      int
     street:           bool
@@ -43,14 +43,12 @@ class Location(BaseModel):
                  t_karta.c.node_id == int(NODE_ID))
         res = await ARHM_DB.fetch_one(query)
 
-        node_list = json.loads(res['contact_list_id'])
-
         query = t_karta.select()\
             .with_only_columns([
                 t_karta.c.node_id,
                 t_karta.c.name_node
                 ])\
-            .where(t_karta.c.node_id.in_(node_list))
+            .where(t_karta.c.node_id.in_(res['contact_list_id']))
 
         return await ARHM_DB.fetch_all(query)
 
@@ -65,6 +63,8 @@ class Location(BaseModel):
                 t_karta.c.node_id == row['node_id']
                 )
             res = await ARHM_DB.fetch_one(query)
+
+            row['contact_list_id'] = loads(row['contact_list_id'])
 
             # если строки нет, то добавляем
             if res is None:

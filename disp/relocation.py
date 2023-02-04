@@ -7,6 +7,7 @@ from clas import PersonStatus, Location
 from func import update_message, timedelta_to_str
 from conf import emoji
 
+
 @dp.callback_query_handler(Text(equals='leave'))
 async def leave(query: types.CallbackQuery):
     "проверить список локаций по близости и предложить игроку"

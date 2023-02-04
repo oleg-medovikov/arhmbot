@@ -5,19 +5,8 @@ import pandas as pd
 
 from clas import User, PersonDefaults, Location, \
     LocationDescription, Manual, Item, Event, \
-    Monster, String
+    Monster, String, Shop
 from func import delete_message
-
-FILES = {
-    'PersonDefaults.xlsx':     'update_person_defaults',
-    'Karta.xlsx':              'update_location',
-    'KartaDescriptions.xlsx':  'update_location_description',
-    'Manual.xlsx':             'update_manual',
-    'Items.xlsx':              'update_item',
-    'Events.xlsx':             'update_event',
-    'Monsters.xlsx':           'update_monster',
-    'Strings.xlsx':            'update_string',
-        }
 
 NAMES = {
     'PersonDefaults.xlsx': [
@@ -59,6 +48,11 @@ NAMES = {
         'mind_damage', 'body_damage', 'health', 'price', 'item',
         'experience', 'date_update'
         ],
+    'Shops.xlsx': [
+        's_id', 'l_id', 'stage', 'shop_name', 'demand', 'mess_welcome',
+        'mess_not_pass', 'mess_goodbye', 'product_list',
+        'shopping_list', 'date_update'
+        ],
         }
 
 
@@ -73,7 +67,7 @@ async def update_base(message: types.Message):
 
     FILE = message['document']
 
-    if not FILE['file_name'] in FILES.keys():
+    if not FILE['file_name'] in NAMES.keys():
         return await message.answer('У файла неправильное имя')
 
     DESTINATION = 'temp/' + FILE.file_unique_id + 'xlsx'
@@ -101,6 +95,7 @@ async def update_base(message: types.Message):
         'Events':            Event.update_all(list_),
         'Monsters':          Monster.update_all(list_),
         'Strings':           String.update_all(list_),
+        'Shops':             Shop.update_all(list_),
         }.get(FILE['file_name'][:-5])
 
     try:

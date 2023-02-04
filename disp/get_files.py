@@ -7,7 +7,7 @@ from func import delete_message, write_styling_excel
 from conf import emoji, emoji_all
 from clas import User, PersonDefaults, Location, \
     LocationDescription, Manual, Item, Event, \
-    Monster, String
+    Monster, String, Shop
 
 
 @dp.message_handler(commands='files')
@@ -28,24 +28,26 @@ async def get_files_help(message: types.Message):
     /get_Events
     /get_Monsters
     /get_Strings
+    /get_Shops
     /test_emoji
     """.replace('_', '\\_')
 
     return await message.answer(MESS, parse_mode='Markdown')
 
-DICT_XLSX = {
-    'get_Events':             '/read_all_events',
-    'get_Items':              '/read_all_items',
-    'get_PersonDefaults':     '/read_all_persons_defaults',
-    'get_Karta':              '/read_all_locations',
-    'get_Manual':             '/read_full_manual',
-    'get_Monsters':           '/read_all_monsters',
-    'get_KartaDescriptions':  '/read_all_locations_descriptions',
-    'get_Strings':            '/read_all_strings',
-        }
+DICT_XLSX = [
+    'get_Events',
+    'get_Items',
+    'get_PersonDefaults',
+    'get_Karta',
+    'get_Manual',
+    'get_Monsters',
+    'get_KartaDescriptions',
+    'get_Strings',
+    'get_Shops',
+    ]
 
 
-@dp.message_handler(commands=DICT_XLSX.keys())
+@dp.message_handler(commands=DICT_XLSX)
 async def send_objects_file(message: types.Message):
     # удалим команду для чистоты
     await delete_message(message)
@@ -65,6 +67,7 @@ async def send_objects_file(message: types.Message):
         'get_Events':            Event.get_all(),
         'get_Monsters':          Monster.get_all(),
         'get_Strings':           String.get_all(),
+        'get_Shops':             Shop.get_all(),
         }.get(COMMAND)
 
     try:

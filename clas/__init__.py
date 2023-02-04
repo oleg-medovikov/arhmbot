@@ -13,6 +13,7 @@ from .PersonStatus import PersonStatus
 from .Inventory import Inventory
 from .String import String
 from .FightHistory import FightHistory
+from .Shop import Shop
 
 __all__ = [
     'User',
@@ -30,4 +31,5 @@ __all__ = [
     'DropItem',
     'String',
     'FightHistory',
+    'Shop',
     ]

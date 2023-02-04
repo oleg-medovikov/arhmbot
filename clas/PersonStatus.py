@@ -194,10 +194,14 @@ class PersonStatus(BaseModel):
 
     async def waste_time(self, TIME: int) -> int:
         "Тратим игровое время в зависимости от скорости персонажа"
-        if self.speed > 10:
-            TOTAL = 1
-        else:
-            TOTAL = TIME * (6 - self.speed//2)
+        if TIME < 1:
+            return 0
+
+        TOTAL = {
+            self.speed > 10:      1,
+            self.speed < 1:       TIME*6,
+            0 < self.speed < 10:  TIME * (6 - self.speed//2),
+                }[True]
 
         self.gametime += TOTAL
         self.hunger += TOTAL

@@ -4,7 +4,8 @@ from aiogram.dispatcher.filters import Text
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from clas import PersonStatus, Inventory, Event, EventHistory
-from func import update_message
+from func import update_message, timedelta_to_str
+from conf import emoji
 
 DICT_CHECK = {
     'speed':     'на скорость',
@@ -26,6 +27,7 @@ async def end_event(query: types.CallbackQuery):
     PERS, STAT = await PersonStatus.get_all(query.message['chat']['id'])
     EVENTHIS = await EventHistory.get(PERS.p_id)
     MESS = query.message.text
+    WASTE = 0
 
     # если событие подразумевает выбор, то нужно определиться, что выбрано
 
@@ -78,7 +80,7 @@ async def end_event(query: types.CallbackQuery):
                    'location', 'death'):
             STAT = await STAT.change(key, value)
         elif key == 'time':
-            await STAT.waste_time(int(value))
+            WASTE = await STAT.waste_time(int(value))
         elif key == 'item':
             INV = Inventory(**{
                 'p_id': PERS.p_id,
@@ -89,7 +91,8 @@ async def end_event(query: types.CallbackQuery):
             if not CHECK_EQUIP:
                 MESS += '\n\n' + MESS_EQUIP
 
-    #MESS = f'```\n{MESS}\n```'
+    MESS = emoji('stopwatch') + ' ' + timedelta_to_str(WASTE) \
+        + '\n\n' + MESS
 
     # заканчиваем прохождение ивента
     await EVENTHIS.write_result()

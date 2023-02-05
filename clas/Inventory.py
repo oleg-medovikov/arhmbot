@@ -5,7 +5,7 @@ from sqlalchemy import select, and_
 
 from base import ARHM_DB, t_inventory, t_items
 from conf import MAX_BAG_CAPASITY
-
+from .String import String
 
 class Inventory(BaseModel):
     p_id:         int
@@ -15,6 +15,7 @@ class Inventory(BaseModel):
 
     @staticmethod
     async def check_item(P_ID, I_ID) -> bool:
+        "проверяем наличие предмета у персонажа"
         query = t_inventory.select(and_(
             t_inventory.c.p_id == P_ID,
             t_inventory.c.i_id == I_ID
@@ -135,7 +136,7 @@ class Inventory(BaseModel):
             ))
         res = await ARHM_DB.fetch_one(query)
         if res is not None:
-            return False, 'Предмет не добавлен, так как он уже есть у Вас.'
+            return False, String.get('double_item')
         # проверка на вместимость сумки
         query = t_inventory.select().where(and_(
             t_inventory.c.p_id == P_ID,
@@ -143,7 +144,7 @@ class Inventory(BaseModel):
             ))
         res = await ARHM_DB.fetch_all(query)
         if len(res) >= MAX_BAG_CAPASITY:
-            return False,  'Предмет не добавлен, в сумке не хватает места!'
+            return False, String.get('not_free_space_in_bug')
 
         values = {
             'p_id': P_ID,

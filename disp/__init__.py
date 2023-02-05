@@ -22,6 +22,7 @@ from .get_event import get_event
 from .end_event import end_event
 from .monster_fight import monster_fight
 from .go_to_the_shop import go_to_the_shop
+from .buy_item import buy_item
 
 __all__ = [
     'dp',
@@ -57,4 +58,5 @@ __all__ = [
     'end_event',
     'monster_fight',
     'go_to_the_shop',
+    'buy_item',
     ]

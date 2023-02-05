@@ -38,7 +38,7 @@ async def go_to_the_shop(query: types.CallbackQuery):
                     )
             KEY = ''.join(str(x) for x in LIST)
 
-            DICT[KEY] = f'buy_item_{ITEM.i_id}'
+            DICT[KEY] = f'buy_item_{S_ID}_{ITEM.i_id}'
         DICT['уйти'] = 'continue_game'
     else:
         # если не проходит требования

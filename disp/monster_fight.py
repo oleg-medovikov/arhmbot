@@ -5,7 +5,8 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from uuid import uuid4
 
 from clas import PersonStatus, Event, Monster, FightHistory, EventHistory
-from func import update_message
+from func import update_message, timedelta_to_str
+from conf import emoji
 
 
 @dp.callback_query_handler(Text(startswith=['monster_fight_']))
@@ -25,6 +26,7 @@ async def monster_fight(query: types.CallbackQuery):
     CHOICE = 0 if 'hide' in query.data else 1
     MESS = query.message.text
     MESS += '\n\nВы выбрали ' + EVENT.get_choice()[CHOICE]
+    WASTE = 0
 
     if not CHOICE:
         # Если персонаж пробует спрятаться от монстра
@@ -49,6 +51,10 @@ async def monster_fight(query: types.CallbackQuery):
             EVENTHIS.result = False
             await EVENTHIS.write_result()
 
+            WASTE += await STAT.waste_time(2)
+            MESS = emoji('stopwatch') + ' ' + timedelta_to_str(WASTE) \
+                + '\n\n' + MESS
+
             return await update_message(
                     query.message,
                     MESS,
@@ -58,7 +64,7 @@ async def monster_fight(query: types.CallbackQuery):
             # Персонаж не прошёл проверку - тратит время и здоровье
             MESS += '\nВам не удалось пройти проверку! Придётся драться!'
             MESS += '\nВы потратили время и нервы на попытку'
-            await STAT.waste_time(1)
+            WASTE += await STAT.waste_time(1)
             STAT = await STAT.change('mind', -1)
 
     # начинается сражение с монстром
@@ -113,7 +119,10 @@ async def monster_fight(query: types.CallbackQuery):
     STAT.health = BATLE.p_end_hp
     STAT.mind = BATLE.p_end_md
     await STAT.update()
-    await STAT.waste_time(BATLE.battle_round)
+    WASTE += await STAT.waste_time(BATLE.battle_round)
+
+    MESS = emoji('stopwatch') + ' ' + timedelta_to_str(WASTE) \
+        + '\n\n' + MESS
 
     kb_event.add(InlineKeyboardButton(
         text='закончить событие',

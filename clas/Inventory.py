@@ -136,7 +136,7 @@ class Inventory(BaseModel):
             ))
         res = await ARHM_DB.fetch_one(query)
         if res is not None:
-            return False, String.get('double_item')
+            return False, await String.get('double_item')
         # проверка на вместимость сумки
         query = t_inventory.select().where(and_(
             t_inventory.c.p_id == P_ID,
@@ -144,7 +144,7 @@ class Inventory(BaseModel):
             ))
         res = await ARHM_DB.fetch_all(query)
         if len(res) >= MAX_BAG_CAPASITY:
-            return False, String.get('not_free_space_in_bug')
+            return False, await String.get('not_free_space_in_bug')
 
         values = {
             'p_id': P_ID,

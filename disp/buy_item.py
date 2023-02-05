@@ -8,10 +8,9 @@ from func import update_message
 from conf import emoji
 
 
-@dp.callback_query_handler(Text(startswith=['by_item_']))
-async def by_item(query: types.CallbackQuery):
+@dp.callback_query_handler(Text(startswith=['buy_item_']))
+async def buy_item(query: types.CallbackQuery):
     "покупаем предмет в магазине"
-
     I_ID = int(query.data.split('_')[-1])
     S_ID = int(query.data.split('_')[-2])
 

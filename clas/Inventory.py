@@ -7,6 +7,7 @@ from base import ARHM_DB, t_inventory, t_items
 from conf import MAX_BAG_CAPASITY
 from .String import String
 
+
 class Inventory(BaseModel):
     p_id:         int
     slot:         str
@@ -22,6 +23,16 @@ class Inventory(BaseModel):
             ))
         res = await ARHM_DB.fetch_one(query)
         return res is not None
+
+    @staticmethod
+    async def check_not_item(P_ID, I_ID) -> bool:
+        "проверяем отсутствие предмета у персонажа"
+        query = t_inventory.select(and_(
+            t_inventory.c.p_id == P_ID,
+            t_inventory.c.i_id == I_ID
+            ))
+        res = await ARHM_DB.fetch_one(query)
+        return res is None
 
     @staticmethod
     async def bug_free_space(P_ID: int) -> bool:

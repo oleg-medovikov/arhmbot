@@ -23,7 +23,7 @@ async def buy_item(query: types.CallbackQuery):
     # проверяем, достаточно ли денег у персонажа
     ITEM = await Item.get(I_ID)
     if STAT.money < ITEM.cost:
-        MESS = emoji('8leg') + '   ' + String.get('not_enough_money')
+        MESS = emoji('8leg') + '   ' + await String.get('not_enough_money')
         kb_shop.add(InlineKeyboardButton(
             text='Понимаю',
             callback_data=f'go_to_the_shop_{S_ID}'

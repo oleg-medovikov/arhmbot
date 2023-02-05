@@ -1,6 +1,6 @@
 from .base import metadata
 
-from sqlalchemy import Table, Column, String, SmallInteger, DateTime
+from sqlalchemy import Table, Column, ARRAY, String, SmallInteger, DateTime
 
 t_monsters = Table(
     'monsters',
@@ -22,7 +22,7 @@ t_monsters = Table(
     Column('body_damage',     SmallInteger),  # урон по здоровью
     Column('health',          SmallInteger),  # здоровье монстра
     Column('price',           SmallInteger),  # награда за победу
-    Column('item',            String),  # список выпадающих предметов
+    Column('item',            ARRAY(SmallInteger)),  # выпадающие предметы
     Column('experience',      SmallInteger),  # количество опыта
     Column('date_update',     DateTime),
         )

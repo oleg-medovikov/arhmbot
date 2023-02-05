@@ -1,6 +1,7 @@
 from datetime import datetime
 from pydantic import BaseModel
 from typing import Optional
+from json import loads
 
 from base import ARHM_DB, t_monsters
 
@@ -23,7 +24,7 @@ class Monster(BaseModel):
     body_damage:      int
     health:           int
     price:            int
-    item:             str
+    item:             list
     experience:       int
     date_update:      Optional[datetime]
 
@@ -49,6 +50,7 @@ class Monster(BaseModel):
                 t_monsters.c.m_id == row['m_id']
                 )
             res = await ARHM_DB.fetch_one(query)
+            row['item'] = loads(row['item'])
 
             # если строки нет, то добавляем
             if res is None:

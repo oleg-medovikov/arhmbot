@@ -1,6 +1,6 @@
 from .base import metadata
 
-from sqlalchemy import Table, Column, SmallInteger, String, DateTime
+from sqlalchemy import Table, Column, ARRAY, SmallInteger, String, DateTime
 
 t_persons_defaults = Table(
     "persons_defaults",
@@ -10,7 +10,7 @@ t_persons_defaults = Table(
     Column('start_location_id', SmallInteger),
     Column('money_min',         SmallInteger),
     Column('money_max',         SmallInteger),
-    Column('start_list_items',  String),
+    Column('start_list_items',  ARRAY(SmallInteger)),
     Column('max_health_min',    SmallInteger),
     Column('max_health_max',    SmallInteger),
     Column('max_mind_min',      SmallInteger),

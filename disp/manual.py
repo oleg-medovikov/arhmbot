@@ -15,7 +15,7 @@ async def kb_full_manual(query: types.CallbackQuery):
 
     kb_man = InlineKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 
-    for man in await Manual.get_all().items():
+    for man in await Manual.get_all():
         kb_man.add(InlineKeyboardButton(
             text=man.m_name,
             callback_data=f'manual_{man.m_id}',

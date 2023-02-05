@@ -24,11 +24,21 @@ async def go_to_the_shop(query: types.CallbackQuery):
 
     DICT = dict()
 
-    if demand(PERS, STAT, SHOP.get_demand()):
+    if await demand(PERS, STAT, SHOP.get_demand()):
         # если персонаж проходит требования магазина
         MESS = SHOP.mess_welcome
+        MESS += '\n\n' + f'У вас при себе  {emoji("dollar")} {STAT.money}'
+
         for ITEM in await Item.get_by_list(SHOP.product_list):
-            DICT[emoji(ITEM.emoji) + ' ' + ITEM.name] = f'buy_item_{ITEM.i_id}'
+            LIST = (
+                    emoji(ITEM.emoji), ' ',
+                    ITEM.name,  '      ',
+                    emoji('dollar'), ' ',
+                    ITEM.cost,
+                    )
+            KEY = ''.join(str(x) for x in LIST)
+
+            DICT[KEY] = f'buy_item_{ITEM.i_id}'
         DICT['уйти'] = 'continue_game'
     else:
         # если не проходит требования

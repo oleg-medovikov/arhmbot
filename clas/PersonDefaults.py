@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
+from json import loads
 
 from base import ARHM_DB, t_persons_defaults
 
@@ -10,7 +11,7 @@ class PersonDefaults(BaseModel):
     start_location_id:   int
     money_min:           int
     money_max:           int
-    start_list_items:    str
+    start_list_items:    list
     max_health_min:      int
     max_health_max:      int
     max_mind_min:        int
@@ -50,6 +51,7 @@ class PersonDefaults(BaseModel):
                 t_persons_defaults.c.profession == row['profession']
                 )
             res = await ARHM_DB.fetch_one(query)
+            row['start_list_items'] = loads(row['start_list_items'])
 
             # если строки нет, то добавляем
             if res is None:
@@ -73,31 +75,6 @@ class PersonDefaults(BaseModel):
         if string == '':
             string = 'Нечего обновлять'
         return string
-
-    async def update(self) -> dict:
-        """функция обновления строк в базе"""
-        query = t_persons_defaults.select(
-                t_persons_defaults.c.profession == self.profession)
-
-        res = await ARHM_DB.fetch_one(query)
-        if res is None:
-            self.date_update = datetime.now()
-            query = t_persons_defaults.insert().values(self.dict())
-            await ARHM_DB.execute(query)
-            return {'mess': f'строка {self.profession} добавлена'}
-        else:
-            # если строчка есть ищем несовпадение значений, чтобы заменить
-            for key, value in dict(res).items():
-                if self.dict()[key] != value and key != 'date_update':
-                    self.date_update = datetime.now()
-                    query = t_persons_defaults.update()\
-                        .where(
-                            t_persons_defaults.c.profession == self.profession
-                            )\
-                        .values(self.dict())
-                    await ARHM_DB.execute(query)
-                    return {'mess': f'строка {self.profession} исправлена'}
-            return {'mess': f'строка {self.profession} без изменений'}
 
     @staticmethod
     async def get_all() -> list:

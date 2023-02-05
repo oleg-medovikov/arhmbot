@@ -1,4 +1,3 @@
-import json
 from .dispetcher import dp
 from aiogram import types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
@@ -149,11 +148,10 @@ async def load_destination_register(message: types.Message, state: FSMContext):
         await state.finish()
 
     # Теперь нужно заполнить инвентарь персонажа
-
     PERSDEF = await PersonDefaults.get(PERS.profession)
     STAT = await PersonStatus.get(PERS)
 
-    for I_ID in json.loads(PERSDEF.start_list_items):
+    for I_ID in PERSDEF.start_list_items:
         await using_item(PERS, STAT, I_ID, True)
 
     kb_end_reg = InlineKeyboardMarkup(

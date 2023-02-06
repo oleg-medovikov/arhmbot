@@ -14,7 +14,7 @@ t_dialogs = Table(
         Column('transfer',    ARRAY(SmallInteger)),  # куда переходим
         Column('buy_items',   ARRAY(SmallInteger)),  # список товаров
         Column('buy_costs',   ARRAY(SmallInteger)),  # список цен
-        Column('sele_items',  ARRAY(SmallInteger)),  # список на продажу
+        Column('sale_items',  ARRAY(SmallInteger)),  # список на продажу
         Column('sale_costs',  ARRAY(SmallInteger)),  # цены продажи
         Column('date_update', DateTime),
         )

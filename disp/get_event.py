@@ -2,10 +2,41 @@ from .dispetcher import dp
 from aiogram import types
 from aiogram.dispatcher.filters import Text
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from random import choice
 
-from clas import PersonStatus, Event, EventHistory
+from clas import Person, PersonStatus, Event, EventHistory
 
-from func import update_message, filter_event
+from func import update_message, demand
+
+
+async def filter_event(PERS: 'Person', STAT: 'PersonStatus') -> 'Event':
+    "отбираем события доступные персонажу"
+    EVENTS = await Event.location(
+        STAT.location,
+        STAT.stage,
+        PERS.profession
+            )
+    EVENT_FILTER = []
+    # получаем список событий, которые персонаж уже проходил
+    EVENT_DONE = await EventHistory.get_list(PERS.p_id)
+
+    for EVENT in EVENTS:
+        # если событие одноразовые и уже было, то исключаем
+        if EVENT.single and EVENT.e_id in list(EVENT_DONE):
+            EVENT_FILTER.append(EVENT)
+            continue
+        # проверяем событие подходит ли оно по требованиям
+        if not await demand(PERS, STAT, EVENT.get_demand()):
+            EVENT_FILTER.append(EVENT)
+
+    # удаляем из списка ивентов те, что попали в фильтр
+    for EVENT in EVENT_FILTER:
+        EVENTS.remove(EVENT)
+
+    if len(EVENTS) == 0:
+        raise ValueError('Нет событий!')
+    else:
+        return choice(EVENTS)
 
 
 @dp.callback_query_handler(Text(equals=['get_event']))

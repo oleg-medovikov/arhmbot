@@ -14,6 +14,7 @@ class Shop(BaseModel):
     stage:         int
     shop_name:     str
     demand:        str
+    dialog:        int
     mess_welcome:  str
     mess_not_pass: str
     mess_goodbye:  str
@@ -60,6 +61,7 @@ class Shop(BaseModel):
                 'stage':          1,
                 'shop_name':      'ашан',
                 'demand':         '{}',
+                'dialog':         0,
                 'mess_welcome':   'Добро пожаловать',
                 'mess_not_pass':  'пшл прочь нищеброд',
                 'mess_goodbye':   'рады видеть ещё раз',

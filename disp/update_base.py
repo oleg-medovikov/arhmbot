@@ -49,8 +49,8 @@ NAMES = {
         'experience', 'date_update'
         ],
     'Shops.xlsx': [
-        's_id', 'l_id', 'stage', 'shop_name', 'demand', 'mess_welcome',
-        'mess_not_pass', 'mess_goodbye', 'product_list',
+        's_id', 'l_id', 'stage', 'shop_name', 'demand', 'dialog',
+        'mess_welcome', 'mess_not_pass', 'mess_goodbye', 'product_list',
         'shopping_list', 'date_update'
         ],
     'Dialogs.xlsx': [

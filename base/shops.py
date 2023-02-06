@@ -10,6 +10,7 @@ t_shops = Table(
         Column('stage',         SmallInteger),  # номер стадии игры
         Column('shop_name',     String),  # имя для магазина
         Column('demand',        String),  # требования для входа
+        Column('dialog',        SmallInteger),  # id диалога с продавцом
         Column('mess_welcome',  String),  # приветственное сообщение
         Column('mess_not_pass', String),  # когда не проходишь по требованиям
         Column('mess_goodbye',  String),  # прощальное сообщение

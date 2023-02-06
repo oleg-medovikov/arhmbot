@@ -4,8 +4,8 @@ from sqlalchemy import Table, Column, ARRAY, \
     SmallInteger, String, DateTime
 
 t_dialogs = Table(
-        metadata,
         'dialogs',
+        metadata,
         Column('d_id',        SmallInteger),  # идентификатор диалога
         Column('q_id',        SmallInteger),  # идентификатор вопроса
         Column('name',        String),  # название диалога

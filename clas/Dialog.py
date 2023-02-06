@@ -24,7 +24,7 @@ class Dialog(BaseModel):
     async def get(D_ID: int, Q_ID: int) -> 'Dialog':
         query = t_dialogs.select(and_(
                 t_dialogs.c.d_id == D_ID,
-                t_dialogs.c.d_id == Q_ID
+                t_dialogs.c.q_id == Q_ID
                 ))
         res = await ARHM_DB.fetch_one(query)
         if res is not None:
@@ -68,7 +68,7 @@ class Dialog(BaseModel):
         for row in list_:
             query = t_dialogs.select(and_(
                 t_dialogs.c.d_id == row['d_id'],
-                t_dialogs.c.d_id == row['q_id']
+                t_dialogs.c.q_id == row['q_id']
                 ))
             res = await ARHM_DB.fetch_one(query)
             row['answers'] = loads(row['answers'])

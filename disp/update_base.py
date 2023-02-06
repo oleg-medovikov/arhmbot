@@ -5,7 +5,7 @@ import pandas as pd
 
 from clas import User, PersonDefaults, Location, \
     LocationDescription, Manual, Item, Event, \
-    Monster, String, Shop
+    Monster, String, Shop, Dialog
 from func import delete_message
 
 NAMES = {
@@ -52,6 +52,10 @@ NAMES = {
         's_id', 'l_id', 'stage', 'shop_name', 'demand', 'mess_welcome',
         'mess_not_pass', 'mess_goodbye', 'product_list',
         'shopping_list', 'date_update'
+        ],
+    'Dialogs.xlsx': [
+        'd_id', 'q_id', 'name', 'description', 'answers', 'transfer',
+        'buy_items', 'buy_costs', 'sale_items', 'sale_costs', 'date_update'
         ],
         }
 
@@ -103,6 +107,7 @@ async def update_base(message: types.Message):
         'Monsters':          Monster.update_all(list_),
         'Strings':           String.update_all(list_),
         'Shops':             Shop.update_all(list_),
+        'Dialogs':           Dialog.update_all(list_),
         }.get(FILE['file_name'][:-5])
 
     try:

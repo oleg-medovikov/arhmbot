@@ -14,6 +14,7 @@ from .Inventory import Inventory
 from .String import String
 from .FightHistory import FightHistory
 from .Shop import Shop
+from .Dialog import Dialog
 
 __all__ = [
     'User',
@@ -32,4 +33,5 @@ __all__ = [
     'String',
     'FightHistory',
     'Shop',
+    'Dialog',
     ]

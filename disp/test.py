@@ -1,14 +1,14 @@
 from .dispetcher import dp
 from aiogram import types
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from clas import User, PersonStatus, Event
-from func import delete_message, using_item
+from clas import User, PersonStatus
+from func import update_message
 
 
 @dp.message_handler(commands='test')
 async def test_func(message: types.Message):
     "команда для того чтобы тестово что-то отправлять"
-    await delete_message(message)
 
     USER = await User.get(message['from']['id'])
     if USER is None or not USER.admin:
@@ -22,8 +22,21 @@ async def test_func(message: types.Message):
     #EVENT = await Event.get(0)
     #L = EVENT.get_check()
 
+    kb_test = InlineKeyboardMarkup(
+            resize_keyboard=True,
+            one_time_keyboard=True
+            )
 
+    DICT = {
+        'вперед!': 'dialog_1_1',
+            }
 
-    MESS = str(res)
+    for key, value in DICT.items():
+        kb_test.add(InlineKeyboardButton(
+            text=key,
+            callback_data=value
+            ))
 
-    await message.answer(MESS)
+    MESS = "пробуем поговорить с продавцом хотдогов"
+
+    return await message.answer(MESS, parse_mode='html',  reply_markup=kb_test)

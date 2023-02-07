@@ -3,7 +3,7 @@ from aiogram import types
 from aiogram.dispatcher.filters import Text
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from clas import PersonStatus, Shop, Item
+from clas import PersonStatus, Shop, Item, Dialog
 from func import update_message, demand
 from conf import emoji
 
@@ -28,6 +28,9 @@ async def go_to_the_shop(query: types.CallbackQuery):
         # если персонаж проходит требования магазина
         MESS = SHOP.mess_welcome
         MESS += '\n\n' + f'У вас при себе  {emoji("dollar")} {STAT.money}'
+        if SHOP.dialog:
+            DIALOG = await Dialog.get(SHOP.dialog, 1)
+            DICT[DIALOG.name] = f'dialog_{DIALOG.d_id}_1'
 
         for ITEM in await Item.get_by_list(SHOP.product_list):
             LIST = (

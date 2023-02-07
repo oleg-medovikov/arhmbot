@@ -198,7 +198,7 @@ class PersonStatus(BaseModel):
             return 0
 
         TOTAL = {
-            self.speed > 10:      1,
+            self.speed > 9:      1,
             self.speed < 1:       TIME*6,
             0 < self.speed < 10:  TIME * (6 - self.speed//2),
                 }[True]
@@ -249,5 +249,3 @@ class PersonStatus(BaseModel):
             'numbers':      NUMBERS,
             'check_passed': CHECK_PASSED
                 }
-
-

@@ -11,6 +11,7 @@ from .update_message import update_message
 from .remove_item import remove_item
 from .time_to_str import timedelta_to_str
 from .demand import demand
+from .applying_effects import applying_effects
 
 __all__ = [
     'delete_message',
@@ -26,4 +27,5 @@ __all__ = [
     'remove_item',
     'timedelta_to_str',
     'demand',
+    'applying_effects',
     ]

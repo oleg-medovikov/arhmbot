@@ -8,15 +8,16 @@ STAT_LIST = [
         ]
 
 
-async def applying_effect(PERS: 'Person', STAT: 'PersonStatus', DICT: dict):
+async def applying_effects(PERS: 'Person', STAT: 'PersonStatus', DICT: dict):
     "Накладываем на персонажа разные эффекты после прохождения ивентов"
     MESS = ""
     for key, value in DICT.items():
         try:
             MOD = {
-                key in STAT_LIST: STAT.change(key, value),
-                key == 'time':    STAT.waste_time(int(value)),
-                key == 'item':    Inventory.add(PERS.p_id, int(value)),
+                key in STAT_LIST:   STAT.change(key, value),
+                key == 'time':      STAT.waste_time(int(value)),
+                key == 'item':      Inventory.add(PERS.p_id, int(value)),
+                key == 'drop_item': Inventory.drop(PERS.p_id, int(value)),
                     }[True]
         except KeyError:
             continue
@@ -26,4 +27,4 @@ async def applying_effect(PERS: 'Person', STAT: 'PersonStatus', DICT: dict):
         if key in ('item'):
             MESS += '\n\n' + MOD[1]
 
-
+    return MESS

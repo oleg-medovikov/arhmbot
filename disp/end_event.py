@@ -4,7 +4,7 @@ from aiogram.dispatcher.filters import Text
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from clas import PersonStatus, Inventory, Event, EventHistory
-from func import update_message, timedelta_to_str
+from func import update_message, timedelta_to_str, applying_effects
 from conf import emoji
 
 DICT_CHECK = {
@@ -27,10 +27,9 @@ async def end_event(query: types.CallbackQuery):
     PERS, STAT = await PersonStatus.get_all(query.message['chat']['id'])
     EVENTHIS = await EventHistory.get(PERS.p_id)
     MESS = query.message.text
-    WASTE = 0
+    TIME_START = STAT.gametime
 
     # если событие подразумевает выбор, то нужно определиться, что выбрано
-
     if EVENT.choice:
         CHEAK = 0 if 'prize' in query.data else 1
         MESS += '\n\nВы выбрали ' + EVENT.get_choice()[CHEAK]
@@ -73,24 +72,9 @@ async def end_event(query: types.CallbackQuery):
         else EVENT.get_punishment()
 
     # Применяем эффекты
-    for key, value in DICT.items():
-        if key in ('speed', 'stealth', 'strength', 'knowledge',
-                   'godliness', 'luck', 'experience', 'bless', 'proof',
-                   'hunger', 'weary', 'money', 'health', 'mind',
-                   'location', 'death'):
-            STAT = await STAT.change(key, value)
-        elif key == 'time':
-            WASTE = await STAT.waste_time(int(value))
-        elif key == 'item':
-            INV = Inventory(**{
-                'p_id': PERS.p_id,
-                'slot': 'bag',
-                'i_id': int(value)
-                })
-            CHECK_EQUIP, MESS_EQUIP = await INV.add()
-            if not CHECK_EQUIP:
-                MESS += '\n\n' + MESS_EQUIP
-
+    MESS += await applying_effects(PERS, STAT, DICT)
+    STAT = await PersonStatus.get(PERS)
+    WASTE = STAT.gametime - TIME_START
     MESS = emoji('stopwatch') + ' ' + timedelta_to_str(WASTE) \
         + '\n\n' + MESS
 

@@ -6,70 +6,103 @@ from sqlalchemy import select, and_
 from base import ARHM_DB, t_inventory, t_items
 from conf import MAX_BAG_CAPASITY
 from .String import String
+from .Person import Person
 
 
 class Inventory(BaseModel):
     p_id:         int
-    slot:         str
-    i_id:         int
+    head:         Optional[int]
+    earrings:     list
+    hands:        list
+    rings:        list
+    body:         Optional[int]
+    legs:         Optional[int]
+    shoes:        Optional[int]
+    bag:          list
+    achievements: list
     date_update:  Optional[datetime] = datetime.now()
 
     @staticmethod
-    async def check_item(P_ID, I_ID) -> bool:
+    async def get(PERS: 'Person') -> 'Inventory':
+        "Вытаскиваем инвентарь персонажа"
+        query = t_inventory.select(
+            t_inventory.c.p_id == PERS.p_id
+            )
+        res = await ARHM_DB.fetch_one(query)
+        if res is None:
+            # Необходимо создать пустой инвентарь
+            values = {
+                'p_id':         PERS.p_id,
+                'sex':          PERS.sex,
+                'earrings':     [],
+                'hands':        [],
+                'rings':        [],
+                'bag':          [],
+                'achievements': [],
+                'date_update':  datetime.now()
+                }
+            return Inventory(*values)
+        else:
+            return Inventory(*res)
+
+    async def check_item(self, I_ID: int) -> bool:
         "проверяем наличие предмета у персонажа"
-        query = t_inventory.select(and_(
-            t_inventory.c.p_id == P_ID,
-            t_inventory.c.i_id == I_ID
-            ))
-        res = await ARHM_DB.fetch_one(query)
-        return res is not None
+        for key, value in self:
+            if key == 'p_id':
+                continue
+            if type(value) is list:
+                if I_ID in value:
+                    return True
+            if type(value) is int:
+                if I_ID == value:
+                    return True
+        return False
 
-    @staticmethod
-    async def check_not_item(P_ID, I_ID) -> bool:
+    async def check_not_item(self, I_ID: int) -> bool:
         "проверяем отсутствие предмета у персонажа"
-        query = t_inventory.select(and_(
-            t_inventory.c.p_id == P_ID,
-            t_inventory.c.i_id == I_ID
-            ))
-        res = await ARHM_DB.fetch_one(query)
-        return res is None
+        for key, value in self:
+            if key == 'p_id':
+                continue
+            if type(value) is list:
+                if I_ID in value:
+                    return False
+            if type(value) is int:
+                if I_ID == value:
+                    return False
+        return True
 
-    @staticmethod
-    async def bug_free_space(P_ID: int) -> bool:
+    async def bug_free_space(self, P_ID: int) -> bool:
         "Проверяем есть ли свободное место в сумке"
-        query = t_inventory.select(and_(
-            t_inventory.c.p_id == P_ID,
-            t_inventory.c.slot == 'bag'
-            ))
-        res = await ARHM_DB.fetch_all(query)
+        return len(self.bag) < MAX_BAG_CAPASITY
 
-        return len(res) < MAX_BAG_CAPASITY
-
-    @staticmethod
-    async def get(P_ID: int) -> list:
+    async def get_all(self) -> dict:
         "Возвращаем список всех предметов персонажа"
-        j = t_inventory.join(
-                t_items,
-                t_inventory.c.i_id == t_items.c.i_id
-                      )
-
-        query = select([
-            t_inventory.c.p_id,
-            t_inventory.c.slot,
-            t_inventory.c.i_id,
-            t_items.c.name,
-            t_items.c.emoji,
-            t_inventory.c.date_update
-            ]).where(t_inventory.c.p_id == P_ID)\
-            .order_by(t_inventory.c.date_update)\
-            .select_from(j)
-
         list_ = []
+        DICT = dict()
+        for key, value in self:
+            if key == 'p_id':
+                DICT[key] = value
+                continue
 
-        for row in await ARHM_DB.fetch_all(query):
-            list_.append(dict(row))
+            if type(value) is list:
+                query = select([
+                    t_items.c.i_id,
+                    t_items.c.name,
+                    t_items.c.emoji,
+                    ]).where(t_items.c.p_id.in_(value))
+            if type(value) is list:
+                query = select([
+                    t_items.c.i_id,
+                    t_items.c.name,
+                    t_items.c.emoji,
+                    ]).where(t_items.c.p_id.in_(value))
 
-        return list_
+            for row in await ARHM_DB.fetch_all(query):
+                list_.append(dict(row))
+
+            DICT[key] = list_
+
+        return DICT
 
     @staticmethod
     async def equip(

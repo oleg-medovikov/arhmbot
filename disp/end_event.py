@@ -67,12 +67,13 @@ async def end_event(query: types.CallbackQuery):
     MESS += '\n\n' + EVENT.mess_prize if EVENTHIS.result \
         else '\n\n' + EVENT.mess_punishment
 
-    # словарь изменение статов персонажа
-    DICT = EVENT.get_prize() if EVENTHIS.result \
-        else EVENT.get_punishment()
-
-    # Применяем эффекты
-    MESS += await applying_effects(PERS, STAT, DICT)
+    # Применяем эффекты, награждаем или наказываем
+    MESS += await applying_effects(
+        PERS,
+        STAT,
+        EVENT.get_prize() if EVENTHIS.result else EVENT.get_punishment()
+            )
+    # считаем сколько потратили времени
     STAT = await PersonStatus.get(PERS)
     WASTE = STAT.gametime - TIME_START
     MESS = emoji('stopwatch') + ' ' + timedelta_to_str(WASTE) \

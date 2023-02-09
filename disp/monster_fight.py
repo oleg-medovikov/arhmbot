@@ -5,7 +5,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from uuid import uuid4
 
 from clas import PersonStatus, Event, Monster, FightHistory, EventHistory
-from func import update_message, timedelta_to_str
+from func import update_message, timedelta_to_str, applying_effects
 from conf import emoji
 
 
@@ -26,6 +26,7 @@ async def monster_fight(query: types.CallbackQuery):
     CHOICE = 0 if 'hide' in query.data else 1
     MESS = query.message.text
     MESS += '\n\nВы выбрали ' + EVENT.get_choice()[CHOICE]
+    START_TIME = STAT.gametime
     WASTE = 0
 
     if not CHOICE:
@@ -50,8 +51,11 @@ async def monster_fight(query: types.CallbackQuery):
                         ))
             EVENTHIS.result = False
             await EVENTHIS.write_result()
-
-            WASTE += await STAT.waste_time(2)
+            # Применяем эффекты, награждаем
+            MESS += await applying_effects(PERS, STAT, EVENT.get_prize())
+            # считаем сколько потратили времени
+            STAT = await PersonStatus.get(PERS)
+            WASTE = STAT.gametime - TIME_START
             MESS = emoji('stopwatch') + ' ' + timedelta_to_str(WASTE) \
                 + '\n\n' + MESS
 
@@ -119,6 +123,11 @@ async def monster_fight(query: types.CallbackQuery):
     STAT.health = BATLE.p_end_hp
     STAT.mind = BATLE.p_end_md
     await STAT.update()
+
+    # Применяем эффекты, награждаем
+    MESS += await applying_effects(PERS, STAT, EVENT.get_punishment())
+
+    # считаем сколько потратили времени
     WASTE += await STAT.waste_time(BATLE.battle_round)
 
     MESS = emoji('stopwatch') + ' ' + timedelta_to_str(WASTE) \

@@ -193,42 +193,46 @@ class Inventory(BaseModel):
 
         return True, 'Предмет положен в сумку'
 
-    @staticmethod
-    async def drop(P_ID: int, I_ID: int):
+    async def drop(self, I_ID: int):
         """Функция удаления из инвенторя"""
-        query = t_inventory.delete().where(and_(
-            t_inventory.c.p_id == P_ID,
-            t_inventory.c.i_id == I_ID
-            ))
-
+        # узнаем в каком слоте предмет
+        SLOT = ''
+        for key, value in self:
+            if key == 'p_id':
+                continue
+            if type(value) is list:
+                if I_ID in value:
+                    SLOT = key
+                    value.remove(I_ID)
+                    setattr(self, key, value)
+                    break
+            if type(value) is int:
+                if I_ID == value:
+                    SLOT = key
+                    setattr(self, key, None)
+                    break
+        if SLOT == '':
+            return False, 'Нет такого предмета!'
+        # обновляем базу
+        query = t_inventory.update()\
+            .where(t_inventory.c.p_id == self.p_id)\
+            .values(*self)
         await ARHM_DB.execute(query)
+        return True, 'Предмет выброшен!'
 
-    @staticmethod
-    async def add(P_ID: int, I_ID: int) -> tuple[bool, str]:
+    async def add(self, I_ID: int) -> tuple[bool, str]:
         """функция добавления предмета в сумку
         проверка на уникальность"""
-        query = t_inventory.select().where(and_(
-            t_inventory.c.p_id == P_ID,
-            t_inventory.c.i_id == I_ID
-            ))
-        res = await ARHM_DB.fetch_one(query)
-        if res is not None:
+        if I_ID in self.bag:
             return False, await String.get('double_item')
-        # проверка на вместимость сумки
-        query = t_inventory.select().where(and_(
-            t_inventory.c.p_id == P_ID,
-            t_inventory.c.slot == 'bag'
-            ))
-        res = await ARHM_DB.fetch_all(query)
-        if len(res) >= MAX_BAG_CAPASITY:
+        if len(self.bag) >= MAX_BAG_CAPASITY:
             return False, await String.get('not_free_space_in_bug')
 
-        values = {
-            'p_id': P_ID,
-            'slot': 'bag',
-            'i_id': I_ID,
-            'date_update': datetime.now()
-                }
-        query = t_inventory.insert().values(**values)
+        self.bag.append(I_ID)
+        # меняем таблицу
+        query = t_inventory.update()\
+            .where(t_inventory.c.p_id == self.p_id)\
+            .values(bag=self.bag)
+
         await ARHM_DB.execute(query)
         return True, 'Предмет добавлен в сумку'

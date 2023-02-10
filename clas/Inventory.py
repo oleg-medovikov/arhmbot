@@ -7,12 +7,13 @@ from base import ARHM_DB, t_inventory, t_items
 from conf import MAX_BAG_CAPASITY
 from .String import String
 from .Person import Person
+from .Item import Item
 
 
 class Inventory(BaseModel):
     p_id:         int
     head:         Optional[int]
-    earrings:     list
+    earrings:     Optional[int]
     hands:        list
     rings:        list
     body:         Optional[int]
@@ -41,6 +42,8 @@ class Inventory(BaseModel):
                 'achievements': [],
                 'date_update':  datetime.now()
                 }
+            query = t_inventory.insert(*values)
+            await ARHM_DB.execute(query)
             return Inventory(*values)
         else:
             return Inventory(*res)
@@ -77,25 +80,25 @@ class Inventory(BaseModel):
 
     async def get_all(self) -> dict:
         "Возвращаем список всех предметов персонажа"
-        list_ = []
         DICT = dict()
         for key, value in self:
             if key == 'p_id':
                 DICT[key] = value
                 continue
+            list_ = []
 
             if type(value) is list:
                 query = select([
                     t_items.c.i_id,
                     t_items.c.name,
                     t_items.c.emoji,
-                    ]).where(t_items.c.p_id.in_(value))
-            if type(value) is list:
+                    ]).where(t_items.c.i_id.in_(value))
+            if type(value) is int:
                 query = select([
                     t_items.c.i_id,
                     t_items.c.name,
                     t_items.c.emoji,
-                    ]).where(t_items.c.p_id.in_(value))
+                    ]).where(t_items.c.i_id == value)
 
             for row in await ARHM_DB.fetch_all(query):
                 list_.append(dict(row))
@@ -104,52 +107,56 @@ class Inventory(BaseModel):
 
         return DICT
 
-    @staticmethod
-    async def equip(
-        P_ID: int,
-        I_ID: int,
-        SLOT: str,
-        equip_mess: str
-            ) -> tuple[bool, str]:
+    async def equip(self, ITEM: 'Item') -> tuple[bool, str]:
         """ Функция надевания предмета
         нужно проверить есть ли в данном слоте другой предмет
+        двуручное блокируется двуручным и одноручным и наоборот
+        решаем блокировать ли обмундирование, занят ли слот
         """
-        query = select([t_inventory.c.slot])\
-            .where(t_inventory.c.p_id == P_ID)
+        try:
+            value = getattr(self, ITEM.slot)
+        except AttributeError:
+            raise f"Несуществующий слот у предмета {ITEM.name}"
 
-        LIST = [x[0] for x in await ARHM_DB.fetch_all(query)]
-
-        # двуручное блокируется двуручным и одноручным и наоборот
-        # решаем блокировать ли обмундирование, занят ли слот
-        LOCK = {
-            'onehand':  'twohands' in LIST or LIST.count('onehand') > 1,
-            'twohands': 'onehand' or 'twohands' in LIST,
-            'head':     'head' in LIST,
-            'body':     'body' in LIST,
-            'legs':     'legs' in LIST,
-            'shoes':    'shoes' in LIST,
-                }.get(SLOT)
-
-        if LOCK:
+        if type(value) is int:
+            # это если слот занят
             MESS = {
-                'onehand':  'Обе руки заняты!',
-                'twohands': 'У Вас не хватает рук!',
+                'earrings': 'Вы уже носите другие серьги!',
                 'head':     'Вы уже что-то носите на голове!',
                 'body':     'Вы уже одеты во что-то!',
                 'legs':     'На ваших ногах что-то надето!',
                 'shoes':    'Вы уже обуты в другую обувь!',
-                }.get(SLOT)
+            }.get(ITEM.slot)
             return False, MESS
+        if type(value) is list:
+            # для слотов с несколькими предметами проверяем количество
+            COUNT = len(value)
+            if ITEM.slot == 'twohands' and COUNT:
+                return False, 'Этот двуручный предмет, требует свободных рук'
 
-        # если проверка пройдена экипируем предмет
+            if ITEM.slot == 'onehand' and COUNT > 1:
+                return False, 'Обе руки заняты!'
+
+            # если всё ок, добавляем предмет
+            # двуручное добавляем дважды
+            value.append(ITEM.i_id)
+            if ITEM.slot == 'twohands':
+                value.append(ITEM.i_id)
+
+            setattr(self, ITEM.slot, value)
+
+        if value is None:
+            # Если слот пустой, то просто добавляем в него предмет
+            setattr(self, ITEM.slot, ITEM.i_id)
+
+        self.date_update = datetime.now()
+        # обновляем строчку в базе
         query = t_inventory.update()\
-            .where(and_(
-                t_inventory.c.p_id == P_ID,
-                t_inventory.c.i_id == I_ID
-                ))\
-            .values(slot=SLOT, date_update=datetime.now())
+            .where(t_inventory.c.p_id == self.p_id)\
+            .values(*self)
         await ARHM_DB.execute(query)
-        return True, equip_mess
+
+        return True, ITEM.equip_mess
 
     @staticmethod
     async def remove(P_ID: int, I_ID: int):

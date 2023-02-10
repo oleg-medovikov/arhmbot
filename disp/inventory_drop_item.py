@@ -57,6 +57,9 @@ async def inventory_drop_item(query: types.CallbackQuery):
 
     ITEM = await Item.get(I_ID)
 
+    INVE = await Inventory.get(PERS)
+    await INVE.drop(I_ID)
+
     DROPITEM = DropItem(**{
         'node_id':   STAT.location,
         'i_id':      I_ID,
@@ -65,8 +68,6 @@ async def inventory_drop_item(query: types.CallbackQuery):
         'comment':   NOTE,
         })
     await DROPITEM.new()
-
-    await Inventory.drop(PERS.p_id, I_ID)
 
     kb_bag = InlineKeyboardMarkup(
             resize_keyboard=True,

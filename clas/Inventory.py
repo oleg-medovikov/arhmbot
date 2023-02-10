@@ -158,14 +158,40 @@ class Inventory(BaseModel):
 
         return True, ITEM.equip_mess
 
-    @staticmethod
-    async def remove(P_ID: int, I_ID: int):
+    async def remove(self, I_ID: int) -> tuple[bool, str]:
         """снятие предмета и помещение в сумку"""
-        query = t_inventory.update().where(and_(
-            t_inventory.c.p_id == P_ID,
-            t_inventory.c.i_id == I_ID
-                )).values(slot='bag')
+        COUNT = MAX_BAG_CAPASITY - len(self.bag)
+        if COUNT < 1:
+            return False, 'Вам нужно освободить место в сумке!'
+        # узнаем в каком слоте предмет
+        SLOT = ''
+        for key, value in self:
+            if key == 'p_id':
+                continue
+            if type(value) is list:
+                if I_ID in value:
+                    SLOT = key
+                    value.remove(I_ID)
+                    setattr(self, key, value)
+                    break
+            if type(value) is int:
+                if I_ID == value:
+                    SLOT = key
+                    setattr(self, key, None)
+                    break
+
+        if SLOT == '':
+            return False, 'Вы пытаетесь снять то, что не одето!'
+
+        # кладем предмет в сумку
+        self.bag.append(I_ID)
+        # обновляем базу
+        query = t_inventory.update()\
+            .where(t_inventory.c.p_id == self.p_id)\
+            .values(*self)
         await ARHM_DB.execute(query)
+
+        return True, 'Предмет положен в сумку'
 
     @staticmethod
     async def drop(P_ID: int, I_ID: int):

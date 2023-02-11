@@ -19,16 +19,17 @@ async def inventory_equip_items(query: types.CallbackQuery):
     "показываем игроку список надетых вещей"
     PERS, STAT = await PersonStatus.get_all(query.message['chat']['id'])
 
-    INV = await Inventory.get(PERS.p_id)
+    INVE = await Inventory.get(PERS)
+    ITEMS = await INVE.get_all()
 
-    MESS = inventory_mess(PERS, INV, EQUIP=True)
+    MESS = inventory_mess(PERS, ITEMS, EQUIP=True)
 
     kb_bag = InlineKeyboardMarkup(
             resize_keyboard=True,
             one_time_keyboard=True
             )
 
-    for item in INV:
+    for item in ITEMS:
         if item['slot'] in equip_slots:
             kb_bag.add(InlineKeyboardButton(
                 text=emoji(item['emoji']) + ' ' + item['name'],

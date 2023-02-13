@@ -9,8 +9,8 @@ from func import inventory_mess, update_message
 from conf import emoji
 
 equip_slots = [
-    'head', 'onehand', 'twohands',
-    'head', 'body', 'legs', 'shoes'
+    'head', 'earrings', 'hands', 'rings',
+    'body', 'legs', 'shoes'
     ]
 
 
@@ -29,8 +29,8 @@ async def inventory_equip_items(query: types.CallbackQuery):
             one_time_keyboard=True
             )
 
-    for item in ITEMS:
-        if item['slot'] in equip_slots:
+    for slot in equip_slots:
+        for item in ITEMS[slot]:
             kb_bag.add(InlineKeyboardButton(
                 text=emoji(item['emoji']) + ' ' + item['name'],
                 callback_data='inventory_equip_item_' + str(item['i_id'])

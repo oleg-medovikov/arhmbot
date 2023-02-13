@@ -19,13 +19,14 @@ async def remove_item(
 
     # получаем предмет
     ITEM = await Item.get(I_ID)
+    INVE = await Inventory.get(PERS)
 
     # Проверяем место в сумке
-    if not await Inventory.bug_free_space(PERS.p_id):
+    if not await INVE.bug_free_space():
         return "Необходимо освободить место в сумке!"
 
     # снимаем предмет и кладем в сумку
-    await Inventory.remove(STAT.p_id, ITEM.i_id)
+    await INVE.remove(ITEM.i_id)
 
     # теперь нужно применить свойства предмета
     for key, value in json.loads(ITEM.effect).items():

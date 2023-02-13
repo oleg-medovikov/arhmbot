@@ -21,6 +21,7 @@ async def using_item(
     """
     # получаем предмет
     ITEM = await Item.get(I_ID)
+    INVE = await Inventory.get(PERS)
     # кладём предмет в сумку, если это создание персонажа
     if CREATE_PERSON:
         cheak, string = await Inventory.add(PERS.p_id, I_ID)
@@ -41,11 +42,7 @@ async def using_item(
 
     # Настало время надеть предмет на персонажа
     if ITEM.slot in equip_slots:
-        CHEAK, MESS = await Inventory.equip(
-            PERS.p_id,
-            ITEM.i_id,
-            ITEM.slot,
-            ITEM.equip_mess)
+        CHEAK, MESS = await INVE.equip(ITEM)
         if not CHEAK:
             return MESS
 
@@ -55,7 +52,7 @@ async def using_item(
 
     # если предмет одноразовый, то удалить из инвентаря
     if ITEM.single_use:
-        await Inventory.drop(PERS.p_id, ITEM.i_id)
+        await INVE.drop(ITEM.i_id)
         return ITEM.equip_mess
 
     return MESS

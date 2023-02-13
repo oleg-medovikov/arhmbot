@@ -35,18 +35,17 @@ class Inventory(BaseModel):
             values = {
                 'p_id':         PERS.p_id,
                 'sex':          PERS.sex,
-                'earrings':     [],
                 'hands':        [],
                 'rings':        [],
                 'bag':          [],
                 'achievements': [],
                 'date_update':  datetime.now()
                 }
-            query = t_inventory.insert(*values)
+            query = t_inventory.insert().values(values)
             await ARHM_DB.execute(query)
-            return Inventory(*values)
+            return Inventory(**values)
         else:
-            return Inventory(*res)
+            return Inventory(**res)
 
     async def check_item(self, I_ID: int) -> bool:
         "проверяем наличие предмета у персонажа"
@@ -74,7 +73,7 @@ class Inventory(BaseModel):
                     return False
         return True
 
-    async def bug_free_space(self, P_ID: int) -> bool:
+    async def bug_free_space(self) -> bool:
         "Проверяем есть ли свободное место в сумке"
         return len(self.bag) < MAX_BAG_CAPASITY
 
@@ -82,9 +81,13 @@ class Inventory(BaseModel):
         "Возвращаем список всех предметов персонажа"
         DICT = dict()
         for key, value in self:
-            if key == 'p_id':
+            if key in ('p_id', 'sex', 'date_update'):
                 DICT[key] = value
                 continue
+            if value is None:
+                DICT[key] = []
+                continue
+
             list_ = []
 
             if type(value) is list:
@@ -113,10 +116,14 @@ class Inventory(BaseModel):
         двуручное блокируется двуручным и одноручным и наоборот
         решаем блокировать ли обмундирование, занят ли слот
         """
+
         try:
-            value = getattr(self, ITEM.slot)
+            value = getattr(
+                self,
+                'hands' if ITEM.slot in ('onehand', 'twohands') else ITEM.slot
+                    )
         except AttributeError:
-            raise f"Несуществующий слот у предмета {ITEM.name}"
+            raise ValueError(f"Несуществующий слот у предмета {ITEM.name}")
 
         if type(value) is int:
             # это если слот занят
@@ -143,17 +150,25 @@ class Inventory(BaseModel):
             if ITEM.slot == 'twohands':
                 value.append(ITEM.i_id)
 
-            setattr(self, ITEM.slot, value)
+            setattr(
+                self,
+                'hands' if ITEM.slot in ('onehand', 'twohands') else ITEM.slot,
+                value
+                    )
 
         if value is None:
             # Если слот пустой, то просто добавляем в него предмет
-            setattr(self, ITEM.slot, ITEM.i_id)
+            setattr(
+                self,
+                'hands' if ITEM.slot in ('onehand', 'twohands') else ITEM.slot,
+                ITEM.i_id
+                    )
 
         self.date_update = datetime.now()
         # обновляем строчку в базе
         query = t_inventory.update()\
             .where(t_inventory.c.p_id == self.p_id)\
-            .values(*self)
+            .values(self.dict())
         await ARHM_DB.execute(query)
 
         return True, ITEM.equip_mess
@@ -188,7 +203,7 @@ class Inventory(BaseModel):
         # обновляем базу
         query = t_inventory.update()\
             .where(t_inventory.c.p_id == self.p_id)\
-            .values(*self)
+            .values(self.dict())
         await ARHM_DB.execute(query)
 
         return True, 'Предмет положен в сумку'
@@ -216,7 +231,7 @@ class Inventory(BaseModel):
         # обновляем базу
         query = t_inventory.update()\
             .where(t_inventory.c.p_id == self.p_id)\
-            .values(*self)
+            .values(self.dict())
         await ARHM_DB.execute(query)
         return True, 'Предмет выброшен!'
 

@@ -56,10 +56,12 @@ async def demand(PERS: 'Person', STAT: 'PersonStatus', DEMAND: dict) -> bool:
             key in LIST_STAT:    check_stat(STAT, key, value),
             key == 'time':       time_cheack(STAT.gametime, value),
             key == 'less_money': less_money(STAT.money, value),
-            key == 'item':       INVE.check_not_item(value),
-            key == 'not_item':   INVE.check_item(value),
+            key == 'item':       INVE.check_item(value),
+            key == 'not_item':   INVE.check_not_item(value),
                 }.get(True, True)
 
-        if not await CHECK:
+        res = await CHECK
+        print(key, res)
+        if not res:
             return False
     return True

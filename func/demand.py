@@ -48,6 +48,7 @@ LIST_PERS = [
 
 async def demand(PERS: 'Person', STAT: 'PersonStatus', DEMAND: dict) -> bool:
     "Прохождение проверки персонажем"
+    INVE = await Inventory.get(PERS)
     for key, value in DEMAND.items():
         CHECK = {
             key in LIST_PERS:    check_pers(PERS, key, value),
@@ -55,11 +56,10 @@ async def demand(PERS: 'Person', STAT: 'PersonStatus', DEMAND: dict) -> bool:
             key in LIST_STAT:    check_stat(STAT, key, value),
             key == 'time':       time_cheack(STAT.gametime, value),
             key == 'less_money': less_money(STAT.money, value),
-            key == 'item':       Inventory.check_not_item(PERS.p_id, value),
-            key == 'not_item':   Inventory.check_item(PERS.p_id, value),
+            key == 'item':       INVE.check_not_item(value),
+            key == 'not_item':   INVE.check_item(value),
                 }.get(True, True)
 
-        CHECK = await CHECK
-        if not CHECK:
+        if not await CHECK:
             return False
     return True

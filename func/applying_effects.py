@@ -22,7 +22,7 @@ async def applying_effects(PERS: 'Person', STAT: 'PersonStatus', DICT: dict):
         except KeyError:
             continue
 
-        MOD = await MOD
+        await MOD
 
         if key in ('item'):
             MESS += '\n\n' + MOD[1]

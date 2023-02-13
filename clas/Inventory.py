@@ -164,6 +164,9 @@ class Inventory(BaseModel):
                 ITEM.i_id
                     )
 
+        # нужно удалить предмет из сумки
+        self.bag.remove(ITEM.i_id)
+        # обновляем дату
         self.date_update = datetime.now()
         # обновляем строчку в базе
         query = t_inventory.update()\

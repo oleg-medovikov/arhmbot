@@ -139,10 +139,8 @@ class PersonStatus(BaseModel):
             await ARHM_DB.execute(query)
             return PersonStatus(**values)
 
-    async def change(self, KEY: str, VALUE: int) -> 'PersonStatus':
+    async def change(self, KEY: str, VALUE: int):
         "изменение 1 параметра в базе"
-        DICT = {}
-        OLD = self.dict().get(KEY)
 
         L_STANDART = [
             'speed', 'stealth', 'strength', 'knowledge',
@@ -153,26 +151,21 @@ class PersonStatus(BaseModel):
         L_ID = ['location']
         L_BOOL = ['death']
 
-        DICT[KEY] = {
+        OLD = getattr(self, KEY)
+        ITOG = {
             KEY in L_STANDART:   OLD + VALUE,
             KEY in L_POSITIVE:   OLD + VALUE if OLD + VALUE > 0 else 0,
             KEY in L_ID:         VALUE,
             KEY in L_BOOL:       bool(VALUE),
             }.get(True, OLD)
 
-        DICT['date_update'] = datetime.now()
+        setattr(self, KEY, ITOG)
 
         query = t_persons_status.update().where(
             t_persons_status.c.p_id == self.p_id
-                ).values(**DICT)
+            ).values(**{KEY: ITOG, 'date_update': datetime.now()})
 
         await ARHM_DB.execute(query)
-        # вытаскиваем измененную строку
-        query = t_persons_status.select(
-            t_persons_status.c.p_id == self.p_id
-                )
-        res = await ARHM_DB.fetch_one(query)
-        return PersonStatus(**res)
 
     async def update(self):
         "синхронизируем объект класса с базой данных"

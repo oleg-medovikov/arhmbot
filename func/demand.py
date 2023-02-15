@@ -21,10 +21,10 @@ async def time_cheack(gametime: int, VALUE: str) -> bool:
         + timedelta(minutes=15*gametime)
 
     STRING = {
-        TIME.hour in range(0, 6):    'ночь',
-        TIME.hour in range(6, 9):    'утро',
-        TIME.hour in range(9, 19):   'день',
-        TIME.hour in range(19, 24):  'вечер',
+        TIME.hour in range(0,  6):  'ночь',
+        TIME.hour in range(6,  9):  'утро',
+        TIME.hour in range(9,  19): 'день',
+        TIME.hour in range(19, 24): 'вечер',
         }.get(True, '')
     return STRING == VALUE
 
@@ -60,8 +60,6 @@ async def demand(PERS: 'Person', STAT: 'PersonStatus', DEMAND: dict) -> bool:
             key == 'not_item':   INVE.check_not_item(value),
                 }.get(True, True)
 
-        res = await CHECK
-        print(key, res)
-        if not res:
+        if not await CHECK:
             return False
     return True

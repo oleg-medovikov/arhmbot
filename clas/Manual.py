@@ -23,22 +23,33 @@ class Manual(BaseModel):
             return f'Нет такой строчки мануала {M_ID}'
 
     @staticmethod
-    async def get_all() -> list:
+    async def get_all_manual() -> list:
+        "Это объекты для функции работы с мануалом"
         query = t_manual.select().order_by(t_manual.c.order)
         list_ = []
         for row in await ARHM_DB.fetch_all(query):
             list_.append(Manual(**row))
 
+        return list_
+
+    @staticmethod
+    async def get_all() -> list:
+        "Это словарь для экселины"
+        query = t_manual.select().order_by(t_manual.c.order)
+        list_ = []
+        for row in await ARHM_DB.fetch_all(query):
+            list_.append(Manual(**row).dict())
+
         if len(list_):
             return list_
         else:
-            return [Manual(**{
+            return [{
                 'm_id':         '0',
                 'm_name':       'Название кнопочки',
                 'order':        '0',
                 'text':         'какой-то текст, поясняющий тему кнопки',
                 'date_update':  datetime.now(),
-                })]
+                }]
 
     @staticmethod
     async def update_all(list_: list) -> str:

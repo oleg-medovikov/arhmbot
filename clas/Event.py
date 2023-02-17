@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from typing import Optional
 from sqlalchemy import select, and_
 from sqlalchemy.sql.expression import true
+from asyncpg.exceptions import DataError
 import json
 
 from base import ARHM_DB, t_events, t_karta
@@ -145,12 +146,16 @@ class Event(BaseModel):
             query = t_events.select(
                 t_events.c.e_id == row['e_id']
                 )
-            res = await ARHM_DB.fetch_one(query)
+            try:
+                res = await ARHM_DB.fetch_one(query)
+            except DataError:
+                res = None
 
             # если строки нет, то добавляем
             if res is None:
                 string += f"добавил строку {row['e_name']}\n"
                 row['date_update'] = datetime.now()
+                row.pop('e_id')
                 query = t_events.insert().values(**row)
                 await ARHM_DB.execute(query)
                 continue

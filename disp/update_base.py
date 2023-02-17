@@ -112,8 +112,8 @@ async def update_base(message: types.Message):
 
     try:
         MESS = await MESS
-    except TypeError:
-        MESS = 'Пока не могу этот файл обработать'
+    except TypeError as e:
+        MESS = 'Пока не могу этот файл обработать\n' + str(e)
 
     await message.answer(MESS)
     os.remove(DESTINATION)

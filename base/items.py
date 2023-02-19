@@ -5,7 +5,7 @@ from sqlalchemy import Table, Column, SmallInteger, String, Boolean, DateTime
 t_items = Table(
     'items',
     metadata,
-    Column('i_id',        SmallInteger),  # номер предмета
+    Column('i_id',        SmallInteger, primary_key=True),  # номер предмета
     Column('name',        String),  # название предмета
     Column('description', String),  # описание предмета
     Column('equip_mess',  String),  # сообщение при использовании

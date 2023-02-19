@@ -88,6 +88,7 @@ class Item(BaseModel):
             if res is None:
                 string += f"добавил строку {row['name']}\n"
                 row['date_update'] = datetime.now()
+                row.pop('i_id')
                 query = t_items.insert().values(**row)
                 await ARHM_DB.execute(query)
                 continue

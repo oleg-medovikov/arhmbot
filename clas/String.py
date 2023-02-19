@@ -54,6 +54,7 @@ class String(BaseModel):
             if res is None:
                 string += f"добавил строку {row['s_name']}\n"
                 row['date_update'] = datetime.now()
+                row.pop('s_id')
                 query = t_strings.insert().values(**row)
                 await ARHM_DB.execute(query)
                 continue

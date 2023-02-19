@@ -56,6 +56,7 @@ class Monster(BaseModel):
             if res is None:
                 string += f"добавил строку {row['name']}\n"
                 row['date_update'] = datetime.now()
+                row.pop('m_id')
                 query = t_monsters.insert().values(**row)
                 await ARHM_DB.execute(query)
                 continue

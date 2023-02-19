@@ -5,7 +5,7 @@ from sqlalchemy import Table, Column, ARRAY, String, SmallInteger, DateTime
 t_monsters = Table(
     'monsters',
     metadata,
-    Column('m_id',            SmallInteger),  #
+    Column('m_id',            SmallInteger, primary_key=True),  #
     Column('name',            String),  # название монстра
     Column('description',     String),  # описание монстра
     Column('mess_win',        String),  # сообщение при выигрыше

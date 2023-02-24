@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
+from asyncpg.exceptions import DataError
 
 from base import ARHM_DB, t_strings
 
@@ -68,7 +69,11 @@ class String(BaseModel):
                         .where(
                             t_strings.c.s_id == row['s_id'])\
                         .values(**row)
-                    await ARHM_DB.execute(query)
+                    try:
+                        await ARHM_DB.execute(query)
+                    except DataError:
+                        string += f"ошибка в строчке {row['s_name']}\n"
+
                     break
         if string == '':
             string = 'Нечего обновлять'

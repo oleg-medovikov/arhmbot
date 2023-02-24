@@ -1,8 +1,8 @@
 from datetime import datetime
 from pydantic import BaseModel
-from typing import Optional
 from sqlalchemy import and_
 from json import loads
+from asyncpg.exceptions import DataError
 
 from base import ARHM_DB, t_dialogs
 
@@ -97,7 +97,11 @@ class Dialog(BaseModel):
                             t_dialogs.c.q_id == row['q_id']
                                 ))\
                         .values(**row)
-                    await ARHM_DB.execute(query)
+                    try:
+                        await ARHM_DB.execute(query)
+                    except DataError:
+                        string += f"ошибка в строке {row['name']} {row['q_id']}\n"
+
                     break
         if string == '':
             string = 'Нечего обновлять'

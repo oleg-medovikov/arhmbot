@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import Optional
 from sqlalchemy import and_
 from json import loads
+from asyncpg.exceptions import DataError
 
 
 from base import ARHM_DB, t_shops
@@ -101,7 +102,11 @@ class Shop(BaseModel):
                         .where(
                             t_shops.c.s_id == row['s_id'])\
                         .values(**row)
-                    await ARHM_DB.execute(query)
+                    try:
+                        await ARHM_DB.execute(query)
+                    except DataError:
+                        string += f"ошибка в строке {row['shop_name']}\n"
+
                     break
         if string == '':
             string = 'Нечего обновлять'

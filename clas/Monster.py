@@ -2,6 +2,7 @@ from datetime import datetime
 from pydantic import BaseModel
 from typing import Optional
 from json import loads
+from asyncpg.exceptions import DataError
 
 from base import ARHM_DB, t_monsters
 
@@ -70,7 +71,11 @@ class Monster(BaseModel):
                         .where(
                             t_monsters.c.m_id == row['m_id'])\
                         .values(**row)
-                    await ARHM_DB.execute(query)
+                    try:
+                        await ARHM_DB.execute(query)
+                    except DataError:
+                        string += f"ошибка в строке {row['name']}\n"
+
                     break
         if string == '':
             string = 'Нечего обновлять'

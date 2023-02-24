@@ -169,7 +169,11 @@ class Event(BaseModel):
                         .where(
                             t_events.c.e_id == row['e_id'])\
                         .values(**row)
-                    await ARHM_DB.execute(query)
+                    try:
+                        await ARHM_DB.execute(query)
+                    except DataError:
+                        string += f"ошибка в строке {row['e_name']}\n"
+
                     break
         if string == '':
             string = 'Нечего обновлять'

@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from sqlalchemy import and_
 from json import loads
 from asyncpg.exceptions import DataError
+from json.decoder import JSONDecodeError
 
 from base import ARHM_DB, t_dialogs
 
@@ -71,12 +72,17 @@ class Dialog(BaseModel):
                 t_dialogs.c.q_id == row['q_id']
                 ))
             res = await ARHM_DB.fetch_one(query)
-            row['answers'] = loads(row['answers'])
-            row['transfer'] = loads(row['transfer'])
-            row['buy_items'] = loads(row['buy_items'])
-            row['buy_costs'] = loads(row['buy_costs'])
-            row['sale_items'] = loads(row['sale_items'])
-            row['sale_costs'] = loads(row['sale_costs'])
+            try:
+                row['answers'] = loads(row['answers'])
+                row['transfer'] = loads(row['transfer'])
+                row['buy_items'] = loads(row['buy_items'])
+                row['buy_costs'] = loads(row['buy_costs'])
+                row['sale_items'] = loads(row['sale_items'])
+                row['sale_costs'] = loads(row['sale_costs'])
+            except JSONDecodeError:
+                string += f"ошибка {row['name']} {row['q_id']}\n"
+                continue
+
 
             # если строки нет, то добавляем
             if res is None:

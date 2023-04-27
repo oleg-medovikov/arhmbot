@@ -1,5 +1,11 @@
-import logging
+"""
+autor: Медовиков О.Е.
+mess:  Адоптированный для телеграмма движок настольной игры
+
+"""
+
 import warnings
+import logging
 from aiogram import executor
 
 from disp import dp, on_startup

@@ -92,11 +92,7 @@ async def continue_game(query: types.CallbackQuery):
         'уйти куда-то ещё':  'leave',
         }
 
-    try:
-        SHOP = await Shop.get(STAT.location, STAT.stage)
-    except ValueError:
-        pass
-    else:
+    for SHOP in await Shop.get(STAT.location, STAT.stage):
         DICT[SHOP.shop_name] = f'go_to_the_shop_{SHOP.s_id}'
 
     for key, value in DICT.items():

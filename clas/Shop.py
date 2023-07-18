@@ -24,16 +24,15 @@ class Shop(BaseModel):
     date_update: Optional[datetime] = datetime.now()
 
     @staticmethod
-    async def get(L_ID: int, STAGE: int) -> 'Shop':
+    async def get(L_ID: int, STAGE: int) -> list:
         query = t_shops.select(and_(
                 t_shops.c.l_id == L_ID,
                 t_shops.c.stage == STAGE
                 ))
-        res = await ARHM_DB.fetch_one(query)
-        if res is not None:
-            return Shop(**res)
-        else:
-            raise ValueError('в этой локации нет магазина')
+        list_ = []
+        for res in await ARHM_DB.fetch_all(query):
+            list_.append(Shop(**res))
+        return list_
 
     @staticmethod
     async def get_by_id(S_ID: int) -> 'Shop':

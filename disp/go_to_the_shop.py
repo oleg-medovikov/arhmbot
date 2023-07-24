@@ -30,7 +30,7 @@ async def go_to_the_shop(query: types.CallbackQuery):
         MESS += '\n\n' + f'У вас при себе  {emoji("dollar")} {STAT.money}'
         if SHOP.dialog:
             DIALOG = await Dialog.get(SHOP.dialog, 1)
-            DICT[DIALOG.name] = f'dialog_{DIALOG.d_id}_1'
+            DICT[DIALOG.name] = f'dialog_answer_{S_ID}_{DIALOG.d_id}_1'
 
         for ITEM in await Item.get_by_list(SHOP.product_list):
             LIST = (
@@ -41,7 +41,7 @@ async def go_to_the_shop(query: types.CallbackQuery):
                     )
             KEY = ''.join(str(x) for x in LIST)
 
-            DICT[KEY] = f'buy_item_{S_ID}_{ITEM.i_id}'
+            DICT[KEY] = f'dialog_buy_{S_ID}_{ITEM.i_id}_{ITEM.cost}'
         DICT['уйти'] = 'continue_game'
     else:
         # если не проходит требования

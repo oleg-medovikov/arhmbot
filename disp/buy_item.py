@@ -8,11 +8,15 @@ from func import update_message
 from conf import emoji
 
 
-@dp.callback_query_handler(Text(startswith=['buy_item_']))
+@dp.callback_query_handler(Text(startswith=['dialog_buy_']))
 async def buy_item(query: types.CallbackQuery):
     "покупаем предмет в магазине"
-    I_ID = int(query.data.split('_')[-1])
-    S_ID = int(query.data.split('_')[-2])
+    print(query.data)
+    # стоимость
+    COST = int(query.data.split('_')[-1])
+    # предмет
+    I_ID = int(query.data.split('_')[-2])
+    S_ID = int(query.data.split('_')[-3])
 
     PERS, STAT = await PersonStatus.get_all(query.message['chat']['id'])
 
@@ -22,7 +26,8 @@ async def buy_item(query: types.CallbackQuery):
             )
     # проверяем, достаточно ли денег у персонажа
     ITEM = await Item.get(I_ID)
-    if STAT.money < ITEM.cost:
+    # if STAT.money < ITEM.cost:
+    if STAT.money < COST:
         MESS = emoji('8leg') + '   ' + await String.get('not_enough_money')
         kb_shop.add(InlineKeyboardButton(
             text='Понимаю',
@@ -34,10 +39,11 @@ async def buy_item(query: types.CallbackQuery):
             kb_shop
                 )
 
-    CHECK, STRING = await Inventory.add(PERS.p_id, ITEM.i_id)
+    INV = await Inventory.get(PERS)
+    CHECK, STRING = await INV.add(ITEM.i_id)
     if CHECK:
         # удачная покупка
-        STAT.money -= ITEM.cost
+        STAT.money -= COST
         await STAT.update()
 
     MESS = emoji('8leg') + '   ' + STRING

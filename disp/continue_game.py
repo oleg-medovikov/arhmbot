@@ -5,7 +5,8 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from conf import MAX_HUNGER, MAX_WEARY
 from clas import EventHistory, PersonStatus, Shop
-from func import death_message, person_status_card, update_message
+from func import death_message, person_status_card, update_message, \
+    demand
 
 """
     1. показать игроку частичный статус
@@ -94,6 +95,11 @@ async def continue_game(query: types.CallbackQuery):
         }
 
     for SHOP in await Shop.get(STAT.location, STAT.stage):
+        # тут нужно проверить, если персонаж не проходит проверку
+        # маназина и нет сообщения, чтобы не показывать магазин
+        if SHOP.mess_not_pass == 'None':
+            if not await demand(PERS, STAT, SHOP.get_demand()):
+                continue
         DICT[SHOP.shop_name] = f'go_to_the_shop_{SHOP.s_id}'
 
     for key, value in DICT.items():

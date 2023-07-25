@@ -77,11 +77,11 @@ async def relocation(query: types.CallbackQuery):
     MESS = ''.join(str(x) for x in LIST)
 
     # формируемсообщение в журнал
-    MESS_J = f'Вы оказались в {LOCATION.declension}. {timedelta_to_str(WASTE)}'
+    MESS_J = f'Вы оказались {LOCATION.declension}. {timedelta_to_str(WASTE)}'
     JOUR = Journal(**{
         'gametime': STAT.gametime,
         'p_id': STAT.p_id,
-        'name': f'переход в {LOCATION.name_node.lower()}',
+        'name': f'Переход: {LOCATION.name_node.lower()}',
         'metka': 1000 + LOCATION.node_id,
         'mess': MESS_J,
     })

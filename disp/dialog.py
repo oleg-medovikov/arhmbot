@@ -29,7 +29,7 @@ async def dialog(query: types.CallbackQuery):
         ITEM = await Item.get(I_ID)
         KEY = emoji(ITEM.emoji) + ' ' + ITEM.name + ' ' \
             + emoji('dollar') + ' ' + str(COST)
-        DICT[KEY] = f'dialog_buy_{S_ID}_{I_ID}_{COST}'
+        DICT[KEY] = f'dialog_buy_{S_ID}_{D_ID}_{Q_ID}_{I_ID}_{COST}'
         print(DICT[KEY])
 
     # тут нужно повторить для возможных продаж

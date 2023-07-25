@@ -11,13 +11,16 @@ from conf import emoji
 @dp.callback_query_handler(Text(startswith=['dialog_buy_']))
 async def buy_item(query: types.CallbackQuery):
     "покупаем предмет в магазине"
-    print(query.data)
     # стоимость
     COST = int(query.data.split('_')[-1])
     # предмет
     I_ID = int(query.data.split('_')[-2])
-    # магазин
-    S_ID = int(query.data.split('_')[-3])
+    # момент диалога
+    Q_ID = int(query.data.split('_')[-3])
+    # номер диалога
+    D_ID = int(query.data.split('_')[-4])
+    # номер магазина
+    S_ID = int(query.data.split('_')[-5])
 
     PERS, STAT = await PersonStatus.get_all(query.message['chat']['id'])
 
@@ -48,7 +51,7 @@ async def buy_item(query: types.CallbackQuery):
     MESS = emoji('8leg') + '   ' + STRING
     kb_shop.add(InlineKeyboardButton(
         text='Понимаю',
-        callback_data=f'go_to_the_shop_{S_ID}'
+        callback_data=f'dialog_answer_{S_ID}_{D_ID}_{Q_ID}'
         ))
     return await update_message(
         query.message,

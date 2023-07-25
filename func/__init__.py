@@ -12,6 +12,7 @@ from .remove_item import remove_item
 from .time_to_str import timedelta_to_str
 from .demand import demand
 from .applying_effects import applying_effects
+from .button_key_add_space import button_key_add_space
 
 __all__ = [
     'delete_message',
@@ -28,4 +29,5 @@ __all__ = [
     'timedelta_to_str',
     'demand',
     'applying_effects',
+    'button_key_add_space',
     ]

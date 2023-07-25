@@ -81,7 +81,7 @@ async def relocation(query: types.CallbackQuery):
     JOUR = Journal(**{
         'gametime': STAT.gametime,
         'p_id': STAT.p_id,
-        'name': f'Переход: {LOCATION.name_node.lower()}',
+        'name': f'Переход: {LOCATION.name_node}',
         'metka': 1000 + LOCATION.node_id,
         'mess': MESS_J,
     })

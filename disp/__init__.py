@@ -24,6 +24,9 @@ from .monster_fight import monster_fight
 from .go_to_the_shop import go_to_the_shop
 from .buy_item import buy_item
 from .dialog import dialog
+from .prepare_main import prepare_main
+from .prepare_main_quest import prepare_main_quest
+from .prepare_relocations import prepare_relocations
 
 __all__ = [
     'dp',
@@ -61,4 +64,7 @@ __all__ = [
     'go_to_the_shop',
     'buy_item',
     'dialog',
+    'prepare_main',
+    'prepare_main_quest',
+    'prepare_relocations',
     ]

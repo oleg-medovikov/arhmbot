@@ -87,11 +87,10 @@ async def continue_game(query: types.CallbackQuery):
     предложить меню дальнейших действий в городе
     """
     DICT = {
-        'осмотреться':       'look_around',
-        # '': '',
-        'инвентарь':         'inventory_main',
-        'действовать':       'get_event',
-        'уйти куда-то ещё':  'leave',
+        'разветка':       'look_around',
+        'подготовка':     'prepare_main',
+        'действие':       'get_event',
+        'переход':  'leave',
         }
 
     for SHOP in await Shop.get(STAT.location, STAT.stage):

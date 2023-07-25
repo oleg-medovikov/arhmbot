@@ -3,7 +3,7 @@ from aiogram import types
 from aiogram.dispatcher.filters import Text
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from clas import PersonStatus, Item, Inventory, String
+from clas import PersonStatus, Inventory, String
 from func import update_message
 from conf import emoji
 
@@ -16,6 +16,7 @@ async def buy_item(query: types.CallbackQuery):
     COST = int(query.data.split('_')[-1])
     # предмет
     I_ID = int(query.data.split('_')[-2])
+    # магазин
     S_ID = int(query.data.split('_')[-3])
 
     PERS, STAT = await PersonStatus.get_all(query.message['chat']['id'])
@@ -25,8 +26,6 @@ async def buy_item(query: types.CallbackQuery):
             one_time_keyboard=True
             )
     # проверяем, достаточно ли денег у персонажа
-    ITEM = await Item.get(I_ID)
-    # if STAT.money < ITEM.cost:
     if STAT.money < COST:
         MESS = emoji('8leg') + '   ' + await String.get('not_enough_money')
         kb_shop.add(InlineKeyboardButton(
@@ -40,7 +39,7 @@ async def buy_item(query: types.CallbackQuery):
                 )
 
     INV = await Inventory.get(PERS)
-    CHECK, STRING = await INV.add(ITEM.i_id)
+    CHECK, STRING = await INV.add(I_ID)
     if CHECK:
         # удачная покупка
         STAT.money -= COST

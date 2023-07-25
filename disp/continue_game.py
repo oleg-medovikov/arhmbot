@@ -87,6 +87,7 @@ async def continue_game(query: types.CallbackQuery):
     """
     DICT = {
         'осмотреться':       'look_around',
+        # '': '',
         'инвентарь':         'inventory_main',
         'действовать':       'get_event',
         'уйти куда-то ещё':  'leave',

@@ -3,7 +3,7 @@ from aiogram import types
 from aiogram.dispatcher.filters import Text
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from clas import PersonStatus, Location
+from clas import PersonStatus, Location, Journal
 from func import update_message, timedelta_to_str
 from conf import emoji
 
@@ -44,15 +44,15 @@ async def relocation(query: types.CallbackQuery):
     NODE_ID = int(query.data.split('_')[-1])
 
     PERS, STAT = await PersonStatus.get_all(query.message['chat']['id'])
-
+    # пропуск времени
     WASTE = await STAT.waste_time(1)
-
+    # перемещение персонажа
     STAT.location = NODE_ID
-
     await STAT.update()
 
     LOCATION = await Location.get(STAT.location)
 
+    # формируем разные сообщения
     LIST_1 = (
         'Вы отдали последние силы,\n',
         'чтобы оказаться ', LOCATION.declension, ',\n',
@@ -75,6 +75,18 @@ async def relocation(query: types.CallbackQuery):
         }.get(True, (LIST_3, False))
 
     MESS = ''.join(str(x) for x in LIST)
+
+    # формируемсообщение в журнал
+    MESS_J = f'Вы оказались в {LOCATION.declension}. {timedelta_to_str(WASTE)}'
+    JOUR = Journal(**{
+        'gametime': STAT.gametime,
+        'p_id': STAT.p_id,
+        'name': f'переход в {LOCATION.name_node.lower()}',
+        'metka': 1000 + LOCATION.node_id,
+        'mess': MESS_J,
+    })
+    await JOUR.add()
+    # =========
 
     kb_relocation = InlineKeyboardMarkup(
             resize_keyboard=True,

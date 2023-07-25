@@ -108,9 +108,8 @@ class Event(BaseModel):
             t_events.c.username,
             t_events.c.date_update,
             ]).order_by(t_events.c.e_id).select_from(j)
-        list_ = []
-        for row in await ARHM_DB.fetch_all(query):
-            list_.append(Event(**row).dict())
+        list_ = [dict(r) for r in await ARHM_DB.fetch_all(query)]
+
         if len(list_):
             return list_
         else:

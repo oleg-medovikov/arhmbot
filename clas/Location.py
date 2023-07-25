@@ -14,8 +14,6 @@ class Location(BaseModel):
     contact_list_id:  list
     district:         str
     district_id:      int
-    street:           bool
-    dist:             bool
     date_update:      Optional[datetime]
 
     @staticmethod
@@ -48,7 +46,8 @@ class Location(BaseModel):
                 t_karta.c.node_id,
                 t_karta.c.name_node
                 ])\
-            .where(t_karta.c.node_id.in_(res['contact_list_id']))
+            .where(t_karta.c.node_id.in_(res['contact_list_id']))\
+            .order_by(t_karta.c.node_id)
 
         return await ARHM_DB.fetch_all(query)
 
@@ -110,5 +109,3 @@ class Location(BaseModel):
                 'dist':             True,
                 'date_update':      datetime.now(),
                 }]
-
-

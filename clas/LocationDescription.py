@@ -28,19 +28,19 @@ class LocationDescription(BaseModel):
     async def get_all():
         j = t_karta_descriptions.join(
                 t_karta,
-                t_karta_descriptions.c.node_id == t_karta.c.node_id
+                t_karta_descriptions.c.node_id == t_karta.c.node_id,
+                isouter=True
                 )
         query = select([
                 t_karta_descriptions.c.node_id,
                 t_karta_descriptions.c.stage,
                 t_karta.c.name_node,
+                t_karta.c.district,
                 t_karta_descriptions.c.description,
                 t_karta_descriptions.c.date_update
                 ]).order_by(t_karta_descriptions.c.node_id).select_from(j)
 
-        list_ = []
-        for row in await ARHM_DB.fetch_all(query):
-            list_.append(LocationDescription(**row).dict())
+        list_ = [dict(r) for r in await ARHM_DB.fetch_all(query)]
         if len(list_):
             return list_
         else:

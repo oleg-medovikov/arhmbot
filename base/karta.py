@@ -1,7 +1,7 @@
 from .base import metadata
 
 from sqlalchemy import Table, Column, ARRAY, \
-    SmallInteger, String, Boolean, DateTime
+    SmallInteger, String, DateTime
 
 t_karta = Table(
     'karta',
@@ -12,7 +12,7 @@ t_karta = Table(
     Column('contact_list_id', ARRAY(SmallInteger)),  # связи с другими узлами
     Column('district',        String),  # район  локации
     Column('district_id',     SmallInteger),  # код района локации
-    Column('street',          Boolean),  # Является ли улицей
-    Column('dist',            Boolean),  # является ли районом
+    # Column('street',          Boolean),  # Является ли улицей
+    # Column('dist',            Boolean),  # является ли районом
     Column('date_update',     DateTime),
         )

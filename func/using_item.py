@@ -24,7 +24,7 @@ async def using_item(
     INVE = await Inventory.get(PERS)
     # кладём предмет в сумку, если это создание персонажа
     if CREATE_PERSON:
-        cheak, string = await Inventory.add(PERS.p_id, I_ID)
+        cheak, string = await INVE.add(I_ID)
         # если предмет не нужно одевать,  вы выходим
         if ITEM.slot not in equip_slots:
             return "Предмет добавлен в сумку"

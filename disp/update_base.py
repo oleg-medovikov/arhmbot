@@ -19,7 +19,7 @@ NAMES = {
         ],
     'Karta.xlsx': [
         'node_id', 'name_node', 'declension', 'contact_list_id', 'district',
-        'district_id', 'street', 'dist', 'date_update'
+        'district_id', 'date_update'
         ],
     'KartaDescriptions.xlsx': [
         'node_id', 'stage', 'description', 'date_update'

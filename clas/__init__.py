@@ -15,6 +15,7 @@ from .String import String
 from .FightHistory import FightHistory
 from .Shop import Shop
 from .Dialog import Dialog
+from .DialogHistory import DialogHistory
 from .Journal import Journal
 
 __all__ = [
@@ -35,5 +36,6 @@ __all__ = [
     'FightHistory',
     'Shop',
     'Dialog',
+    'DialogHistory',
     'Journal',
     ]

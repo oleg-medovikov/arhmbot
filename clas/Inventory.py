@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
-from sqlalchemy import select, and_
+from sqlalchemy import select
 
 from base import ARHM_DB, t_inventory, t_items
 from conf import MAX_BAG_CAPASITY

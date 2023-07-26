@@ -1,10 +1,9 @@
 from .dispetcher import dp
 from aiogram import types
 from aiogram.dispatcher.filters import Text
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from clas import PersonStatus, Shop, Item, Dialog
-from func import update_message, demand
+from clas import PersonStatus, Shop, Item, Dialog, DialogHistory
+from func import update_message, demand, create_keyboard
 from conf import emoji
 
 
@@ -17,11 +16,6 @@ async def go_to_the_shop(query: types.CallbackQuery):
     SHOP = await Shop.get_by_id(S_ID)
     PERS, STAT = await PersonStatus.get_all(query.message['chat']['id'])
 
-    kb_shop = InlineKeyboardMarkup(
-            resize_keyboard=True,
-            one_time_keyboard=True
-            )
-
     DICT = dict()
 
     if await demand(PERS, STAT, SHOP.get_demand()):
@@ -31,6 +25,14 @@ async def go_to_the_shop(query: types.CallbackQuery):
         if SHOP.dialog:
             DIALOG = await Dialog.get(SHOP.dialog, 1)
             DICT[DIALOG.name] = f'dialog_answer_{S_ID}_{DIALOG.d_id}_1'
+            # добавляем строчку о диалоге в историю
+            await DialogHistory(**{
+                'p_id':   STAT.p_id,
+                's_id':   S_ID,
+                'd_id':   DIALOG.d_id,
+                'q_id':   1,
+                'result': True,
+                }).add()
 
         for ITEM in await Item.get_by_list(SHOP.product_list):
             LIST = (
@@ -48,14 +50,8 @@ async def go_to_the_shop(query: types.CallbackQuery):
         MESS = SHOP.mess_not_pass
         DICT['понятно'] = 'continue_game'
 
-    for key, value in DICT.items():
-        kb_shop.add(InlineKeyboardButton(
-            text=key,
-            callback_data=value
-                ))
-
     return await update_message(
             query.message,
             MESS,
-            kb_shop
+            create_keyboard(DICT)
             )

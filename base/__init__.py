@@ -18,6 +18,7 @@ from .fight_history import t_fight_history
 from .shops import t_shops
 from .dialogs import t_dialogs
 from .journal import t_journal
+from .dialogs_history import t_dialogs_history
 
 metadata.create_all(engine)
 
@@ -40,5 +41,6 @@ __all__ = [
     't_fight_history',
     't_shops',
     't_dialogs',
+    't_dialogs_history',
     't_journal',
     ]

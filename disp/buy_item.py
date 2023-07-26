@@ -1,45 +1,30 @@
 from .dispetcher import dp
 from aiogram import types
 from aiogram.dispatcher.filters import Text
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from clas import PersonStatus, Inventory, String
-from func import update_message
+from func import update_message, create_keyboard
 from conf import emoji
 
 
 @dp.callback_query_handler(Text(startswith=['dialog_buy_']))
 async def buy_item(query: types.CallbackQuery):
     "покупаем предмет в магазине"
-    # стоимость
-    COST = int(query.data.split('_')[-1])
-    # предмет
-    I_ID = int(query.data.split('_')[-2])
-    # момент диалога
-    Q_ID = int(query.data.split('_')[-3])
-    # номер диалога
-    D_ID = int(query.data.split('_')[-4])
-    # номер магазина
-    S_ID = int(query.data.split('_')[-5])
+
+    S_ID, D_ID, Q_ID, I_ID, COST = [int(x) for x in query.data[11:].split('_')]
 
     PERS, STAT = await PersonStatus.get_all(query.message['chat']['id'])
-
-    kb_shop = InlineKeyboardMarkup(
-            resize_keyboard=True,
-            one_time_keyboard=True
-            )
+    DICT = {}
     # проверяем, достаточно ли денег у персонажа
     if STAT.money < COST:
         MESS = emoji('8leg') + '   ' + await String.get('not_enough_money')
-        kb_shop.add(InlineKeyboardButton(
-            text='Понимаю',
-            callback_data=f'go_to_the_shop_{S_ID}'
-            ))
+        DICT['Понимаю'] = f'go_to_the_shop_{S_ID}'
+
         return await update_message(
             query.message,
             MESS,
-            kb_shop
-                )
+            create_keyboard(DICT)
+            )
 
     INV = await Inventory.get(PERS)
     CHECK, STRING = await INV.add(I_ID)
@@ -49,12 +34,10 @@ async def buy_item(query: types.CallbackQuery):
         await STAT.update()
 
     MESS = emoji('8leg') + '   ' + STRING
-    kb_shop.add(InlineKeyboardButton(
-        text='Понимаю',
-        callback_data=f'dialog_answer_{S_ID}_{D_ID}_{Q_ID}'
-        ))
+    DICT['Понимаю'] = f'dialog_answer_{S_ID}_{D_ID}_{Q_ID}'
+
     return await update_message(
         query.message,
         MESS,
-        kb_shop
-            )
+        create_keyboard(DICT)
+        )

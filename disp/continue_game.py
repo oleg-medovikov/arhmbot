@@ -1,12 +1,11 @@
 from .dispetcher import dp
 from aiogram import types
 from aiogram.dispatcher.filters import Text
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from conf import MAX_HUNGER, MAX_WEARY
 from clas import EventHistory, PersonStatus, Shop
 from func import death_message, person_status_card, update_message, \
-    demand
+    demand, create_keyboard
 
 """
     1. показать игроку частичный статус
@@ -24,27 +23,20 @@ async def continue_game(query: types.CallbackQuery):
 
     PERS, STAT = await PersonStatus.get_all(query.message['chat']['id'])
 
-    kb_game = InlineKeyboardMarkup(
-        resize_keyboard=True,
-        one_time_keyboard=True
-        )
-
+    DICT = {}
     # если есть незаконченное событие, предложить его закончить
     try:
         await EventHistory.get(PERS.p_id)
     except ValueError:
         pass
     else:
-        kb_game.add(InlineKeyboardButton(
-             text='понимаю',
-             callback_data='get_event'
-             ))
+        DICT['понимаю'] = 'get_event'
 
         return await update_message(
             query.message,
             'У вас незаконченное событие!',
-            kb_game
-                )
+            create_keyboard(DICT)
+            )
 
     # вытаскиваем статус персонажа, чтобы проверить его состояние, жив ли
     if STAT.death:
@@ -71,16 +63,14 @@ async def continue_game(query: types.CallbackQuery):
         """
         PERS = await PERS.die(reason)
         STAT = await STAT.change('death', True)
-        kb_game.add(InlineKeyboardButton(
-             text='попробовать ещё раз',
-             callback_data='start_new_game'
-             ))
+        DICT['попробовать ещё раз'] = 'start_new_game'
+
         # пишем эпитафию
         return await update_message(
             query.message,
             death_message(PERS, STAT),
-            kb_game
-                )
+            create_keyboard(DICT)
+            )
 
     """
     если с персонажем все нормально,
@@ -90,7 +80,7 @@ async def continue_game(query: types.CallbackQuery):
         'разветка':       'look_around',
         'подготовка':     'prepare_main',
         'действие':       'get_event',
-        'переход':  'leave',
+        'переход':        'leave',
         }
 
     for SHOP in await Shop.get(STAT.location, STAT.stage):
@@ -101,14 +91,8 @@ async def continue_game(query: types.CallbackQuery):
                 continue
         DICT[SHOP.shop_name] = f'go_to_the_shop_{SHOP.s_id}'
 
-    for key, value in DICT.items():
-        kb_game.add(InlineKeyboardButton(
-            text=key,
-            callback_data=value
-            ))
-
     return await update_message(
             query.message,
             person_status_card(PERS, STAT),
-            kb_game
-                )
+            create_keyboard(DICT)
+            )

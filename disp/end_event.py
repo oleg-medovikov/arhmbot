@@ -1,10 +1,10 @@
 from .dispetcher import dp
 from aiogram import types
 from aiogram.dispatcher.filters import Text
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from clas import PersonStatus, Inventory, Event, EventHistory
-from func import update_message, timedelta_to_str, applying_effects
+from clas import PersonStatus, Event, EventHistory
+from func import update_message, timedelta_to_str, applying_effects, \
+    create_keyboard
 from conf import emoji
 
 DICT_CHECK = {
@@ -81,20 +81,10 @@ async def end_event(query: types.CallbackQuery):
 
     # заканчиваем прохождение ивента
     await EVENTHIS.write_result()
-
-    kb_event = InlineKeyboardMarkup(
-            resize_keyboard=True,
-            one_time_keyboard=True
-            )
-
-    # в любом случае предлагаем продолжить
-    kb_event.add(InlineKeyboardButton(
-        text='закончить событие',
-        callback_data='continue_game'
-                ))
+    DICT = {'закончить событие': 'continue_game'}
 
     return await update_message(
             query.message,
             MESS,
-            kb_event
+            create_keyboard(DICT)
             )

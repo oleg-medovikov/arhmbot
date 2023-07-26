@@ -1,11 +1,10 @@
 from .dispetcher import dp
 from aiogram import types
 from aiogram.dispatcher.filters import Text
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from clas import PersonStatus, Location, \
     LocationDescription, Item, DropItem, Inventory
-from func import update_message
+from func import update_message, create_keyboard
 
 
 @dp.callback_query_handler(Text(equals=['look_around']))
@@ -13,7 +12,6 @@ async def look_around(query: types.CallbackQuery):
     "персонаж осматривается на местности и тратит время"
 
     PERS, STAT = await PersonStatus.get_all(query.message['chat']['id'])
-
     LOCATION = await Location.get(STAT.location)
 
     await STAT.waste_time(1)
@@ -60,11 +58,6 @@ async def look_around(query: types.CallbackQuery):
 
     MESS = ''.join(str(x) for x in LIST)
 
-    kb_look_around = InlineKeyboardMarkup(
-        resize_keyboard=True,
-        one_time_keyboard=True
-        )
-
     # если игрок нашёл предмет, то предложить его поднять
     if FIND:
         DICT = {
@@ -76,17 +69,11 @@ async def look_around(query: types.CallbackQuery):
             'Продолжить': 'continue_game'
                 }
 
-    for key, value in DICT.items():
-        kb_look_around.add(InlineKeyboardButton(
-            text=key,
-            callback_data=value
-            ))
-
     return await update_message(
         query.message,
         MESS,
-        kb_look_around
-            )
+        create_keyboard(DICT)
+        )
 
 
 @dp.callback_query_handler(Text(startswith=['look_around_get_']))
@@ -106,7 +93,8 @@ async def look_around_get_item(query: types.CallbackQuery):
 
     # пробуем поместить предмет в сумку
     if GET:
-        check, MESS = await Inventory.add(PERS.p_id, DP.i_id)
+        INV = await Inventory.get(PERS)
+        check, MESS = await INV.add(DP.i_id)
         if check:
             await DP.delete_from_location()
 
@@ -114,19 +102,8 @@ async def look_around_get_item(query: types.CallbackQuery):
             'Продолжить': 'continue_game'
         }
 
-    kb_look_around = InlineKeyboardMarkup(
-        resize_keyboard=True,
-        one_time_keyboard=True
-        )
-
-    for key, value in DICT.items():
-        kb_look_around.add(InlineKeyboardButton(
-            text=key,
-            callback_data=value
-            ))
-
     return await update_message(
         query.message,
         MESS,
-        kb_look_around
-            )
+        create_keyboard(DICT)
+        )

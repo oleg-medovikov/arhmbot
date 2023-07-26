@@ -27,6 +27,7 @@ from .dialog import dialog
 from .prepare_main import prepare_main
 from .prepare_main_quest import prepare_main_quest
 from .prepare_relocations import prepare_relocations
+from .prepare_map import prepare_map
 
 __all__ = [
     'dp',
@@ -67,4 +68,5 @@ __all__ = [
     'prepare_main',
     'prepare_main_quest',
     'prepare_relocations',
+    'prepare_map',
     ]

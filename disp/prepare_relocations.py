@@ -20,7 +20,7 @@ async def prepare_relocations(query: types.CallbackQuery):
     SPISOK = await Journal.get_relocations(
         STAT.p_id,
         START,
-        START + 5
+        START + 4
     )
 
     kb_prepare = InlineKeyboardMarkup(

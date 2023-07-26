@@ -27,6 +27,16 @@ class Location(BaseModel):
             raise ValueError('Нет такой локации!')
 
     @staticmethod
+    async def get_names(LIST: list) -> dict:
+        query = t_karta.select(t_karta.c.node_id.in_(LIST))
+
+        DICT = {}
+        for row in await ARHM_DB.fetch_all(query):
+            DICT[row['node_id']] = row['name_node']
+
+        return DICT
+
+    @staticmethod
     async def get_districts() -> list:
         "тестовая функция"
         query = select([t_karta.c.district]).distinct()\

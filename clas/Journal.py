@@ -27,7 +27,7 @@ class Journal(BaseModel):
         "возвращаем последние посещенные локации"
         query = t_journal.select().where(and_(
             t_journal.c.p_id == P_ID,
-            t_journal.c.metka.between(1000, 1999)
+            t_journal.c.metka.between(10000, 19999)
         )).order_by(desc(t_journal.c.gametime))
 
         list_ = []
@@ -50,3 +50,17 @@ class Journal(BaseModel):
         ))
         res = await ARHM_DB.fetch_one(query)
         return Journal(**res)
+
+    @staticmethod
+    async def get_relocation_map(P_ID: int) -> list:
+        query = t_journal.select().where(and_(
+            t_journal.c.p_id == P_ID,
+            t_journal.c.metka.between(10000, 19999)
+        )).distinct()
+
+        list_ = []
+        for row in await ARHM_DB.fetch_all(query):
+            a = int(str(row['metka'])[1:3])
+            b = int(str(row['metka'])[3:6])
+            list_.append([a, b])
+        return list_

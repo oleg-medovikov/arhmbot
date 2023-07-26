@@ -26,10 +26,11 @@ async def prepare_main(query: types.CallbackQuery):
             one_time_keyboard=True
             )
     DICT = {
-        'основная цель':       'prepare_main_quest',
-        'история перемещений': 'prepare_relocations_0',
-        'инвентарь':           'inventory_main',
-        'назад':               'continue_game',
+        'основная цель':        'prepare_main_quest',
+        'история перемещений':  'prepare_relocations_0',
+        'карта':               f'prepare_map_{STAT.p_id}',
+        'инвентарь':            'inventory_main',
+        'назад':                'continue_game',
     }
 
     for KEY, VALUE in DICT.items():

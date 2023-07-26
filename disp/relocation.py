@@ -46,7 +46,9 @@ async def relocation(query: types.CallbackQuery):
     PERS, STAT = await PersonStatus.get_all(query.message['chat']['id'])
     # пропуск времени
     WASTE = await STAT.waste_time(1)
-    # перемещение персонажа
+    # предыдущая локация
+    NODE_START = STAT.location
+    # перемещение персонажа в новую локацию
     STAT.location = NODE_ID
     await STAT.update()
 
@@ -82,7 +84,7 @@ async def relocation(query: types.CallbackQuery):
         'gametime': STAT.gametime,
         'p_id': STAT.p_id,
         'name': f'Переход: {LOCATION.name_node}',
-        'metka': 1000 + LOCATION.node_id,
+        'metka': 10000 + NODE_START*100 + LOCATION.node_id,
         'mess': MESS_J,
     })
     await JOUR.add()

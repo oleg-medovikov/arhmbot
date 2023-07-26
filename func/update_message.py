@@ -9,7 +9,7 @@ async def update_message(
         MESS,
         keyboard: types.InlineKeyboardMarkup
         ) -> None:
-    "удаление сообщения с обработкой исключения"
+    "изменение сообщения с обработкой исключений"
 
     try:
         await message.edit_text(MESS, parse_mode='Markdown')

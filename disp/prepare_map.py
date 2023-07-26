@@ -1,14 +1,12 @@
 from .dispetcher import dp
 from aiogram import types
 from aiogram.dispatcher.filters import Text
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, InputMedia
 import networkx as nx
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import figure
-from json import loads
 
 from clas import Journal, Location
-from func import update_message
+from func import create_keyboard
 
 
 @dp.callback_query_handler(Text(startswith=['prepare_map_']))
@@ -39,20 +37,13 @@ async def prepare_map(query: types.CallbackQuery):
     photo = open(MAP, 'rb')
     await query.message.delete()
 
-    kb_prepare = InlineKeyboardMarkup(
-            resize_keyboard=True,
-            one_time_keyboard=True
-            )
-    kb_prepare.add(InlineKeyboardButton(
-            text='назад',
-            callback_data='prepare_main',
-        ))
-
+    DICT = {
+        'назад': 'prepare_main'
+    }
     MESS = 'Вы нарисовали карандашом схему своих путешествий по городу.'
 
-    # await query.message.delete()
     return await query.message.answer_photo(
         caption=MESS,
         photo=photo,
-        reply_markup=kb_prepare
+        reply_markup=create_keyboard(DICT)
     )

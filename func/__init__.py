@@ -13,6 +13,7 @@ from .time_to_str import timedelta_to_str
 from .demand import demand
 from .applying_effects import applying_effects
 from .button_key_add_space import button_key_add_space
+from .create_keyboard import create_keyboard
 
 __all__ = [
     'delete_message',
@@ -30,4 +31,5 @@ __all__ = [
     'demand',
     'applying_effects',
     'button_key_add_space',
+    'create_keyboard',
     ]

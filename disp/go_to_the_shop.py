@@ -24,7 +24,9 @@ async def go_to_the_shop(query: types.CallbackQuery):
         MESS += '\n\n' + f'У вас при себе  {emoji("dollar")} {STAT.money}'
         if SHOP.dialog:
             DIALOG = await Dialog.get(SHOP.dialog, 1)
-            DICT[DIALOG.name] = f'dialog_answer_{S_ID}_{DIALOG.d_id}_1'
+            DICT[DIALOG.name] = f'dialog_answer_{STAT.p_id}' \
+                + f'_{S_ID}_{DIALOG.d_id}_1'
+
             # добавляем строчку о диалоге в историю
             await DialogHistory(**{
                 'p_id':   STAT.p_id,

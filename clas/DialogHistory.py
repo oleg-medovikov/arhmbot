@@ -15,7 +15,7 @@ class DialogHistory(BaseModel):
     @staticmethod
     async def check(P_ID: int) -> 'DialogHistory':
         query = t_dialogs_history.select().where(and_(
-            t_dialogs_history.c.result is false,
+            t_dialogs_history.c.result == false(),
             t_dialogs_history.c.p_id == P_ID
         ))
 
@@ -30,7 +30,8 @@ class DialogHistory(BaseModel):
         query = t_dialogs_history.select(
             t_dialogs_history.c.p_id == P_ID
         )
-        return DialogHistory(**ARHM_DB.fetch_one(query))
+        res = await ARHM_DB.fetch_one(query)
+        return DialogHistory(**res)
 
     async def add(self) -> None:
         query = t_dialogs_history.select(
@@ -53,4 +54,4 @@ class DialogHistory(BaseModel):
         ).values(
             **self.dict()
         )
-        ARHM_DB.execute(query)
+        await ARHM_DB.execute(query)

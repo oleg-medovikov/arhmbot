@@ -2,7 +2,7 @@ from .dispetcher import dp
 from aiogram import types
 from aiogram.dispatcher.filters import Text
 
-from clas import Item, Dialog
+from clas import Item, Dialog, DialogHistory
 from func import update_message, create_keyboard
 from conf import emoji
 
@@ -10,9 +10,12 @@ from conf import emoji
 @dp.callback_query_handler(Text(startswith=['dialog_answer']))
 async def dialog(query: types.CallbackQuery):
     "покупаем предмет в магазине"
-    S_ID, D_ID, Q_ID = [int(x) for x in query.data[14:].split('_')]
+    P_ID, S_ID, D_ID, Q_ID = [int(x) for x in query.data[14:].split('_')]
 
     DLOG = await Dialog.get(D_ID, Q_ID)
+    DHIS = await DialogHistory.get(P_ID)
+    DHIS.q_id = Q_ID
+    DHIS.result = False
     DICT = dict()
 
     # сначала описываем возможные покупки
@@ -31,8 +34,16 @@ async def dialog(query: types.CallbackQuery):
 
     # теперь просто варианты ответов
     for KEY, ID in zip(DLOG.answers, DLOG.transfer):
-        DICT[KEY] = f'dialog_answer_{S_ID}_{D_ID}_{ID}' if ID != -1 \
-            else 'continue_game'
+        if ID == -1:
+            # если есть ответ с выходом,
+            # считаем диалог завершенным
+            DICT[KEY] = 'continue_game'
+            DHIS.result = True
+            continue
+        DICT[KEY] = f'dialog_answer_{P_ID}_{S_ID}_{D_ID}_{ID}'
+
+    # обновляем историю диалога
+    await DHIS.update()
 
     return await update_message(
             query.message,

@@ -3,7 +3,7 @@ from aiogram import types
 from aiogram.dispatcher.filters import Text
 
 from conf import MAX_HUNGER, MAX_WEARY
-from clas import EventHistory, PersonStatus, Shop
+from clas import EventHistory, PersonStatus, Shop, DialogHistory
 from func import death_message, person_status_card, update_message, \
     demand, create_keyboard
 
@@ -35,6 +35,20 @@ async def continue_game(query: types.CallbackQuery):
         return await update_message(
             query.message,
             'У вас незаконченное событие!',
+            create_keyboard(DICT)
+            )
+    # если есть неоконченный диалог, предлагаем продолжить
+    try:
+        DHIS = await DialogHistory.check(PERS.p_id)
+    except ValueError:
+        pass
+    else:
+        DICT['понимаю'] = f'dialog_answer_{PERS.p_id}' \
+            + f'_{DHIS.s_id}_{DHIS.d_id}_{DHIS.q_id}'
+
+        return await update_message(
+            query.message,
+            'Вы не закончили диалог!',
             create_keyboard(DICT)
             )
 

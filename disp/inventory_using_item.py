@@ -1,10 +1,9 @@
 from .dispetcher import dp
 from aiogram import types
 from aiogram.dispatcher.filters import Text
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from clas import PersonStatus
-from func import update_message, using_item
+from func import update_message, using_item, create_keyboard
 
 
 @dp.callback_query_handler(Text(startswith=['inventory_using_item_']))
@@ -17,23 +16,12 @@ async def inventory_using_item(query: types.CallbackQuery):
 
     MESS = await using_item(PERS, STAT, I_ID)
 
-    kb_bag = InlineKeyboardMarkup(
-            resize_keyboard=True,
-            one_time_keyboard=True
-            )
-
     DICT = {
         'назад': 'inventory_main',
         }
 
-    for key, value in DICT.items():
-        kb_bag.add(InlineKeyboardButton(
-            text=key,
-            callback_data=value,
-            ))
-
     return await update_message(
             query.message,
             MESS,
-            kb_bag
+            create_keyboard(DICT)
             )

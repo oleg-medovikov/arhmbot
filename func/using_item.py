@@ -22,6 +22,9 @@ async def using_item(
     # получаем предмет
     ITEM = await Item.get(I_ID)
     INVE = await Inventory.get(PERS)
+    # это дефолтное сообщение
+    MESS = 'этот предмет нельзя использовать'
+
     # кладём предмет в сумку, если это создание персонажа
     if CREATE_PERSON:
         cheak, string = await INVE.add(I_ID)

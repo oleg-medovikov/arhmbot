@@ -1,11 +1,10 @@
 from .dispetcher import dp
 from aiogram import types
 from aiogram.dispatcher.filters import Text
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from clas import PersonStatus, Inventory
 
-from func import inventory_mess, update_message
+from func import inventory_mess, update_message, create_keyboard
 from conf import emoji
 
 equip_slots = [
@@ -23,24 +22,16 @@ async def inventory_equip_items(query: types.CallbackQuery):
     ITEMS = await INVE.get_all()
 
     MESS = inventory_mess(PERS, ITEMS, EQUIP=True)
-
-    kb_bag = InlineKeyboardMarkup(
-            resize_keyboard=True,
-            one_time_keyboard=True
-            )
+    DICT = {}
 
     for slot in equip_slots:
         for item in ITEMS[slot]:
-            kb_bag.add(InlineKeyboardButton(
-                text=emoji(item['emoji']) + ' ' + item['name'],
-                callback_data='inventory_equip_item_' + str(item['i_id'])
-                    ))
-
-    kb_bag.add(InlineKeyboardButton(
-        text='назад',
-        callback_data='inventory_main',
-        ))
+            KEY = emoji(item['emoji']) + ' ' + item['name']
+            VALUE = 'inventory_equip_item_' + str(item['i_id'])
+            DICT[KEY] = VALUE
+    DICT['назад'] = 'inventory_main'
     return await update_message(
             query.message,
             MESS,
-            kb_bag)
+            create_keyboard(DICT)
+    )

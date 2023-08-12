@@ -15,6 +15,7 @@ class Dialog(BaseModel):
     description:  str
     answers:      list
     transfer:     list
+    demaind:      str
     buy_items:    list
     buy_costs:    list
     sale_items:   list
@@ -53,6 +54,7 @@ class Dialog(BaseModel):
                 'description': 'Описание ситуции',
                 'answers':     '[]',
                 'transfer':    '[]',
+                'demaind':     '{}',
                 'buy_items':   '[]',
                 'buy_costs':   '[]',
                 'sale_items':  '[]',

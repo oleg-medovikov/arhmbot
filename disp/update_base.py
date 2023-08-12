@@ -55,7 +55,8 @@ NAMES = {
         ],
     'Dialogs.xlsx': [
         'd_id', 'q_id', 'name', 'description', 'answers', 'transfer',
-        'buy_items', 'buy_costs', 'sale_items', 'sale_costs', 'date_update'
+        'demaind', 'buy_items', 'buy_costs', 'sale_items',
+        'sale_costs', 'date_update'
         ],
         }
 

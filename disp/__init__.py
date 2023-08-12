@@ -22,8 +22,9 @@ from .get_event import get_event
 from .end_event import end_event
 from .monster_fight import monster_fight
 from .go_to_the_shop import go_to_the_shop
-from .buy_item import buy_item
 from .dialog import dialog
+from .dialog_buy_item import dialog_buy_item
+from .dialog_sale_item import dialog_sale_item
 from .prepare_main import prepare_main
 from .prepare_main_quest import prepare_main_quest
 from .prepare_relocations import prepare_relocations
@@ -63,8 +64,9 @@ __all__ = [
     'end_event',
     'monster_fight',
     'go_to_the_shop',
-    'buy_item',
     'dialog',
+    'dialog_buy_item',
+    'dialog_sale_item',
     'prepare_main',
     'prepare_main_quest',
     'prepare_relocations',

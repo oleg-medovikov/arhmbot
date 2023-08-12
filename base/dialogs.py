@@ -12,6 +12,7 @@ t_dialogs = Table(
         Column('description', String),  # описание ситуации
         Column('answers',     ARRAY(String)),  # список ответов
         Column('transfer',    ARRAY(SmallInteger)),  # куда переходим
+        Column('demaind',     String),  # требования для данного вороса
         Column('buy_items',   ARRAY(SmallInteger)),  # список товаров
         Column('buy_costs',   ARRAY(SmallInteger)),  # список цен
         Column('sale_items',  ARRAY(SmallInteger)),  # список на продажу

@@ -8,7 +8,7 @@ from conf import emoji
 
 
 @dp.callback_query_handler(Text(startswith=['dialog_buy_']))
-async def buy_item(query: types.CallbackQuery):
+async def dialog_buy_item(query: types.CallbackQuery):
     "покупаем предмет в магазине"
 
     S_ID, D_ID, Q_ID, I_ID, COST = [int(x) for x in query.data[11:].split('_')]
@@ -34,7 +34,7 @@ async def buy_item(query: types.CallbackQuery):
         await STAT.update()
 
     MESS = emoji('8leg') + '   ' + STRING
-    DICT['Понимаю'] = f'dialog_answer_{S_ID}_{D_ID}_{Q_ID}'
+    DICT['Понимаю'] = f'dialog_answer_{PERS.p_id}_{S_ID}_{D_ID}_{Q_ID}'
 
     return await update_message(
         query.message,

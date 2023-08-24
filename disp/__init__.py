@@ -23,6 +23,7 @@ from .end_event import end_event
 from .monster_fight import monster_fight
 from .go_to_the_shop import go_to_the_shop
 from .dialog import dialog
+from .dialog_graph import dialog_graph
 from .dialog_buy_item import dialog_buy_item
 from .dialog_sale_item import dialog_sale_item
 from .prepare_main import prepare_main
@@ -65,6 +66,7 @@ __all__ = [
     'monster_fight',
     'go_to_the_shop',
     'dialog',
+    'dialog_graph',
     'dialog_buy_item',
     'dialog_sale_item',
     'prepare_main',

@@ -35,6 +35,14 @@ class Dialog(BaseModel):
             raise ValueError(f'Нет такого диалога {D_ID} {Q_ID}')
 
     @staticmethod
+    async def get_dialog(D_ID: int) -> list:
+        query = t_dialogs.select().where(
+            t_dialogs.c.d_id == D_ID
+        )
+        res = await ARHM_DB.fetch_all(query)
+        return [dict(_) for _ in res]
+
+    @staticmethod
     async def get_all() -> list:
         query = t_dialogs.select().order_by(
             t_dialogs.c.d_id,
@@ -84,7 +92,6 @@ class Dialog(BaseModel):
             except JSONDecodeError:
                 string += f"ошибка {row['name']} {row['q_id']}\n"
                 continue
-
 
             # если строки нет, то добавляем
             if res is None:
